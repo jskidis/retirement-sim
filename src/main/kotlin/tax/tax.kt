@@ -2,8 +2,8 @@ package tax
 
 import Amount
 import Name
+import Rate
 import YearlyDetail
-import config.MainConfig
 import moneyFormat
 
 data class TaxableAmounts(
@@ -54,5 +54,6 @@ data class TaxesRec(
 }
 
 interface TaxCalculator {
-    fun determineTax(taxableAmount: Amount, config: MainConfig, currYear: YearlyDetail): Amount
+    fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
+    fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate
 }
