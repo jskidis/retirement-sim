@@ -9,10 +9,10 @@ object TaxesProcessor {
     fun processTaxes(currYear: YearlyDetail, config: MainConfig): TaxesRec {
         val taxable = determineTaxableAmounts(currYear)
         return TaxesRec(
-            fed = config.taxConfig.fed.determineTax(taxable.fed, config, currYear),
-            state = config.taxConfig.state.determineTax(taxable.state, config, currYear),
-            socSec = config.taxConfig.socSec.determineTax(taxable.socSec, config, currYear),
-            medicare = config.taxConfig.medicare.determineTax(taxable.medicare, config, currYear),
+            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear),
+            state = config.taxConfig.state.determineTax(taxable.state, currYear),
+            socSec = config.taxConfig.socSec.determineTax(taxable.socSec, currYear),
+            medicare = config.taxConfig.medicare.determineTax(taxable.medicare, currYear),
         )
     }
 

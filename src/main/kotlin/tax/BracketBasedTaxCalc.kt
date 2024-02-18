@@ -3,7 +3,6 @@ package tax
 import Amount
 import Rate
 import YearlyDetail
-import config.MainConfig
 import org.apache.commons.csv.CSVRecord
 
 interface BracketBasedTaxCalc : TaxCalculator {
@@ -23,7 +22,7 @@ interface BracketBasedTaxCalc : TaxCalculator {
 
     fun getCmpdInflation(currYear: YearlyDetail): Rate = currYear.inflation.chain.cmpdStart
 
-    override fun determineTax(taxableAmount: Amount, config: MainConfig, currYear: YearlyDetail)
+    override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail)
         : Amount {
 
         val cmpdInflation = getCmpdInflation(currYear)
@@ -32,5 +31,15 @@ interface BracketBasedTaxCalc : TaxCalculator {
             if (bracket.start > inflationAdjAmount) acc
             else acc + bracket.pct * (Math.min(bracket.end, inflationAdjAmount) - bracket.start)
         } * cmpdInflation
+    }
+
+    override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail)
+        : Rate {
+
+        val cmpdInflation = getCmpdInflation(currYear)
+        val inflationAdjAmount = taxableAmount / cmpdInflation
+        return brackets.findLast {
+            it.start < inflationAdjAmount && it.end > inflationAdjAmount
+        }?.pct ?: 0.0
     }
 }

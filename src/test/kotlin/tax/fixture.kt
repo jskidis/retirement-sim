@@ -1,16 +1,13 @@
 package tax
 
 import Amount
+import Rate
 import YearlyDetail
-import config.MainConfig
 import config.TaxCalcConfig
 
 class taxCalculatorFixture : TaxCalculator {
-    override fun determineTax(
-        taxableAmount: Amount,
-        config: MainConfig,
-        currYear: YearlyDetail,
-    ): Amount = 0.0
+    override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = 0.0
+    override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate = 0.0
 }
 
 fun taxConfigFixture() = TaxCalcConfig(
