@@ -17,7 +17,7 @@ interface BracketBasedTaxCalc : TaxCalculator {
     }
 
     fun loadBrackets(resourcePath: String): List<TaxBracket> {
-        return getReader().readCsvFromResource(resourcePath)
+        return getReader().readCsvFromResource(resourcePath).sortedBy { it.start }
     }
 
     fun getCmpdInflation(currYear: YearlyDetail): Rate = currYear.inflation.chain.cmpdStart

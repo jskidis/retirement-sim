@@ -14,10 +14,10 @@ typealias Rate = Double
 data class YearlyDetail(
     val year: Year,
     val inflation: InflationRec,
-    val incomes: ArrayList<IncomeRec> = ArrayList(),
-    val expenses: ArrayList<ExpenseRec> = ArrayList(),
-    val assets: ArrayList<AssetRec> = ArrayList(),
-    val taxes: ArrayList<TaxesRec> = ArrayList(),
+    val incomes: List<IncomeRec> = ArrayList(),
+    val expenses: List<ExpenseRec> = ArrayList(),
+    val assets: List<AssetRec> = ArrayList(),
+    val taxes: MutableList<TaxesRec> = ArrayList(),
     val rorRndGaussian: Double = 0.0,
     var netSpend: Amount = 0.0
 ) {

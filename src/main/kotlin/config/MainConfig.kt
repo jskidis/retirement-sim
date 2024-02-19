@@ -11,9 +11,9 @@ data class MainConfig(
     val startYear: Year,
     val householdMembers: HouseholdMembers,
     val inflationConfig: Progression<InflationRec>,
-    val householdExpenses: ArrayList<ExpenseConfigProgression> = ArrayList(),
-    val jointAssets: ArrayList<AssetConfigProgression> = ArrayList(),
-    val taxConfig: TaxCalcConfig,
+    var householdExpenses: List<ExpenseConfigProgression> = ArrayList(),
+    var jointAssets: List<AssetConfigProgression> = ArrayList(),
+    var taxConfig: TaxCalcConfig,
 )
 
 /*
