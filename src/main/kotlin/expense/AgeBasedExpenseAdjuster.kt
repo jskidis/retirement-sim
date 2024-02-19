@@ -7,7 +7,7 @@ import YearMonth
 import YearlyDetail
 import progression.AmountAdjusterWithGapFiller
 
-class AgeBasedExpenseAdjuster(val birthYM: YearMonth) : AmountAdjusterWithGapFiller {
+open class AgeBasedExpenseAdjuster(val birthYM: YearMonth) : AmountAdjusterWithGapFiller {
 
     override fun adjustAmount(value: Amount, prevYear: YearlyDetail): Amount =
         value * AgeBasedAdjustment.calc(birthYM, prevYear.year + 1)

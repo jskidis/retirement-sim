@@ -7,7 +7,7 @@ import progression.AmountToRecProvider
 import progression.ChainedAmountAdjuster
 import progression.SCurveDecreasingAmountProgression
 
-class SCurveDecreasingExpense(
+open class SCurveDecreasingExpense(
     startAmount: Amount,
     startDecYear: Year,
     numYears: Int,

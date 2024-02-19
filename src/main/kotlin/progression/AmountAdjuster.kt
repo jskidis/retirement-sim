@@ -18,7 +18,7 @@ interface AmountAdjusterWithGapFiller : AmountAdjuster {
     fun adjustGapFillValue(value: Amount, prevYear: YearlyDetail): Amount
 }
 
-class ChainedAmountAdjusterWithGapFiller(val gapAdjusters: List<AmountAdjusterWithGapFiller>)
+open class ChainedAmountAdjusterWithGapFiller(val gapAdjusters: List<AmountAdjusterWithGapFiller>)
     : ChainedAmountAdjuster(gapAdjusters), AmountAdjusterWithGapFiller {
 
     override fun adjustGapFillValue(value: Amount, prevYear: YearlyDetail): Amount =
