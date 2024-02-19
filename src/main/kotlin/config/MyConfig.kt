@@ -40,7 +40,7 @@ fun buildMyConfig(): MainConfig {
         name = "Expenses", person = jason.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    connie.expenses.add(
+    jason.expenses.add(
         ExpenseConfigProgression(
             config = jasonExpenseConfig,
             progression = BasicExpenseProgression(
