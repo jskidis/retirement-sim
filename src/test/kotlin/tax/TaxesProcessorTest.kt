@@ -1,6 +1,5 @@
 package tax
 
-import config.TaxCalcConfig
 import config.configFixture
 import expense.expenseRecFixture
 import income.incomeRecFixture

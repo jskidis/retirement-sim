@@ -3,7 +3,6 @@ package tax
 import Amount
 import Rate
 import YearlyDetail
-import config.TaxCalcConfig
 
 class taxCalculatorFixture : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = 0.0
