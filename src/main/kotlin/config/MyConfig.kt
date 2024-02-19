@@ -129,7 +129,7 @@ fun buildMyConfig(): MainConfig {
         startYear = startYear,
         householdMembers = householdMembers,
         inflationConfig = FixedRateInflationProgression(0.03),
-        householdExpenses = ArrayList(listOf(householdExpenseProgression)),
+        householdExpenses = listOf(householdExpenseProgression),
         taxConfig = taxCalcConfig,
     )
 }
