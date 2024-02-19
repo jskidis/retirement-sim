@@ -1,9 +1,9 @@
 package asset
 
-import AmountConfig
 import AssetType
 import Name
 import Year
+import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
 
