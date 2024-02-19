@@ -5,7 +5,7 @@ import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
 import inflation.InflationRec
 import progression.Progression
-import tax.TaxCalculator
+import tax.TaxCalcConfig
 
 data class MainConfig(
     val startYear: Year,
@@ -16,12 +16,6 @@ data class MainConfig(
     val taxConfig: TaxCalcConfig,
 )
 
-data class TaxCalcConfig(
-    val fed: TaxCalculator,
-    val state: TaxCalculator,
-    val socSec: TaxCalculator,
-    val medicare: TaxCalculator
-)
 /*
 class EmploymentConfig(
     val name: String,
