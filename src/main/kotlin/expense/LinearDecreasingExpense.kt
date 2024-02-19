@@ -7,7 +7,7 @@ import progression.AmountToRecProvider
 import progression.ChainedAmountAdjuster
 import progression.LinearDecreasingAmountProgression
 
-class LinearDecreasingExpense(
+open class LinearDecreasingExpense(
     startAmount: Amount,
     startDecYear: Year,
     numYears: Int,

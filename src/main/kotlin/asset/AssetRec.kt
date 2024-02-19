@@ -16,7 +16,7 @@ data class AssetRec(
     var calcValues: AssetCalcValuesRec = AssetCalcValuesRec()
 )
 
-class AssetCalcValuesRec(
+data class AssetCalcValuesRec(
     val totalGains: Amount = 0.0,
     val capturedGains: Amount = 0.0,
     val totalContributions: Amount = 0.0,

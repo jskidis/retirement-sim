@@ -6,7 +6,7 @@ import java.io.InputStream
 
 typealias csvRecToEntity<E> = (CSVRecord) -> E
 
-class CSVReader<E>(val convertFunc: csvRecToEntity<E>) {
+open class CSVReader<E>(val convertFunc: csvRecToEntity<E>) {
     fun readCsvFromResource(resourcePath: String): List<E> =
         readCsv(inputStream = javaClass.classLoader.getResourceAsStream(resourcePath)
                 ?: throw RuntimeException("Unable to load resource file $resourcePath"),
