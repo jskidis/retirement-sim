@@ -1,8 +1,8 @@
 package expense
 
 import Amount
-import AmountConfig
 import Name
+import config.AmountConfig
 import moneyFormat
 import progression.AmountToRecProvider
 import progression.Progression

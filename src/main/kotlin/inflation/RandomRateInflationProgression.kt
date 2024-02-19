@@ -1,9 +1,9 @@
 package inflation
 
-import GaussianRndProvider
 import Rate
 import YearlyDetail
 import progression.PrevRecProviderProgression
+import util.GaussianRndProvider
 
 open class RandomRateInflationProgression(
     val stdMean: Rate = .00253, val stdSD: Rate = .015,

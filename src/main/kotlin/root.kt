@@ -2,12 +2,9 @@ import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
-import tax.TaxabilityProfile
 import tax.TaxesRec
 import java.text.DecimalFormat
 import java.time.LocalDate
-import kotlin.random.Random
-import kotlin.random.asJavaRandom
 
 typealias Year = Int
 typealias Amount = Double
@@ -39,16 +36,6 @@ data class DateRange(
     val start: YearMonth,
     val end: YearMonth
 )
-
-interface GaussianRndProvider {
-    fun gaussianRndValue(): Double = Random.asJavaRandom().nextGaussian()
-}
-interface AmountConfig {
-    val name: Name
-    val person: Name
-    val taxabilityProfile: TaxabilityProfile
-    fun isValid(): Boolean = true
-}
 
 val moneyFormat = DecimalFormat("$##,###,###")
 val currentDate = LocalDate.now()
