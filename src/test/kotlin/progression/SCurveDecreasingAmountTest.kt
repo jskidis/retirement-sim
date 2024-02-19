@@ -11,7 +11,7 @@ class SCurveDecreasingAmountTest : ShouldSpec({
     val startYear = 2024
     val numYears = 10
 
-    should("calcAmount: should return approriate amounts") {
+    should("calcAmount returns appropriate amounts") {
         // Before start year should return start amount
         SCurveDecreasingAmount.calcAmount(
             year =startYear - 1, startAmount, startYear, numYears)

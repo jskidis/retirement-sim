@@ -17,8 +17,8 @@ class FixedRateInflationProgressionTest : ShouldSpec({
     val progression = FixedRateInflationProgression(stdRate, medRate, chainRate, wageRate)
 
     should(
-        "determine next with no previous data: " +
-            "rates should be specified fixed rate values and compound should be 1.0") {
+        "determine next with no previous data " +
+            "rates are specified fixed rate values and compound are 1.0") {
 
         val initialValue = progression.determineNext(null)
         initialValue.std.rate.shouldBe(stdRate)
@@ -39,7 +39,7 @@ class FixedRateInflationProgressionTest : ShouldSpec({
 
     should(
         "determine next with no previous data and using default rates : " +
-            "should provide appropriate defaults and compound should be 1.0") {
+            "provides appropriate defaults and compound should be 1.0") {
 
         val initialValue = progression.determineNext(null)
         initialValue.std.rate.shouldBe(stdRate)
@@ -50,8 +50,8 @@ class FixedRateInflationProgressionTest : ShouldSpec({
 
     should(
         "deetermine next with previous data: " +
-            "rates should be fixed rates, " +
-            "compound values should be previous compound times (1.00 based) current rate ") {
+            "rates are fixed rates, " +
+            "compound values are previous compound times (1.00 based) current rate ") {
         val initialValue = progression.determineNext(null)
         val nextValue = progression.determineNext(YearlyDetail(2000, initialValue))
         nextValue.std.rate.shouldBe(stdRate)

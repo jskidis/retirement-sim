@@ -36,7 +36,7 @@ class RandomRateInflationProgressionTest : ShouldSpec({
 
     should(
         "determine next with no previous data: " +
-            "rates should be based on mean and stddev (and mock rand), compound values should be 1.0") {
+            "rates are based on mean and stddev (and mock rand), compound values are 1.0") {
 
         val initialValue = progression.determineNext(null)
 
@@ -58,8 +58,8 @@ class RandomRateInflationProgressionTest : ShouldSpec({
 
     should(
         "deetermine next with previous data: " +
-            "rates should be based on mean and stddev (and mock rand), " +
-            "compound values should be previous compound times (1.00 based) current rate ") {
+            "rates are based on mean and stddev (and mock rand), " +
+            "compound values should are  compound times (1.00 based) current rate ") {
 
         val initialValue = progression.determineNext(null)
         val nextValue = progression.determineNext(YearlyDetail(2000, initialValue))
