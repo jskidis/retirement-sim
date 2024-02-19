@@ -1,12 +1,8 @@
 package config
 
-import Amount
-import AssetRec
-import DateRange
-import Name
 import Year
+import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
-import income.IncomeConfig
 import inflation.InflationRec
 import progression.Progression
 import tax.TaxCalculator
@@ -16,8 +12,8 @@ data class MainConfig(
     val householdMembers: HouseholdMembers,
     val inflationConfig: Progression<InflationRec>,
     val householdExpenses: ArrayList<ExpenseConfigProgression> = ArrayList(),
-    val jointAssets: ArrayList<AssetConfig> = ArrayList(),
-    val taxConfig: TaxCalcConfig
+    val jointAssets: ArrayList<AssetConfigProgression> = ArrayList(),
+    val taxConfig: TaxCalcConfig,
 )
 
 data class TaxCalcConfig(
@@ -26,7 +22,7 @@ data class TaxCalcConfig(
     val socSec: TaxCalculator,
     val medicare: TaxCalculator
 )
-
+/*
 class EmploymentConfig(
     val name: String,
     val person: Name,
@@ -36,12 +32,6 @@ class EmploymentConfig(
     val retirementConfig: ArrayList<RetireContribConfig>
 )
 
-class AssetConfig(
-    val name: String,
-    val person: Name,
-    val progression: Progression<AssetRec>
-)
-
 class EmployerMedInsConfig(
     val available: Boolean,
     val primaryCost: Amount = 0.0,
@@ -49,7 +39,5 @@ class EmployerMedInsConfig(
     val childrenCost: Amount = 0.0,
     val priority: Int = 1,
 )
-
-class RetireContribConfig(
-)
+*/
 

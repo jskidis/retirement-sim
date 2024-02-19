@@ -1,6 +1,7 @@
 package income
 
 import Amount
+import AmountConfig
 import Name
 import moneyFormat
 import progression.AmountToRecProvider
@@ -18,10 +19,10 @@ data class IncomeRec(
 }
 
 data class IncomeConfig(
-    val name: Name,
-    val person: Name,
-    val taxabilityProfile: TaxabilityProfile,
-) {
+    override val name: Name,
+    override val person: Name,
+    override val taxabilityProfile: TaxabilityProfile,
+): AmountConfig {
     override fun toString(): String = "$person:$name"
 }
 
