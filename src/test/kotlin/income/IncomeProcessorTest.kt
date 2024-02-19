@@ -18,11 +18,11 @@ class IncomeProcessorTest : ShouldSpec({
     val parent2Progression = incomeCfgProgessFixture(
         name = "Parent 2 Inc", person = parent2Name, amount = 4000.0)
 
-    config.householdMembers.parent1.otherIncomes.add(parent1Progression)
-    config.householdMembers.parent2.otherIncomes.add(parent2Progression)
+    config.householdMembers.parent1.otherIncomes = listOf(parent1Progression)
+    config.householdMembers.parent2.otherIncomes = listOf(parent2Progression)
 
     should("process all household and household member expenses for the year") {
-        val result: ArrayList<IncomeRec> = IncomeProcessor.process(config, prevYear)
+        val result: List<IncomeRec> = IncomeProcessor.process(config, prevYear)
 
         result.size.shouldBe(2)
 

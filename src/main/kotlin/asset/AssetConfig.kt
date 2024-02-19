@@ -13,7 +13,7 @@ data class AssetConfig(
     override val taxabilityProfile: TaxabilityProfile,
     val type: AssetType,
     val minMaxProvider: AssetMinMaxBalProvider,
-    val assetCompMap: List<YearlyAssetComposition> = ArrayList(),
+    var assetCompMap: List<YearlyAssetComposition> = ArrayList(),
 ) : AmountConfig {
 
     fun determineComposition(year: Year): List<AssetComposition> =

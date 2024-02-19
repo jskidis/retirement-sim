@@ -28,8 +28,9 @@ class BasicExpenseProgressionTest : ShouldSpec({
     }
 
     should("determineNext applies amount adjuster to previous years amount") {
-        val prevYear = yearlyDetailFixture()
-        prevYear.expenses.add(ExpenseRec(expenseConfig, 2000.0, TaxableAmounts(person)))
+        val prevYear = yearlyDetailFixture().copy(expenses = listOf(
+            ExpenseRec(expenseConfig, 2000.0, TaxableAmounts(person))
+        ))
 
         val result = progression.determineNext(prevYear)
         result.config.name.shouldBe(expenseName)
@@ -38,16 +39,11 @@ class BasicExpenseProgressionTest : ShouldSpec({
     }
 
     should("determineNext applied gaps adjustment when this expense is not in previous year") {
-        val prevYear = yearlyDetailFixture()
-        prevYear.expenses.add(/*non-matching expense*/
-            expenseRecFixture(name = expenseName, person = "Other Person", amount = 1000.0)
-        )
-        prevYear.expenses.add(
-            expenseRecFixture(name = "Other Expense", person = person, amount = 2000.0)
-        )
-        prevYear.expenses.add(
+        val prevYear = yearlyDetailFixture().copy(expenses = listOf(
+            expenseRecFixture(name = expenseName, person = "Other Person", amount = 1000.0),
+            expenseRecFixture(name = "Other Expense", person = person, amount = 2000.0),
             expenseRecFixture(name = "Other Expense", person = "Other Person", amount = 3000.0)
-        )
+        ))
 
         val result = progression.determineNext(prevYear)
         result.config.name.shouldBe(expenseName)

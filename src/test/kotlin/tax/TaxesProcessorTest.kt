@@ -32,8 +32,9 @@ class TaxesProcessorTest : ShouldSpec({
         taxConfig = TaxCalcConfig(fedTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc))
 
     should("processTaxes single wage income only no expense") {
-        val currYear = yearlyDetailFixture()
-        currYear.incomes.add(wageInc)
+        val currYear = yearlyDetailFixture().copy(
+            incomes = listOf(wageInc)
+        )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
         result.fed.shouldBe(wageInc.amount * fedTaxCalc.pct)
@@ -43,9 +44,9 @@ class TaxesProcessorTest : ShouldSpec({
     }
 
     should("processTaxes wage and other (no payroll tax) income no expenses") {
-        val currYear = yearlyDetailFixture()
-        currYear.incomes.add(wageInc)
-        currYear.incomes.add(fedOnlyInc)
+        val currYear = yearlyDetailFixture().copy(
+            incomes = listOf(wageInc, fedOnlyInc)
+        )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
         result.fed.shouldBe((wageInc.amount + fedOnlyInc.amount) * fedTaxCalc.pct)
@@ -55,11 +56,10 @@ class TaxesProcessorTest : ShouldSpec({
     }
 
     should("processTaxes wage and other (no payroll tax) income one deductible expense and one non-deductible") {
-        val currYear = yearlyDetailFixture()
-        currYear.incomes.add(wageInc)
-        currYear.incomes.add(fedOnlyInc)
-        currYear.expenses.add(nonDeductExp)
-        currYear.expenses.add(decductExp)
+        val currYear = yearlyDetailFixture().copy(
+            incomes = listOf(wageInc, fedOnlyInc),
+            expenses = listOf(nonDeductExp, decductExp)
+        )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
         result.fed.shouldBe((wageInc.amount + fedOnlyInc.amount - decductExp.amount) * fedTaxCalc.pct)

@@ -24,8 +24,7 @@ class BasicAssetProgressionTest : ShouldSpec({
     val tenPercentRORProvider = BasicAssetRORProvider(mean = 0.1, stdDev = 0.05)
     val onePercentRORProviders = BasicAssetRORProvider(mean = 0.01, stdDev = 0.01)
 
-    val prevYear = yearlyDetailFixture()
-    prevYear.assets.add(prevAssetRec)
+    val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))
 
     should("determineNext returns asset rec with single gain, single asset class composition(all years)") {
         val assetComposition = listOf(
@@ -76,11 +75,10 @@ class BasicAssetProgressionTest : ShouldSpec({
     }
 
     should("determineNext returns asset rec with two gain, two asset class composition(all years)") {
-        val assetComposition = ArrayList(
-            listOf(
+        val assetComposition = listOf(
                 AssetComposition("10 Pct Return", 0.8, tenPercentRORProvider),
                 AssetComposition("1 Pct Return", 0.2, onePercentRORProviders)
-            ))
+            )
         val assetCompMap = listOf(
             YearlyAssetComposition(2024, assetComposition)
         )
@@ -133,7 +131,7 @@ class BasicAssetProgressionTest : ShouldSpec({
             startBalance = startBalance,
             config = baseAssetConfig.copy(assetCompMap = assetCompMap))
 
-        val prevYearMissingAsset = prevYear.copy(assets = ArrayList())
+        val prevYearMissingAsset = prevYear.copy(assets = listOf())
         val results = progression.determineNext(prevYearMissingAsset)
         results.gains.size.shouldBe(1)
         results.gains[0].name.shouldBe(assetCompositionEarly[0].name)

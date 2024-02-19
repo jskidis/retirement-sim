@@ -25,7 +25,7 @@ fun buildMyConfig(): MainConfig {
         name = "Ocelot", person = jason.name,
         taxabilityProfile = WageTaxableProfile()
     )
-    jason.otherIncomes.add(
+    jason.otherIncomes = listOf(
         IncomeConfigProgression(
             config = jasonIncomeConfig,
             progression = BasicIncomeProgression(
@@ -40,7 +40,7 @@ fun buildMyConfig(): MainConfig {
         name = "Expenses", person = jason.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    jason.expenses.add(
+    jason.expenses = listOf(
         ExpenseConfigProgression(
             config = jasonExpenseConfig,
             progression = BasicExpenseProgression(
@@ -58,7 +58,7 @@ fun buildMyConfig(): MainConfig {
         name = "Sumplicity", person = connie.name,
         taxabilityProfile = WageTaxableProfile()
     )
-    connie.otherIncomes.add(
+    connie.otherIncomes = listOf(
         IncomeConfigProgression(
             config = connieIncomeConfig,
             progression = BasicIncomeProgression(
@@ -73,7 +73,7 @@ fun buildMyConfig(): MainConfig {
         name = "Expenses", person = connie.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    connie.expenses.add(
+    connie.expenses = listOf(
         ExpenseConfigProgression(
             config = connieExpenseConfig,
             progression = BasicExpenseProgression(
@@ -91,7 +91,7 @@ fun buildMyConfig(): MainConfig {
         name = "Expenses", person = zoe.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    zoe.contribExpenses.add(
+    zoe.contribExpenses = listOf(
         ExpenseConfigProgression(
             config = zoeExpenseConfig,
             progression = SCurveDecreasingExpense(

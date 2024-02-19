@@ -2,14 +2,16 @@ package config
 
 import Name
 import YearMonth
+import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
 import income.IncomeConfigProgression
 
 interface Person {
     fun name(): Name
     fun birthYM(): YearMonth
-    fun incomes(): ArrayList<IncomeConfigProgression>
-    fun expenses(): ArrayList<ExpenseConfigProgression>
+    fun incomes(): List<IncomeConfigProgression>
+    fun expenses(): List<ExpenseConfigProgression>
+    fun assets(): List<AssetConfigProgression>
 }
 
 data class HouseholdMembers(
@@ -24,31 +26,31 @@ data class HouseholdMembers(
 data class Parent(
     val name: Name,
     val birthYM: YearMonth,
+    var otherIncomes: List<IncomeConfigProgression> = ArrayList(),
+    var expenses: List<ExpenseConfigProgression> = ArrayList(),
+    var assets: List<AssetConfigProgression> = ArrayList(),
 //    val employment: ArrayList<EmploymentConfig>,
-    val otherIncomes: ArrayList<IncomeConfigProgression> = ArrayList(),
-    val expenses: ArrayList<ExpenseConfigProgression> = ArrayList(),
 //    val drawSSYM: YearMonth,
 //    val medicareYM: YearMonth,
 //    val socSec: SocSecConfig,
-//    val assets: ArrayList<AssetConfig>,
 ) : Person {
     override fun name(): Name = name
     override fun birthYM(): YearMonth = birthYM
-    override fun incomes(): ArrayList<IncomeConfigProgression> = otherIncomes
-//        ArrayList(employment.map {it.incomeConfig} + otherIncomes)
-
-    override fun expenses(): ArrayList<ExpenseConfigProgression> = expenses
+    override fun incomes(): List<IncomeConfigProgression> = otherIncomes
+    override fun expenses(): List<ExpenseConfigProgression> = expenses
+    override fun assets(): List<AssetConfigProgression> = assets
 }
 
 data class Dependant(
     val name: Name,
     val birthYM: YearMonth,
-    val contribIncomes: ArrayList<IncomeConfigProgression> = ArrayList(),
-    val contribExpenses: ArrayList<ExpenseConfigProgression> = ArrayList(),
+    var contribIncomes: List<IncomeConfigProgression> = ArrayList(),
+    var contribExpenses: List<ExpenseConfigProgression> = ArrayList(),
 ) : Person {
     override fun name(): Name = name
     override fun birthYM(): YearMonth = birthYM
-    override fun incomes(): ArrayList<IncomeConfigProgression> = contribIncomes
-    override fun expenses(): ArrayList<ExpenseConfigProgression> = contribExpenses
+    override fun incomes(): List<IncomeConfigProgression> = contribIncomes
+    override fun expenses(): List<ExpenseConfigProgression> = contribExpenses
+    override fun assets(): List<AssetConfigProgression> = ArrayList()
 }
 
