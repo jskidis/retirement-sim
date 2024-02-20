@@ -38,6 +38,8 @@ data class DateRange(
 )
 
 val moneyFormat = DecimalFormat("$##,###,###")
+val twoDecimalFormat = DecimalFormat("#0.00")
+val fourDecimalFormat = DecimalFormat(".0000")
 val currentDate = LocalDate.now()
 
 
