@@ -33,24 +33,25 @@ class ExpenseProcessorTest : ShouldSpec({
         result.size.shouldBe(4)
 
         result.find {
-            it.config.name == "Household Exp1" &&
-                it.config.person == householdName && it.amount == 1000.0
-        }.shouldNotBeNull()
+            it.config.person == householdName &&
+                it.config.name == householdProgression1.config.name
+        }.shouldNotBeNull().amount.shouldBe(1000.0)
 
         result.find {
-            it.config.name == "Household Exp2" &&
-                it.config.person == householdName && it.amount == 2000.0
-        }.shouldNotBeNull()
+            it.config.person == householdName &&
+                it.config.name == householdProgression2.config.name
+
+        }.shouldNotBeNull().amount.shouldBe(2000.0)
 
         result.find {
-            it.config.name == "Parent 1 Exp" &&
-                it.config.person == parent1Name && it.amount == 3000.0
-        }.shouldNotBeNull()
+            it.config.person == parent1Name &&
+                it.config.name == parent1Progression.config.name
+        }.shouldNotBeNull().amount.shouldBe(3000.0)
 
         result.find {
-            it.config.name == "Parent 2 Exp" &&
-                it.config.person == parent2Name && it.amount == 4000.0
-        }.shouldNotBeNull()
+            it.config.person == parent2Name &&
+                it.config.name == parent2Progression.config.name
+        }.shouldNotBeNull().amount.shouldBe(4000.0)
     }
 })
 
