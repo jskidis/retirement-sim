@@ -21,8 +21,8 @@ class BasicAssetProgressionTest : ShouldSpec({
         assetConfig = baseAssetConfig, startBal = 0.0, endBal = startBalance
     )
 
-    val tenPercentRORProvider = BasicAssetRORProvider(mean = 0.1, stdDev = 0.05)
-    val onePercentRORProviders = BasicAssetRORProvider(mean = 0.01, stdDev = 0.01)
+    val tenPercentRORProvider = RORProvider(mean = 0.1, stdDev = 0.05)
+    val onePercentRORProviders = RORProvider(mean = 0.01, stdDev = 0.01)
 
     val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))
 

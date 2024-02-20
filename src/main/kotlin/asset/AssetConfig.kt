@@ -16,6 +16,8 @@ data class AssetConfig(
     var assetCompMap: List<YearlyAssetComposition> = ArrayList(),
 ) : AmountConfig {
 
+    override fun toString(): String = "$person:$name"
+
     fun determineComposition(year: Year): List<AssetComposition> =
         assetCompMap.findLast { it.startYear <= year }
             ?.composition

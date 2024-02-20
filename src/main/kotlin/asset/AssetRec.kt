@@ -4,6 +4,7 @@ import Amount
 import AssetGain
 import AssetNetContribution
 import YearlyDetail
+import moneyFormat
 import tax.TaxableAmounts
 import util.PortionOfYearPast
 
@@ -14,7 +15,10 @@ data class AssetRec(
     val gains: List<AssetGain> = ArrayList(),
     val contributions: List<AssetNetContribution> = ArrayList(),
     var calcValues: AssetCalcValuesRec = AssetCalcValuesRec()
-)
+) {
+    override fun toString(): String =
+        "($config = startBal=${moneyFormat.format(startBal)}, gains=$gains, contributions=$contributions, taxableGains=$taxable"
+}
 
 data class AssetCalcValuesRec(
     val totalGains: Amount = 0.0,
