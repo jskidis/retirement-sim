@@ -44,6 +44,11 @@ class AssetProgressionFixture(
     )
 }
 
+data class RORProviderFixture(val mean: Rate, val stdDev: Rate) : AssetRORProvider {
+    override fun determineRate(prevYear: YearlyDetail?): Rate =
+        mean + (stdDev * (prevYear?.rorRndGaussian ?: 0.0))
+}
+
 
 
 
