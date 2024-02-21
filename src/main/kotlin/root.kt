@@ -17,12 +17,14 @@ data class YearlyDetail(
     val incomes: List<IncomeRec> = ArrayList(),
     val expenses: List<ExpenseRec> = ArrayList(),
     val assets: List<AssetRec> = ArrayList(),
-    val taxes: MutableList<TaxesRec> = ArrayList(),
+    val taxes: List<TaxesRec> = ArrayList(),
     val rorRndGaussian: Double = 0.0,
     var netSpend: Amount = 0.0
 ) {
     fun totalIncome() = incomes.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
+    fun totalTaxes() = taxes.sumOf { it.total() }
+    fun totalAssetValues() = assets.sumOf { it.calcValues.finalBal }
 }
 
 data class YearMonth (

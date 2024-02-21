@@ -24,6 +24,7 @@ class NonTaxableProfile : NotFedTaxableProfile, NotStateTaxableProfile, NonPayro
 class WageTaxableProfile : FedTaxableProfile, StateTaxableProfile, PayrollTaxableProfile
 class NonWageTaxableProfile : FedTaxableProfile, StateTaxableProfile, NonPayrollTaxableProfile
 class FedOnlyTaxableProfile : FedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+class FedAndStateTaxableProfile: FedTaxableProfile, StateTaxableProfile, NonPayrollTaxableProfile
 class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrollTaxableProfile
 class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
 

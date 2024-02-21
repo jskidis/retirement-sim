@@ -14,8 +14,9 @@ data class ExpenseRec(
     val amount: Amount,
     val taxDeductions: TaxableAmounts,
 ) {
+    val deductionsStr = if (taxDeductions.hasAmounts()) ", deductions=$taxDeductions" else ""
     override fun toString(): String =
-        "($config = ${moneyFormat.format(amount)}, deductions=$taxDeductions"
+        "($config=${moneyFormat.format(amount)}$deductionsStr)"
 }
 
 data class ExpenseConfig(
@@ -23,7 +24,7 @@ data class ExpenseConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile,
 ): AmountConfig {
-    override fun toString(): String = "$person:$name"
+    override fun toString(): String = "$person-$name"
 }
 
 data class ExpenseConfigProgression(

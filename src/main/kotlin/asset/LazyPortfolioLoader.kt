@@ -6,7 +6,7 @@ import tax.CSVReader
 object LazyPortfolioLoader {
     fun getReader(): CSVReader<Pair<String, LazyPortfolioRORProvider>> =
         CSVReader { it: CSVRecord ->
-            it[0] to LazyPortfolioRORProvider(
+            it[0].trim() to LazyPortfolioRORProvider(
                 mean = it[1].toDouble(),
                 stdDev = it[2].toDouble(),
                 stockPct = it[3].toDouble(),

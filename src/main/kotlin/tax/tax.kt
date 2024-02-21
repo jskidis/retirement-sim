@@ -27,12 +27,14 @@ data class TaxableAmounts(
         fed != 0.0 || fedLTG != 0.0 || state != 0.0 || socSec != 0.0 || medicare != 0.0
 
     override fun toString(): String {
-        val fedStr = if (fed != 0.0) "Fed:${moneyFormat.format(fed)} " else ""
-        val fedLTGStr = if (fedLTG != 0.0) "Fed:${moneyFormat.format(fedLTG)} " else ""
-        val stateStr = if (state != 0.0) "State:${moneyFormat.format(state)} " else ""
-        val socSecStr = if (socSec != 0.0) "SocSec:${moneyFormat.format(socSec)} " else ""
-        val medicareStr = if (fed != 0.0) "Medi:${moneyFormat.format(medicare)} " else ""
-        return "$person-($fedStr$fedLTGStr$stateStr$socSecStr$medicareStr)"
+        val fedStr = if (fed != 0.0) "Fed=${moneyFormat.format(fed)}, " else ""
+        val fedLTGStr = if (fedLTG != 0.0) "FedLTG=${moneyFormat.format(fedLTG)}, " else ""
+        val stateStr = if (state != 0.0) "State=${moneyFormat.format(state)}, " else ""
+        val socSecStr = if (socSec != 0.0) "SocSec=${moneyFormat.format(socSec)}, " else ""
+        val medicareStr = if (medicare != 0.0) "Medi=${moneyFormat.format(medicare)}, " else ""
+        val fullStr = "$fedStr$fedLTGStr$stateStr$socSecStr$medicareStr"
+        val trimmedStr = if(fullStr.length < 2) fullStr else fullStr.dropLast(2)
+        return "(Person:$person, $trimmedStr)"
     }
 }
 
@@ -49,7 +51,7 @@ data class TaxesRec(
         val stateStr = if (state != 0.0) "State:${moneyFormat.format(state)} " else ""
         val socSecStr = if (socSec != 0.0) "SocSec:${moneyFormat.format(socSec)} " else ""
         val medicareStr = if (medicare != 0.0) "Medi:${moneyFormat.format(medicare)} " else ""
-        return "(Total: ${moneyFormat.format(total())}-$fedStr$stateStr$socSecStr$medicareStr)"
+        return "(${moneyFormat.format(total())}-$fedStr$stateStr$socSecStr$medicareStr)"
     }
 }
 

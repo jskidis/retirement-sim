@@ -4,13 +4,15 @@ import YearlyDetail
 import config.MainConfig
 
 object AssetProcessor {
-    fun process(config: MainConfig, prevYear: YearlyDetail?)
+    fun process(config: MainConfig, prevYear: YearlyDetail?, currYear: YearlyDetail)
     : List<AssetRec> {
         val assets: List<AssetConfigProgression> = config.jointAssets +
             config.householdMembers.people().flatMap { it.assets() }
 
         return assets.map {
-            it.progression.determineNext(prevYear)
+            val assetRec = it.progression.determineNext(prevYear)
+            assetRec.calcValues = AssetCalcValuesRec.create(assetRec, currYear)
+            assetRec
         }
     }
 }

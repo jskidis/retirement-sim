@@ -29,8 +29,10 @@ class AssetProcessorTest : ShouldSpec({
     config.householdMembers.parent1.assets = listOf(parent1Progression)
     config.householdMembers.parent2.assets = listOf(parent2Progression)
 
+    val currYear = prevYear.copy(year = prevYear.year +1)
+
     should("process all household and household member assets for the year") {
-        val result: List<AssetRec> = AssetProcessor.process(config, prevYear)
+        val result: List<AssetRec> = AssetProcessor.process(config, prevYear, currYear)
 
         result.size.shouldBe(3)
 

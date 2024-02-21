@@ -7,7 +7,7 @@ data class AssetNetContribution(
     val amount: Amount,
 ) {
     override fun toString(): String =
-        "(name$amount= ${moneyFormat.format(amount)}"
+        "($name: ${moneyFormat.format(amount)})"
 }
 
 typealias AssetGain = AssetNetContribution
