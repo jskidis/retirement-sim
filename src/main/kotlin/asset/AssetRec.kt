@@ -17,7 +17,9 @@ data class AssetRec(
     var calcValues: AssetCalcValuesRec = AssetCalcValuesRec()
 ) {
     override fun toString(): String =
-        "($config = startBal=${moneyFormat.format(startBal)}, gains=$gains, contributions=$contributions, taxableGains=$taxable"
+        "($config:(startBal=${moneyFormat.format(startBal)}, " +
+        "gains=$gains, " + "contributions=$contributions, " +
+        "${calcValues}, taxableGains=$taxable)"
 }
 
 data class AssetCalcValuesRec(
@@ -35,4 +37,10 @@ data class AssetCalcValuesRec(
             return AssetCalcValuesRec(totalGains, capturedGains, totalContributions, finalBal)
         }
     }
+
+    override fun toString(): String =
+        "totalGains=${moneyFormat.format(totalGains)}, " +
+            "capturedGains=${moneyFormat.format(capturedGains)}, " +
+            "contributions=${moneyFormat.format(totalContributions)}, " +
+            "finalBal=${moneyFormat.format(finalBal)}"
 }

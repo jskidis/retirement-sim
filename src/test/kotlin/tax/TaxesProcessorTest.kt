@@ -1,5 +1,6 @@
 package tax
 
+import assetRecFixture
 import config.configFixture
 import expense.expenseRecFixture
 import income.incomeRecFixture
@@ -21,6 +22,9 @@ class TaxesProcessorTest : ShouldSpec({
     )
     val decductExp = expenseRecFixture(
         "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
+    )
+    val assetRec = assetRecFixture(
+        gains = 500.0, taxProfile = FedAndStateTaxableProfile()
     )
 
     val fedTaxCalc = FixedRateTaxCalc(.10)
@@ -67,4 +71,19 @@ class TaxesProcessorTest : ShouldSpec({
         result.socSec.shouldBe(wageInc.amount * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount * medicareTaxCalc.pct)
     }
+
+    should("processTaxes wage and other (no payroll tax) income one deductible expense and one non-deductible and asset gains") {
+        val currYear = yearlyDetailFixture().copy(
+            incomes = listOf(wageInc, fedOnlyInc),
+            expenses = listOf(nonDeductExp, decductExp),
+            assets = listOf(assetRec)
+        )
+
+        val result = TaxesProcessor.processTaxes(currYear, config)
+        result.fed.shouldBe((wageInc.amount + fedOnlyInc.amount + assetRec.calcValues.totalGains - decductExp.amount) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount + assetRec.calcValues.totalGains - decductExp.amount) * stateTaxCalc.pct)
+        result.socSec.shouldBe(wageInc.amount * socSecTaxCalc.pct)
+        result.medicare.shouldBe(wageInc.amount * medicareTaxCalc.pct)
+    }
+
 })

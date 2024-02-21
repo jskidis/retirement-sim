@@ -1,6 +1,9 @@
 package config
 
+import AssetType
+import Rate
 import YearMonth
+import asset.*
 import expense.*
 import income.BasicIncomeProgression
 import income.IncomeConfig
@@ -9,12 +12,20 @@ import inflation.FixedRateInflationProgression
 import inflation.StdInflationAmountAdjuster
 import tax.*
 
+val portfolioMap = LazyPortfolioLoader.loadPortfolios()
+fun assetComp(name: String, pct: Rate = 1.0): AssetComposition =
+    AssetComposition(name = name, pct = pct, rorProvider = portfolioMap[name]!!)
+
 fun buildMyConfig(): MainConfig {
+
     val startYear = 2024
     val jason = Parent(name = "Jason", birthYM = YearMonth(1970, 1))
     val connie = Parent("Connie", YearMonth(1963, 4))
     val sydney = Dependant("Sydney", YearMonth(2001, 3))
     val zoe = Dependant("Zoe", YearMonth(2004, 9))
+
+    val moneyMarketBal = 225000.0
+    val stifelNRABal = 280000.0
 
     val householdMembers = HouseholdMembers(
         parent1 = jason, parent2 = connie,
@@ -118,6 +129,39 @@ fun buildMyConfig(): MainConfig {
         )
     )
 
+    val trustMoneyMarketConfig = AssetConfig(
+        name = "MoneyMarket",
+        person = "Trust",
+        taxabilityProfile = NonWageTaxableProfile(),
+        AssetType.CASH,
+        minMaxProvider = NoMinMaxBalProvider(),
+        assetCompMap = listOf(
+            YearlyAssetComposition(2023, listOf(assetComp("US Cash")))
+        )
+    )
+
+    val trustMoneyMarketProgression = AssetConfigProgression(
+        config = trustMoneyMarketConfig,
+        progression = BasicAssetProgression(moneyMarketBal, trustMoneyMarketConfig)
+    )
+
+    val trustStifelAssetConfig = AssetConfig(
+        name = "Stifel-NRA",
+        person = "Trust",
+        taxabilityProfile = NonWageTaxableProfile(),
+        AssetType.INVEST,
+        minMaxProvider = NoMinMaxBalProvider(),
+        assetCompMap = listOf(
+            YearlyAssetComposition(2023, listOf(assetComp("US Stocks")))
+        )
+    )
+
+    val trustStifelProgression = AssetConfigProgression(
+        config = trustStifelAssetConfig,
+        progression = BasicAssetProgression(stifelNRABal, trustStifelAssetConfig)
+    )
+
+
     val taxCalcConfig = TaxCalcConfig(
         fed = CurrentFedTaxJointBrackets,
         state = CurrentStateTaxJointBrackets,
@@ -130,6 +174,7 @@ fun buildMyConfig(): MainConfig {
         householdMembers = householdMembers,
         inflationConfig = FixedRateInflationProgression(0.03),
         householdExpenses = listOf(householdExpenseProgression),
+        jointAssets = listOf(trustStifelProgression, trustMoneyMarketProgression),
         taxConfig = taxCalcConfig,
     )
 }

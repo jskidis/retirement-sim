@@ -1,3 +1,4 @@
+import asset.AssetProcessor
 import config.MainConfig
 import config.buildMyConfig
 import expense.ExpenseProcessor
@@ -18,27 +19,33 @@ fun main(args: Array<String>) {
     years.forEach {
         println(
             "Year: ${it.year} " +
-                "Income: ${moneyFormat.format(it.totalIncome())} " +
-                "Expense: ${moneyFormat.format(it.totalExpense())} " +
-                "Incomes: ${it.incomes} " +
-                "Expenses: ${it.expenses} " +
-                "Taxes: ${it.taxes} "
+                "Income=${moneyFormat.format(it.totalIncome())} " +
+                "Expense=${moneyFormat.format(it.totalExpense())} " +
+                "Assets=${moneyFormat.format(it.totalAssetValues())} " +
+                "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
+                "Incomes:${it.incomes} " +
+                "Expenses:${it.expenses} " +
+                "Assets:{${it.assets} " +
+                "Taxes:${it.taxes} "
         )
     }
 
 }
 
-fun generateYearlyDetail(config: MainConfig, currYearDetail: YearlyDetail?): YearlyDetail {
-    val year = if(currYearDetail == null) config.startYear else currYearDetail.year + 1
-    val inflation = InflationProcessor.process(config, currYearDetail)
-    val incomes = IncomeProcessor.process(config, currYearDetail)
-    val expenses = ExpenseProcessor.process(config, currYearDetail)
+fun generateYearlyDetail(config: MainConfig, prevYear: YearlyDetail?): YearlyDetail {
+    val year = if(prevYear == null) config.startYear else prevYear.year + 1
+    val inflation = InflationProcessor.process(config, prevYear)
+    val incomes = IncomeProcessor.process(config, prevYear)
+    val expenses = ExpenseProcessor.process(config, prevYear)
 
-    val currYear = YearlyDetail(year,
+    var currYear = YearlyDetail(year,
         inflation = inflation, incomes = incomes, expenses = expenses)
 
+    val assets = AssetProcessor.process(config, prevYear, currYear)
+    currYear = currYear.copy(assets = assets)
+
     val taxesRec = TaxesProcessor.processTaxes(currYear, config)
-    currYear.taxes.add(taxesRec)
+    currYear = currYear.copy(taxes = listOf(taxesRec))
 
     return currYear
 }

@@ -14,8 +14,9 @@ data class IncomeRec(
     val amount: Amount,
     val taxableIncome: TaxableAmounts,
 ) {
+    val taxableStr = if (taxableIncome.hasAmounts()) ", taxable=$taxableIncome" else ""
     override fun toString(): String =
-        "($config = ${moneyFormat.format(amount)}, taxable=$taxableIncome"
+        "($config=${moneyFormat.format(amount)}$taxableStr)"
 }
 
 data class IncomeConfig(
@@ -23,7 +24,7 @@ data class IncomeConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile,
 ): AmountConfig {
-    override fun toString(): String = "$person:$name"
+    override fun toString(): String = "$person-$name"
 }
 
 data class IncomeConfigProgression(
