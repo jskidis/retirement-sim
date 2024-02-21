@@ -61,4 +61,8 @@ US Inflation Protection, .0490, .0605, 0.00, 1.00, .0417
 Ulcer Free Strategy, .0656, .0552, 0.07, 0.82, .0353
 Warren Buffett Portfolio, .0959, .1365, 0.90, 0.10, .1260
 Gold, .0548, .1544, 0.00, 0.00, .2047
-
+TIAA Conservative, .0413, .0331, 0.30, 0.70, .0198
+TIAA Moderate Conservative, .0478, .0380, 0.45, 0.55, .0220
+TIAA Moderate, .0530, .0470, 0.60, 0.40, .0262
+TIAA Moderate Aggressive, .0559, .0523, 0.73, 0.27, .0291
+TIAA Aggressive, .0613, .0648, 0.73, 0.27, .0366
