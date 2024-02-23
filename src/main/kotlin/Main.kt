@@ -1,6 +1,6 @@
 import asset.AssetProcessor
 import config.SimConfig
-import config.buildMyConfig
+import config.sample.Smiths
 import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
@@ -9,11 +9,11 @@ import tax.TaxesProcessor
 fun main(args: Array<String>) {
     val years = ArrayList<YearlyDetail>()
 
-    var currYearDetail = generateYearlyDetail(buildMyConfig(), null)
+    var currYearDetail = generateYearlyDetail(Smiths.buildConfig(), null)
 
     while (currYearDetail.year < 2063) {
         years.add(currYearDetail)
-        currYearDetail = generateYearlyDetail(buildMyConfig(), currYearDetail)
+        currYearDetail = generateYearlyDetail(Smiths.buildConfig(), currYearDetail)
     }
 
     years.forEach {
