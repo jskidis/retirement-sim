@@ -148,7 +148,7 @@ fun buildMyConfig(): SimConfig {
     val trustStifelAssetConfig = AssetConfig(
         name = "Stifel-NRA",
         person = "Trust",
-        taxabilityProfile = NonWageTaxableProfile(),
+        taxabilityProfile = NonRetirementAssetTaxableProfile(),
         AssetType.INVEST,
         minMaxProvider = NoMinMaxBalProvider(),
         assetCompMap = listOf(
