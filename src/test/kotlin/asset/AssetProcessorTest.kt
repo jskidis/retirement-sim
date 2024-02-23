@@ -2,18 +2,20 @@ package asset
 
 import assetCfgProgessFixture
 import config.configFixture
+import config.householdConfigFixture
+import config.householdMembersFixture
+import config.parentConfigFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
 class AssetProcessorTest : ShouldSpec({
-    val config = configFixture()
     val prevYear = yearlyDetailFixture()
 
     val householdName = "Household"
-    val parent1Name = config.householdMembers.parent1.name
-    val parent2Name = config.householdMembers.parent2.name
+    val parent1Name = "Parent 1"
+    val parent2Name = "Parent 2"
 
     val householdProgression1 = assetCfgProgessFixture(
         name = "Joint Asset 1", person = householdName,
@@ -25,9 +27,15 @@ class AssetProcessorTest : ShouldSpec({
         name = "Parent 2 Asset", person = parent2Name,
         startBal = 40000.0, gains = listOf(4000.0))
 
-    config.jointAssets = listOf(householdProgression1)
-    config.householdMembers.parent1.assets = listOf(parent1Progression)
-    config.householdMembers.parent2.assets = listOf(parent2Progression)
+    val parent1 = parentConfigFixture(
+        name = "Parent 1", assetConfigs = listOf(parent1Progression))
+    val parent2 = parentConfigFixture(
+        name = "Parent 2", assetConfigs = listOf(parent2Progression))
+    val householdConfig = householdConfigFixture(
+        householdMembers = householdMembersFixture(parent1, parent2),
+        jointAssets = listOf(householdProgression1)
+    )
+    val config = configFixture(householdConfig = householdConfig)
 
     val currYear = prevYear.copy(year = prevYear.year +1)
 

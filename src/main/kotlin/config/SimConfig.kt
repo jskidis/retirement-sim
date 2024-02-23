@@ -1,18 +1,14 @@
 package config
 
 import Year
-import asset.AssetConfigProgression
-import expense.ExpenseConfigProgression
 import inflation.InflationRec
 import progression.Progression
 import tax.TaxCalcConfig
 
 data class SimConfig(
     val startYear: Year,
-    val householdMembers: HouseholdMembers,
+    val household: HouseholdConfig,
     val inflationConfig: Progression<InflationRec>,
-    var householdExpenses: List<ExpenseConfigProgression> = ArrayList(),
-    var jointAssets: List<AssetConfigProgression> = ArrayList(),
     var taxConfig: TaxCalcConfig,
 )
 

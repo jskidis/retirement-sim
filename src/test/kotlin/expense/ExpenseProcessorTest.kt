@@ -1,18 +1,20 @@
 package expense
 
 import config.configFixture
+import config.householdConfigFixture
+import config.householdMembersFixture
+import config.parentConfigFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
 class ExpenseProcessorTest : ShouldSpec({
-    val config = configFixture()
     val prevYear = yearlyDetailFixture()
 
     val householdName = "Household"
-    val parent1Name = config.householdMembers.parent1.name
-    val parent2Name = config.householdMembers.parent2.name
+    val parent1Name = "Parent1"
+    val parent2Name = "Parent2"
 
     val householdProgression1 = expenseCfgProgessFixture(
         name = "Household Exp1", person = householdName, amount = 1000.0)
@@ -23,9 +25,15 @@ class ExpenseProcessorTest : ShouldSpec({
     val parent2Progression = expenseCfgProgessFixture(
         name = "Parent 2 Exp", person = parent2Name, amount = 4000.0)
 
-    config.householdExpenses = listOf(householdProgression1, householdProgression2)
-    config.householdMembers.parent1.expenses = listOf(parent1Progression)
-    config.householdMembers.parent2.expenses = listOf(parent2Progression)
+    val parent1 = parentConfigFixture(
+        name = "Parent 1", expenseConfigs = listOf(parent1Progression))
+    val parent2 = parentConfigFixture(
+        name = "Parent 2", expenseConfigs = listOf(parent2Progression))
+    val householdConfig = householdConfigFixture(
+        householdMembers = householdMembersFixture(parent1, parent2),
+        expenses = listOf(householdProgression1, householdProgression2)
+    )
+    val config = configFixture(householdConfig = householdConfig)
 
     should("process all household and household member expenses for the year") {
         val result: List<ExpenseRec> = ExpenseProcessor.process(config, prevYear)

@@ -5,7 +5,10 @@ import tax.TaxabilityProfile
 import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
 
-fun assetConfigFixture(assetName: Name, person: Name) = AssetConfig(
+fun assetConfigFixture(
+    assetName: Name = "Asset",
+    person: Name = "Person",
+) = AssetConfig(
     assetName, person, NonTaxableProfile(), AssetType.INVEST, NoMinMaxBalProvider())
 
 fun assetRecFixture(
@@ -20,12 +23,15 @@ fun assetRecFixture(
         calcValues = AssetCalcValuesRec(finalBal = endBal, totalGains = gains)
     )
 
-fun assetCfgProgessFixture(name: Name, person: Name, startBal: Amount, gains: List<Amount>)
-    : AssetConfigProgression {
+fun assetCfgProgessFixture(
+    name: Name = "Asset",
+    person: Name = "Person",
+    startBal: Amount = 0.0,
+    gains: List<Amount> = listOf(),
+) : AssetConfigProgression {
 
     val config = AssetConfig(
-        name, person,
-        TaxabilityProfileFixture(), AssetType.INVEST, NoMinMaxBalProvider()
+        name, person, TaxabilityProfileFixture(), AssetType.INVEST, NoMinMaxBalProvider()
     )
 
     return AssetConfigProgression(
@@ -53,7 +59,3 @@ data class RORProviderFixture(val mean: Rate, val stdDev: Rate) : AssetRORProvid
     override fun determineRate(prevYear: YearlyDetail?): Rate =
         mean + (stdDev * (prevYear?.rorRndGaussian ?: 0.0))
 }
-
-
-
-

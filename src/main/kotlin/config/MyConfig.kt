@@ -19,24 +19,36 @@ fun assetComp(name: String, pct: Rate = 1.0): AssetComposition =
 fun buildMyConfig(): SimConfig {
 
     val startYear = 2024
-    val jason = Parent(name = "Jason", birthYM = YearMonth(1970, 1))
-    val connie = Parent("Connie", YearMonth(1963, 4))
-    val sydney = Dependant("Sydney", YearMonth(2001, 3))
-    val zoe = Dependant("Zoe", YearMonth(2004, 9))
-
     val moneyMarketBal = 225000.0
     val stifelNRABal = 280000.0
 
-    val householdMembers = HouseholdMembers(
-        parent1 = jason, parent2 = connie,
-        dependants = listOf(sydney, zoe)
+
+    val jason = Person(
+        name = "Jason",
+        birthYM = YearMonth(1970, 1),
+        actuarialGender = ActuarialGender.MALE
+    )
+    val connie = Person(
+        name = "Connie",
+        birthYM = YearMonth(1963, 4),
+        actuarialGender = ActuarialGender.FEMALE
+    )
+    val sydney = Person(
+        name = "Sydney",
+        birthYM = YearMonth(2001, 3),
+        actuarialGender = ActuarialGender.FEMALE
+    )
+    val zoe = Person(
+        name = "Zoe",
+        birthYM = YearMonth(2004, 9),
+        actuarialGender = ActuarialGender.FEMALE
     )
 
     val jasonIncomeConfig = IncomeConfig(
         name = "Ocelot", person = jason.name,
         taxabilityProfile = WageTaxableProfile()
     )
-    jason.otherIncomes = listOf(
+    val jasonIncomes = listOf(
         IncomeConfigProgression(
             config = jasonIncomeConfig,
             progression = BasicIncomeProgression(
@@ -51,7 +63,7 @@ fun buildMyConfig(): SimConfig {
         name = "Expenses", person = jason.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    jason.expenses = listOf(
+    val jasonExpenses = listOf(
         ExpenseConfigProgression(
             config = jasonExpenseConfig,
             progression = BasicExpenseProgression(
@@ -65,11 +77,17 @@ fun buildMyConfig(): SimConfig {
         )
     )
 
+    val jasonConfig = ParentConfig(
+        person = jason,
+        incomes = jasonIncomes,
+        expenses = jasonExpenses
+    )
+
     val connieIncomeConfig = IncomeConfig(
         name = "Sumplicity", person = connie.name,
         taxabilityProfile = WageTaxableProfile()
     )
-    connie.otherIncomes = listOf(
+    val connieIncomes = listOf(
         IncomeConfigProgression(
             config = connieIncomeConfig,
             progression = BasicIncomeProgression(
@@ -84,7 +102,7 @@ fun buildMyConfig(): SimConfig {
         name = "Expenses", person = connie.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    connie.expenses = listOf(
+    val connieExpenses = listOf(
         ExpenseConfigProgression(
             config = connieExpenseConfig,
             progression = BasicExpenseProgression(
@@ -98,11 +116,17 @@ fun buildMyConfig(): SimConfig {
         )
     )
 
+    val connieConfig = ParentConfig(
+        person = connie,
+        incomes = connieIncomes,
+        expenses = connieExpenses
+    )
+
     val zoeExpenseConfig = ExpenseConfig(
         name = "Expenses", person = zoe.name,
         taxabilityProfile = NonTaxableProfile()
     )
-    zoe.contribExpenses = listOf(
+    val zoeContributingExpenses = listOf(
         ExpenseConfigProgression(
             config = zoeExpenseConfig,
             progression = SCurveDecreasingExpense(
@@ -115,12 +139,14 @@ fun buildMyConfig(): SimConfig {
         )
     )
 
+    val zoeConfig = DependantConfig(person = zoe, expenses = zoeContributingExpenses)
+    val sydneyConfig = DependantConfig(person = sydney)
+
     val householdExpensesConfig = ExpenseConfig(
         name = "Expenses", person = "Household",
         taxabilityProfile = NonTaxableProfile()
     )
-
-    val householdExpenseProgression = ExpenseConfigProgression(
+    val householdExpenses = ExpenseConfigProgression(
         config = householdExpensesConfig,
         progression = BasicExpenseProgression(
             startAmount = 40000.0,
@@ -139,8 +165,7 @@ fun buildMyConfig(): SimConfig {
             YearlyAssetComposition(2023, listOf(assetComp("US Cash")))
         )
     )
-
-    val trustMoneyMarketProgression = AssetConfigProgression(
+    val trustMoneyMarket = AssetConfigProgression(
         config = trustMoneyMarketConfig,
         progression = BasicAssetProgression(moneyMarketBal, trustMoneyMarketConfig)
     )
@@ -155,8 +180,7 @@ fun buildMyConfig(): SimConfig {
             YearlyAssetComposition(2023, listOf(assetComp("US Stocks")))
         )
     )
-
-    val trustStifelProgression = AssetConfigProgression(
+    val trustStifelAsset = AssetConfigProgression(
         config = trustStifelAssetConfig,
         progression = BasicAssetProgression(stifelNRABal, trustStifelAssetConfig)
     )
@@ -169,12 +193,21 @@ fun buildMyConfig(): SimConfig {
         medicare = EmployeeMedicareTaxCalc(),
     )
 
+    val householdMembers = HouseholdMembers(
+        parent1 = jasonConfig, parent2 = connieConfig,
+        dependants = listOf(sydneyConfig, zoeConfig)
+    )
+    val householdConfig = HouseholdConfig(
+        members = householdMembers,
+        expenses = listOf(element = householdExpenses),
+        jointAssets = listOf(trustMoneyMarket, trustStifelAsset)
+    )
+
+
     return SimConfig(
         startYear = startYear,
-        householdMembers = householdMembers,
+        household = householdConfig,
         inflationConfig = FixedRateInflationProgression(0.03),
-        householdExpenses = listOf(householdExpenseProgression),
-        jointAssets = listOf(trustStifelProgression, trustMoneyMarketProgression),
         taxConfig = taxCalcConfig,
     )
 }

@@ -8,18 +8,34 @@ import tax.TaxabilityProfile
 import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
 
-fun expenseConfigFixture(name: Name, person: Name) =
-    ExpenseConfig(name, person, TaxabilityProfileFixture())
+fun expenseConfigFixture(
+    name: Name = "Expense",
+    person: Name = "Person",
+) = ExpenseConfig(name, person, TaxabilityProfileFixture())
 
-fun expenseRecFixture(name: Name, person: Name, amount: Amount) = ExpenseRec(
-    expenseConfigFixture(name, person), amount, TaxableAmounts(person))
+fun expenseRecFixture(
+    name: Name = "Expense",
+    person: Name = "Person",
+    amount: Amount = 0.0,
+) = ExpenseRec(expenseConfigFixture(name, person), amount, TaxableAmounts(person))
 
-fun expenseRecFixture(name: Name, person: Name, amount: Amount, taxProfile: TaxabilityProfile) =
-    ExpenseRec(ExpenseConfig(name, person, taxProfile), amount, taxProfile.calcTaxable(name, amount))
+fun expenseRecFixture(
+    name: Name = "Expense",
+    person: Name = "Person",
+    amount: Amount = 0.0,
+    taxProfile: TaxabilityProfile,
+) = ExpenseRec(
+    ExpenseConfig(name, person, taxProfile),
+    amount,
+    taxProfile.calcTaxable(name, amount)
+)
 
-fun expenseCfgProgessFixture(name: Name, person: Name, amount: Amount): ExpenseConfigProgression {
+fun expenseCfgProgessFixture(
+    name: Name = "Expense",
+    person: Name = "Person",
+    amount: Amount = 0.0,
+): ExpenseConfigProgression {
     val config = ExpenseConfig(name, person, TaxabilityProfileFixture())
-
     return ExpenseConfigProgression(
         config, ExpenseProgressionFixture(amount, config)
     )
