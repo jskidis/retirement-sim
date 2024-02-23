@@ -16,7 +16,7 @@ val portfolioMap = LazyPortfolioLoader.loadPortfolios()
 fun assetComp(name: String, pct: Rate = 1.0): AssetComposition =
     AssetComposition(name = name, pct = pct, rorProvider = portfolioMap[name]!!)
 
-fun buildMyConfig(): MainConfig {
+fun buildMyConfig(): SimConfig {
 
     val startYear = 2024
     val jason = Parent(name = "Jason", birthYM = YearMonth(1970, 1))
@@ -169,7 +169,7 @@ fun buildMyConfig(): MainConfig {
         medicare = EmployeeMedicareTaxCalc(),
     )
 
-    return MainConfig(
+    return SimConfig(
         startYear = startYear,
         householdMembers = householdMembers,
         inflationConfig = FixedRateInflationProgression(0.03),

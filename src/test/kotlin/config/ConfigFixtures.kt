@@ -6,7 +6,7 @@ import inflationConfigFixture
 import tax.taxConfigFixture
 
 fun configFixture() =
-    MainConfig(
+    SimConfig(
         startYear = 2020,
         householdMembers = householdMembersFixture(),
         inflationConfig = inflationConfigFixture(),

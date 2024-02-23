@@ -1,5 +1,5 @@
 import asset.AssetProcessor
-import config.MainConfig
+import config.SimConfig
 import config.buildMyConfig
 import expense.ExpenseProcessor
 import income.IncomeProcessor
@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 
 }
 
-fun generateYearlyDetail(config: MainConfig, prevYear: YearlyDetail?): YearlyDetail {
+fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDetail {
     val year = if(prevYear == null) config.startYear else prevYear.year + 1
     val inflation = InflationProcessor.process(config, prevYear)
     val incomes = IncomeProcessor.process(config, prevYear)
