@@ -11,6 +11,7 @@ interface AssetRORProvider {
 
 data class LazyPortfolioRORProvider(
     val mean: Rate, val stdDev: Rate,
+    val divid: Rate, val expRatio: Rate,
     val stockPct: Rate, val bondPct: Rate, val ulcerIndex: Rate
 ) : AssetRORProvider {
 

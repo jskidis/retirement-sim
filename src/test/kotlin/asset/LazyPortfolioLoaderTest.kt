@@ -9,8 +9,10 @@ class LazyPortfolioLoaderTest : ShouldSpec({
         val result = LazyPortfolioLoader.loadPortfolios()
         result.size.shouldBeGreaterThan(10)
         result.values.filter {
-            it.mean > 0.25 || it.stdDev > 0.25 || it.ulcerIndex > 0.50 ||
-                it.mean < 0.0 || it.stdDev < 0.0 || it.ulcerIndex < 0.0 ||
+            it.mean > 0.25 || it.stdDev > 0.25 ||
+                it.divid > 0.10 || it.expRatio > 0.01 || it.ulcerIndex > 0.50 ||
+                it.mean < 0.0 || it.stdDev < 0.0 ||
+                it.divid < 0.0 || it.expRatio < 0.0 || it.ulcerIndex < 0.0 ||
                 it.stockPct + it.bondPct > 1.0
         }.shouldBeEmpty()
 
