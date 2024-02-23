@@ -28,6 +28,13 @@ class FedAndStateTaxableProfile: FedTaxableProfile, StateTaxableProfile, NonPayr
 class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrollTaxableProfile
 class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
 
+// Just a placeholder for now
+class NonRetirementAssetTaxableProfile : NonPayrollTaxableProfile {
+    override fun fed(amount: Amount): Amount = amount * .25
+    override fun fedLTG(amount: Amount): Amount  = 0.0
+    override fun state(amount: Amount): Amount = amount * .25
+}
+
 interface FedTaxableProfile : TaxabilityProfile {
     override fun fed(amount: Amount): Amount = amount
     override fun fedLTG(amount: Amount): Amount = 0.0
