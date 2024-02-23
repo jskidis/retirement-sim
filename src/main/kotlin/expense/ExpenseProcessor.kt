@@ -1,10 +1,10 @@
 package expense
 
 import YearlyDetail
-import config.MainConfig
+import config.SimConfig
 
 object ExpenseProcessor {
-    fun process(config: MainConfig, prevYear: YearlyDetail?): List<ExpenseRec> {
+    fun process(config: SimConfig, prevYear: YearlyDetail?): List<ExpenseRec> {
         val expenses: List<ExpenseConfigProgression> = config.householdExpenses +
             config.householdMembers.people().flatMap { it.expenses() }
 

@@ -7,7 +7,7 @@ import inflation.InflationRec
 import progression.Progression
 import tax.TaxCalcConfig
 
-data class MainConfig(
+data class SimConfig(
     val startYear: Year,
     val householdMembers: HouseholdMembers,
     val inflationConfig: Progression<InflationRec>,

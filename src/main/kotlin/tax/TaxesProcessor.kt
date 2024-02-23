@@ -1,12 +1,12 @@
 package tax
 
 import YearlyDetail
-import config.MainConfig
+import config.SimConfig
 
 object TaxesProcessor {
     val nameOfTaxablePerson = "Household"
 
-    fun processTaxes(currYear: YearlyDetail, config: MainConfig): TaxesRec {
+    fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec {
         val taxable = determineTaxableAmounts(currYear)
         return TaxesRec(
             fed = config.taxConfig.fed.determineTax(taxable.fed, currYear),

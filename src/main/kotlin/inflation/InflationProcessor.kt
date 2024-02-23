@@ -1,9 +1,9 @@
 package inflation
 
 import YearlyDetail
-import config.MainConfig
+import config.SimConfig
 
 object InflationProcessor {
-    fun process(config: MainConfig, prevYear: YearlyDetail?): InflationRec =
+    fun process(config: SimConfig, prevYear: YearlyDetail?): InflationRec =
         config.inflationConfig.determineNext(prevYear)
 }
