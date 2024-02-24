@@ -3,35 +3,41 @@ import progression.Progression
 import tax.NonTaxableProfile
 import tax.TaxabilityProfile
 import tax.TaxabilityProfileFixture
-import tax.TaxableAmounts
 
 fun assetConfigFixture(
     assetName: Name = "Asset",
     person: Name = "Person",
+    taxProfile: TaxabilityProfile = NonTaxableProfile(),
+    attributesSet: List<YearlyAssetAttributes> = ArrayList()
 ) = AssetConfig(
-    assetName, person, NonTaxableProfile(), AssetType.INVEST, NoMinMaxBalProvider())
+    AssetType.INVEST, assetName, person, taxProfile, attributesSet)
 
 fun assetRecFixture(
     assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
     startBal: Amount = 0.0, endBal: Amount = 0.0,
-    gains: Amount = 0.0, taxProfile: TaxabilityProfile = NonTaxableProfile(),
-) =
-    AssetRec(
+    gains: Amount = 0.0, taxProfile: TaxabilityProfile = NonTaxableProfile())
+: AssetRec {
+
+    val assetRec = AssetRec(
         config = assetConfig,
         startBal = startBal,
-        taxable = taxProfile.calcTaxable(assetConfig.person, gains),
-        calcValues = AssetCalcValuesRec(finalBal = endBal, totalGains = gains)
+        gains = SimpleAssetChange("Gain", gains)
     )
 
-fun assetCfgProgessFixture(
+    assetRec.calcValues = AssetCalcValuesRec(finalBal = endBal, totalGains = gains,
+        taxable = taxProfile.calcTaxable("", gains))
+    return assetRec
+}
+
+fun assetConfigProgressFixture(
     name: Name = "Asset",
     person: Name = "Person",
     startBal: Amount = 0.0,
-    gains: List<Amount> = listOf(),
+    gains: Amount = 0.0,
 ) : AssetConfigProgression {
 
     val config = AssetConfig(
-        name, person, TaxabilityProfileFixture(), AssetType.INVEST, NoMinMaxBalProvider()
+        AssetType.CASH, name, person, TaxabilityProfileFixture()
     )
 
     return AssetConfigProgression(
@@ -41,21 +47,13 @@ fun assetCfgProgessFixture(
 
 class AssetProgressionFixture(
     val startBal: Amount,
-    val gainAmnts: List<Amount>,
-    val assetCfg: AssetConfig,
+    val gains: Amount,
+    val assetConfig: AssetConfig,
 ) : Progression<AssetRec> {
 
-    override fun determineNext(prevYear: YearlyDetail?) = AssetRec(
-        config = assetCfg,
+    override fun determineNext(prevYear: YearlyDetail?) = assetRecFixture(
         startBal = startBal,
-        taxable = TaxableAmounts(assetCfg.name),
-        gains = gainAmnts.mapIndexed { idx, amount ->
-            AssetGain("Gain $idx", amount)
-        }
+        gains = gains,
+        assetConfig = assetConfig
     )
-}
-
-data class RORProviderFixture(val mean: Rate, val stdDev: Rate) : AssetRORProvider {
-    override fun determineRate(prevYear: YearlyDetail?): Rate =
-        mean + (stdDev * (prevYear?.rorRndGaussian ?: 0.0))
 }

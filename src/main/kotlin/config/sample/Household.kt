@@ -2,7 +2,7 @@ package config.sample
 
 import AssetType
 import asset.*
-import config.AssetCompConfig
+import config.AssetAttributeMap
 import config.HouseholdConfigBuilder
 import expense.BasicExpenseProgression
 import expense.ExpenseConfig
@@ -31,40 +31,40 @@ object Household : HouseholdConfigBuilder {
     override fun assets(): List<AssetConfigProgression> {
 
         val jointSavingConfig = AssetConfig(
+            type = AssetType.CASH,
             name = "Savings",
             person = "Jane & Dick",
             taxabilityProfile = NonWageTaxableProfile(),
-            AssetType.CASH,
-            minMaxProvider = NoMinMaxBalProvider(),
-            assetCompMap = listOf(
-                YearlyAssetComposition(Smiths.startYear -1,
-                    listOf(AssetCompConfig.assetComp("US Cash"))
+            attributesSet = listOf(
+                YearlyAssetAttributes(
+                    startYear = Smiths.startYear -1,
+                    attributes = AssetAttributeMap.assetComp("US Cash")
                 )
             )
         )
         val jointSavings = AssetConfigProgression(
             config = jointSavingConfig,
-            progression = BasicAssetProgression(
-                Smiths.savingsBal, jointSavingConfig
+            progression = SimpleAssetProgression(
+                startBalance = Smiths.savingsBal, config = jointSavingConfig
             )
         )
 
         val jointInvestConfig = AssetConfig(
+            type = AssetType.INVEST,
             name = "Big Inv Bank",
             person = "Jane & Dick",
             taxabilityProfile = NonRetirementAssetTaxableProfile(),
-            AssetType.INVEST,
-            minMaxProvider = NoMinMaxBalProvider(),
-            assetCompMap = listOf(
-                YearlyAssetComposition(Smiths.startYear -1,
-                    listOf(AssetCompConfig.assetComp("US Stocks"))
+            attributesSet = listOf(
+                YearlyAssetAttributes(
+                    startYear = Smiths.startYear -1,
+                    attributes = AssetAttributeMap.assetComp("US Stocks")
                 )
             )
         )
         val jointInvest = AssetConfigProgression(
             config = jointInvestConfig,
-            progression = BasicAssetProgression(
-                Smiths.investBal, jointInvestConfig)
+            progression = TaxableInvestProgression(
+                startBalance = Smiths.investBal, config = jointInvestConfig)
         )
 
         return listOf(jointSavings, jointInvest)

@@ -6,7 +6,7 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 
 class LazyPortfolioLoaderTest : ShouldSpec({
     should("loadPortfolios loads a (String, AssetROR) map from csv") {
-        val result = LazyPortfolioLoader.loadPortfolios()
+        val result = PortfolAttribLoader.loadPortfolios()
         result.size.shouldBeGreaterThan(10)
         result.values.filter {
             it.mean > 0.25 || it.stdDev > 0.25 ||

@@ -8,20 +8,19 @@ import progression.Progression
 import tax.TaxabilityProfile
 
 data class AssetConfig(
+    val type: AssetType,
     override val name: Name,
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile,
-    val type: AssetType,
-    val minMaxProvider: AssetMinMaxBalProvider,
-    var assetCompMap: List<YearlyAssetComposition> = ArrayList(),
+    val attributesSet: List<YearlyAssetAttributes> = ArrayList()
 ) : AmountConfig {
 
-    override fun toString(): String = "$person-$name"
-
-    fun determineComposition(year: Year): List<AssetComposition> =
-        assetCompMap.findLast { it.startYear <= year }
-            ?.composition
+    fun retrieveAttributesByYear(year: Year): PortfolAttribs =
+        attributesSet.findLast { it.startYear <= year }
+            ?.attributes
             ?: throw RuntimeException("Unable to find asset composition for year:$year for asset:$name")
+
+    override fun toString(): String = "$person-$name"
 }
 
 data class AssetConfigProgression(
@@ -29,13 +28,7 @@ data class AssetConfigProgression(
     val progression: Progression<AssetRec>,
 )
 
-data class AssetComposition(
-    val name: Name,
-    val pct: Double,
-    val rorProvider: AssetRORProvider,
-)
-
-data class YearlyAssetComposition(
+data class YearlyAssetAttributes(
     val startYear: Year,
-    val composition: List<AssetComposition> = ArrayList(),
+    val attributes: PortfolAttribs,
 )

@@ -3,10 +3,11 @@ package asset
 import org.apache.commons.csv.CSVRecord
 import tax.CSVReader
 
-object LazyPortfolioLoader {
-    fun getReader(): CSVReader<Pair<String, LazyPortfolioRORProvider>> =
+object PortfolAttribLoader {
+    fun getReader(): CSVReader<Pair<String, PortfolAttribs>> =
         CSVReader { it: CSVRecord ->
-            it[0].trim() to LazyPortfolioRORProvider(
+            it[0].trim() to PortfolAttribs(
+                name = it[0],
                 mean = it[1].toDouble(),
                 stdDev = it[2].toDouble(),
                 divid = it[3].toDouble(),
@@ -17,7 +18,7 @@ object LazyPortfolioLoader {
         }
 
     fun loadPortfolios(resourcePath: String = "tables/lazy-portfolios.csv")
-        : Map<String, LazyPortfolioRORProvider> {
+        : Map<String, PortfolAttribs> {
         return getReader().readCsvFromResource(resourcePath).toMap()
     }
 }

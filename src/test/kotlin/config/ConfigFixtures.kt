@@ -4,7 +4,7 @@ import Name
 import Year
 import YearMonth
 import asset.AssetConfigProgression
-import assetCfgProgessFixture
+import assetConfigProgressFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
 import income.IncomeConfigProgression
@@ -62,13 +62,13 @@ fun householdMembersFixture(
 fun parentConfigFixture(name: Name,
     incomeConfigs: List<IncomeConfigProgression> = listOf(incomeCfgProgessFixture("Income", name)),
     expenseConfigs: List<ExpenseConfigProgression> = listOf(expenseCfgProgessFixture("Expense", name)),
-    assetConfigs: List<AssetConfigProgression> = listOf(assetCfgProgessFixture("Asset", name))
+    assetConfigs: List<AssetConfigProgression> = listOf(assetConfigProgressFixture("Asset", name))
 ) = ParentConfig(personFixture(name), incomeConfigs,expenseConfigs, assetConfigs)
 
 fun dependantConfigFixture(name: Name,
     incomeConfigs: List<IncomeConfigProgression> = listOf(incomeCfgProgessFixture("Income", name)),
     expenseConfigs: List<ExpenseConfigProgression> = listOf(expenseCfgProgessFixture("Expense", name)),
-    assetConfigs: List<AssetConfigProgression> = listOf(assetCfgProgessFixture("Asset", name))
+    assetConfigs: List<AssetConfigProgression> = listOf(assetConfigProgressFixture("Asset", name))
 ) = DependantConfig(personFixture(name), incomeConfigs,expenseConfigs, assetConfigs)
 
 
