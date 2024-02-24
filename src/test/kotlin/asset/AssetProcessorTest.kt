@@ -1,6 +1,6 @@
 package asset
 
-import assetCfgProgessFixture
+import assetConfigProgressFixture
 import config.configFixture
 import config.householdConfigFixture
 import config.householdMembersFixture
@@ -17,15 +17,15 @@ class AssetProcessorTest : ShouldSpec({
     val parent1Name = "Parent 1"
     val parent2Name = "Parent 2"
 
-    val householdProgression1 = assetCfgProgessFixture(
+    val householdProgression1 = assetConfigProgressFixture(
         name = "Joint Asset 1", person = householdName,
-        startBal = 10000.0, gains = listOf(1000.0, 2000.0))
-    val parent1Progression = assetCfgProgessFixture(
+        startBal = 10000.0, gains = 1000.0)
+    val parent1Progression = assetConfigProgressFixture(
         name = "Parent 1 Asset", person = parent1Name,
-        startBal = 30000.0, gains = listOf(3000.0))
-    val parent2Progression = assetCfgProgessFixture(
+        startBal = 30000.0, gains = 3000.0)
+    val parent2Progression = assetConfigProgressFixture(
         name = "Parent 2 Asset", person = parent2Name,
-        startBal = 40000.0, gains = listOf(4000.0))
+        startBal = 40000.0, gains = 4000.0)
 
     val parent1 = parentConfigFixture(
         name = "Parent 1", assetConfigs = listOf(parent1Progression))
@@ -49,25 +49,21 @@ class AssetProcessorTest : ShouldSpec({
                 it.config.name == householdProgression1.config.name
         }
         jointAsset.shouldNotBeNull()
-        jointAsset.gains.size.shouldBe(2)
-        jointAsset.gains[0].amount.shouldBe(1000.0)
-        jointAsset.gains[1].amount.shouldBe(2000.0)
+        jointAsset.gains.totalAmount().shouldBe(1000.0)
 
         val parent1Asset = result.find {
             it.config.person == parent1Name &&
                 it.config.name == parent1Progression.config.name
         }
         parent1Asset.shouldNotBeNull()
-        parent1Asset.gains.size.shouldBe(1)
-        parent1Asset.gains[0].amount.shouldBe(3000.0)
+        parent1Asset.gains.totalAmount().shouldBe(3000.0)
 
         val parent2Asset = result.find {
             it.config.person == parent2Name &&
                 it.config.name == parent2Progression.config.name
         }
         parent2Asset.shouldNotBeNull()
-        parent2Asset.gains.size.shouldBe(1)
-        parent2Asset.gains[0].amount.shouldBe(4000.0)
+        parent2Asset.gains.totalAmount().shouldBe(4000.0)
     }
 })
 

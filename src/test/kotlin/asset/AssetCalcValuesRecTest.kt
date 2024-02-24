@@ -1,7 +1,5 @@
 package asset
 
-import AssetGain
-import AssetNetContribution
 import assetConfigFixture
 import assetRecFixture
 import currentDate
@@ -17,29 +15,23 @@ class AssetCalcValuesRecTest  : ShouldSpec({
     val startBal = 10000.0
 
     val config = assetConfigFixture(assetName, person)
-    val baseRec = assetRecFixture(config, startBal)
     val currYearRec = yearlyDetailFixture(year = 2090) // avoid partial year stuff until needed
 
-    val gain1 = AssetGain("Gain 1", 1000.0)
-    val gain2 = AssetGain("Gain 2", 2000.0)
-    val totalGains = gain1.amount + gain2.amount
+    val gains = 1000.0
+    val rec = assetRecFixture(config, startBal, gains = gains)
 
-    val contrib1 = AssetNetContribution("Contrib 1", 3000.0)
-    val contrib2 = AssetNetContribution("Contrib 2", 4000.0)
-    val totalContrib = contrib1.amount + contrib2.amount
-
-    val rec = baseRec.copy(
-        gains = listOf(gain1, gain2),
-        contributions = listOf(contrib1, contrib2))
+    rec.tributions.add(SimpleAssetChange("Contrib 1", 3000.0))
+    rec.tributions.add(SimpleAssetChange("Contrib 2", 4000.0))
+    val totalContrib = rec.tributions[0].totalAmount() + rec.tributions[1].totalAmount()
 
     should("create returns a new object with the total gains field calculated") {
         val result = AssetCalcValuesRec.create(rec, currYearRec)
-        result.totalGains.shouldBe(totalGains)
+        result.totalGains.shouldBe(gains)
     }
 
     should("create returns a new object with the total contributions field calculated") {
         val result = AssetCalcValuesRec.create(rec, currYearRec)
-        result.totalContributions.shouldBe(totalContrib)
+        result.totalTributions.shouldBe(totalContrib)
     }
 
     should("create determines captured gains based on the year of yearly detail record") {
@@ -49,21 +41,21 @@ class AssetCalcValuesRecTest  : ShouldSpec({
 
         val yearPast = currYearRec.copy(year = 2000)
         val resultPast = AssetCalcValuesRec.create(rec, yearPast)
-        resultPast.capturedGains.shouldBe(totalGains)
+        resultPast.capturedGains.shouldBe(gains)
 
         val yearPresent = currYearRec.copy(year = currentDate.year)
         val resultPresent = AssetCalcValuesRec.create(rec, yearPresent)
         resultPresent.capturedGains.shouldBeGreaterThan(0.0)
-        resultPresent.capturedGains.shouldBeLessThan(totalGains)
+        resultPresent.capturedGains.shouldBeLessThan(gains)
     }
 
     should("create returns a new object with the final balance calculated") {
         val resultFuture = AssetCalcValuesRec.create(rec, currYearRec)
-        resultFuture.finalBal.shouldBe(startBal + totalGains + totalContrib)
+        resultFuture.finalBal.shouldBe(startBal + gains + totalContrib)
 
         val yearPresent = currYearRec.copy(year = currentDate.year)
         val resultPresent = AssetCalcValuesRec.create(rec, yearPresent)
-        resultPresent.finalBal.shouldBeLessThan(startBal + totalGains + totalContrib)
+        resultPresent.finalBal.shouldBeLessThan(startBal + gains + totalContrib)
         resultPresent.finalBal.shouldBeGreaterThan(startBal + totalContrib)
     }
 })

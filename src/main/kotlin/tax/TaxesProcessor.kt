@@ -20,7 +20,7 @@ object TaxesProcessor {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
             currYear.expenses.map { it.taxDeductions } +
-            currYear.assets.map { it.taxable }
+            currYear.assets.map { it.calcValues.taxable }
 
         return taxableAmounts.filter { it.hasAmounts() }
             .fold(TaxableAmounts(person = nameOfTaxablePerson), { acc, amounts -> acc.plus(amounts) })

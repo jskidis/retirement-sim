@@ -24,7 +24,7 @@ class TaxesProcessorTest : ShouldSpec({
         "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
     )
     val assetRec = assetRecFixture(
-        gains = 500.0, taxProfile = FedAndStateTaxableProfile()
+        gains = 500.0, taxProfile = NonWageTaxableProfile()
     )
 
     val fedTaxCalc = FixedRateTaxCalc(.10)
