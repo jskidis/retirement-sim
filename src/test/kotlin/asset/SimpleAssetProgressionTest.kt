@@ -2,8 +2,6 @@ package asset
 
 import Amount
 import Name
-import assetConfigFixture
-import assetRecFixture
 import currentDate
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf

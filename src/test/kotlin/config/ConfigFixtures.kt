@@ -4,7 +4,7 @@ import Name
 import Year
 import YearMonth
 import asset.AssetConfigProgression
-import assetConfigProgressFixture
+import asset.assetConfigProgressFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
 import income.IncomeConfigProgression

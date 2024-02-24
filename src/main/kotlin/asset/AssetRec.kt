@@ -10,6 +10,7 @@ class AssetRec(
     val config: AssetConfig,
     val startBal: Amount,
     val gains: AssetChange,
+    val unrealizedGains: Amount = 0.0
 ) {
     val tributions: MutableList<AssetChange> = ArrayList()
     var calcValues: AssetCalcValuesRec = AssetCalcValuesRec()

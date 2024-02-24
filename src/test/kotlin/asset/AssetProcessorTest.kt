@@ -1,6 +1,5 @@
 package asset
 
-import assetConfigProgressFixture
 import config.configFixture
 import config.householdConfigFixture
 import config.householdMembersFixture

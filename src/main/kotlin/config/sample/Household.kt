@@ -1,6 +1,5 @@
 package config.sample
 
-import AssetType
 import asset.*
 import config.AssetAttributeMap
 import config.HouseholdConfigBuilder

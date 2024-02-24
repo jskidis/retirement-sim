@@ -1,4 +1,8 @@
-import asset.*
+package asset
+
+import Amount
+import Name
+import YearlyDetail
 import progression.Progression
 import tax.NonTaxableProfile
 import tax.TaxabilityProfile
