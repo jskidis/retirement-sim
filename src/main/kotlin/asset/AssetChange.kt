@@ -10,7 +10,6 @@ interface AssetChange {
     val isCarryOver: Boolean
     fun taxable(): TaxableAmounts?
     fun totalAmount(): Amount
-    fun unrealized(): Amount
 }
 
 data class SimpleAssetChange (
@@ -22,7 +21,6 @@ data class SimpleAssetChange (
 
     override fun totalAmount() = amount
     override fun taxable(): TaxableAmounts? = taxable
-    override fun unrealized(): Amount = 0.0
     override fun toString(): String {
         return "($name=Amount=${moneyFormat.format(totalAmount())}" +
             if (taxable != null) ", Taxable=$taxable)" else ")"
@@ -40,7 +38,6 @@ data class TaxableInvestGains(
 
     override fun totalAmount(): Amount = regTaxable + ltTaxable + unrealized
     override fun taxable(): TaxableAmounts? = taxable
-    override fun unrealized() = unrealized
 
     override fun toString(): String {
         val regTaxStr = if (regTaxable != 0.0) "RegTax=${moneyFormat.format(regTaxable)}, " else ""
