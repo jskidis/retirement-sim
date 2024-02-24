@@ -5,7 +5,7 @@ import YearlyDetail
 import currentDate
 import progression.Progression
 
-abstract class BasicAssetProgression(
+abstract class AssetProgression(
     val startBalance: Amount,
     val config: AssetConfig,
 ) : Progression<AssetRec>, AssetGainCreator {
@@ -33,7 +33,7 @@ abstract class BasicAssetProgression(
 }
 
 open class SimpleAssetProgression(startBalance: Amount, config: AssetConfig)
-    : BasicAssetProgression(startBalance, config), AssetGainCreator by SimpleAssetGainCreator()
+    : AssetProgression(startBalance, config), AssetGainCreator by SimpleAssetGainCreator()
 
 open class TaxableInvestProgression(startBalance: Amount, config: AssetConfig)
-    : BasicAssetProgression(startBalance, config), AssetGainCreator by TaxableInvestGainCreator()
+    : AssetProgression(startBalance, config), AssetGainCreator by TaxableInvestGainCreator()
