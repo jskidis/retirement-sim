@@ -7,9 +7,9 @@ import expense.BasicExpenseProgression
 import expense.ExpenseConfig
 import expense.ExpenseConfigProgression
 import inflation.StdInflationAmountAdjuster
-import tax.NonRetirementAssetTaxableProfile
 import tax.NonTaxableProfile
 import tax.NonWageTaxableProfile
+import tax.OverriddenTaxableProfile
 
 object Household : HouseholdConfigBuilder {
     override fun expenses(): List<ExpenseConfigProgression> {
@@ -52,7 +52,7 @@ object Household : HouseholdConfigBuilder {
             type = AssetType.INVEST,
             name = "Big Inv Bank",
             person = "Jane & Dick",
-            taxabilityProfile = NonRetirementAssetTaxableProfile(),
+            taxabilityProfile = OverriddenTaxableProfile(),
             attributesSet = listOf(
                 YearlyAssetAttributes(
                     startYear = Smiths.startYear -1,

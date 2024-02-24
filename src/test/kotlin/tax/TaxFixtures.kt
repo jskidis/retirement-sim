@@ -18,7 +18,6 @@ fun taxConfigFixture() = TaxCalcConfig(
 
 open class TaxabilityProfileFixture : TaxabilityProfile {
     override fun fed(amount: Amount): Amount = 0.0
-    override fun fedLTG(amount: Amount): Amount = 0.0
     override fun state(amount: Amount): Amount = 0.0
     override fun socSec(amount: Amount): Amount = 0.0
     override fun medicare(amount: Amount): Amount = 0.0
