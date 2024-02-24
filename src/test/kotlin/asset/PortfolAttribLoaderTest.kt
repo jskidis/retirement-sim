@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
 
-class LazyPortfolioLoaderTest : ShouldSpec({
+class PortfolAttribLoaderTest : ShouldSpec({
     should("loadPortfolios loads a (String, AssetROR) map from csv") {
         val result = PortfolAttribLoader.loadPortfolios()
         result.size.shouldBeGreaterThan(10)

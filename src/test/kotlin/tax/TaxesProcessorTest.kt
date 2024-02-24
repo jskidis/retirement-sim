@@ -1,6 +1,6 @@
 package tax
 
-import assetRecFixture
+import asset.assetRecFixture
 import config.configFixture
 import expense.expenseRecFixture
 import income.incomeRecFixture
