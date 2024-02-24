@@ -6,7 +6,7 @@ import moneyFormat
 import tax.TaxableAmounts
 import util.PortionOfYearPast
 
-class AssetRec(
+data class AssetRec(
     val config: AssetConfig,
     val startBal: Amount,
     val gains: AssetChange,
