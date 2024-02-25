@@ -4,6 +4,7 @@ import income.IncomeRec
 import inflation.InflationRec
 import tax.FilingStatus
 import tax.TaxesRec
+import util.PortionOfYearPast
 import java.text.DecimalFormat
 import java.time.LocalDate
 
@@ -22,12 +23,12 @@ data class YearlyDetail(
     val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
-    var netSpend: Amount = 0.0
-
     fun totalIncome() = incomes.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
     fun totalTaxes() = taxes.sumOf { it.total() }
     fun totalAssetValues() = assets.sumOf { it.calcValues.finalBal }
+    fun netSpend() = (1- PortionOfYearPast.calc(year)) *
+        (totalIncome() - totalExpense() - totalTaxes())
 }
 
 data class YearMonth (

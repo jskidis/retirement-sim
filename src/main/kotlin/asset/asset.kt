@@ -8,7 +8,7 @@ import progression.Progression
 import tax.TaxabilityProfile
 
 enum class AssetType {
-    CASH, TIRA, ROTH, INVEST
+    CASH, INVEST, TIRA, ROTH
 }
 
 data class AssetConfig(
