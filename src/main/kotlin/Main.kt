@@ -1,4 +1,5 @@
 import asset.AssetProcessor
+import asset.NetSpendAllocation
 import config.SimConfig
 import config.sample.Smiths
 import expense.ExpenseProcessor
@@ -23,6 +24,7 @@ fun main(args: Array<String>) {
                 "Expense=${moneyFormat.format(it.totalExpense())} " +
                 "Assets=${moneyFormat.format(it.totalAssetValues())} " +
                 "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
+                "Net Spend=${moneyFormat.format((it.netSpend()))} " +
                 "Incomes:${it.incomes} " +
                 "Expenses:${it.expenses} " +
                 "Assets:{${it.assets} " +
@@ -46,6 +48,8 @@ fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDeta
 
     val taxesRec = TaxesProcessor.processTaxes(currYear, config)
     currYear = currYear.copy(taxes = listOf(taxesRec))
+
+    NetSpendAllocation.allocatedNetSpend(currYear)
 
     return currYear
 }

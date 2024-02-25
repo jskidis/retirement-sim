@@ -19,7 +19,7 @@ class SimpleAssetProgressionTest : ShouldSpec({
 
     val baseAssetConfig = assetConfigFixture(assetName, person)
     val prevAssetRec = assetRecFixture(
-        assetConfig = baseAssetConfig, startBal = 0.0, endBal = startBalance
+        assetConfig = baseAssetConfig, startBal = 0.0, finalBal = startBalance
     )
 
     val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))

@@ -11,14 +11,15 @@ import tax.TaxabilityProfileFixture
 fun assetConfigFixture(
     assetName: Name = "Asset",
     person: Name = "Person",
+    assetType: AssetType = AssetType.INVEST,
     taxProfile: TaxabilityProfile = NonTaxableProfile(),
     attributesSet: List<YearlyAssetAttributes> = ArrayList()
 ) = AssetConfig(
-    AssetType.INVEST, assetName, person, taxProfile, attributesSet)
+    assetType, assetName, person, taxProfile, attributesSet)
 
 fun assetRecFixture(
     assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
-    startBal: Amount = 0.0, endBal: Amount = 0.0,
+    startBal: Amount = 0.0, finalBal: Amount = 0.0,
     gains: Amount = 0.0, taxProfile: TaxabilityProfile = NonTaxableProfile())
 : AssetRec {
 
@@ -28,7 +29,7 @@ fun assetRecFixture(
         gains = SimpleAssetChange("Gain", gains)
     )
 
-    assetRec.calcValues = AssetCalcValuesRec(finalBal = endBal, totalGains = gains,
+    assetRec.calcValues = AssetCalcValuesRec(finalBal = finalBal, totalGains = gains,
         taxable = taxProfile.calcTaxable("", gains))
     return assetRec
 }
