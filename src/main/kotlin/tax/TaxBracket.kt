@@ -3,61 +3,41 @@ package tax
 import Amount
 import Rate
 
-data class TaxBracket(
-    val pct: Rate,
+data class BracketCase(
+    val pct: Rate = 0.0,
     val start: Amount = 0.0,
-    val end: Amount = Double.MAX_VALUE) {
+    val end: Amount= Amount.MAX_VALUE,
+) {
     fun size() = end - start
 }
 
-object CurrentFedTaxJointBrackets : BracketBasedTaxCalc {
+data class TaxBracket(
+    val pct: Rate,
+    val jointly: BracketCase = BracketCase(),
+    val household: BracketCase = BracketCase(),
+    val single: BracketCase = BracketCase()
+)
+
+object CurrentFedTaxBrackets : BracketBasedTaxCalc {
     override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/current-fed-tax-joint.csv")
+        loadBrackets("tables/current-fed-tax.csv")
     }
 }
 
-object RollbackFedTaxJointBrackets : BracketBasedTaxCalc {
+object RollbackFedTaxBrackets : BracketBasedTaxCalc {
     override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/rollback-fed-tax-joint.csv")
+        loadBrackets("tables/rollback-fed-tax.csv")
     }
 }
 
-object CurrentFedTaxSingleBrackets : BracketBasedTaxCalc {
+object CurrentStateTaxBrackets : BracketBasedTaxCalc {
     override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/current-fed-tax-single.csv")
+        loadBrackets("tables/current-state-tax.csv")
     }
 }
 
-object RollbackFedTaxSingleBrackets : BracketBasedTaxCalc {
+object FutureStateTaxBrackets : BracketBasedTaxCalc {
     override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/rollback-fed-tax-joint.csv")
+        loadBrackets("tables/future-state-tax.csv")
     }
 }
-
-object CurrentStateTaxJointBrackets : BracketBasedTaxCalc {
-    override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/current-state-tax-joint.csv")
-    }
-}
-
-object FutureStateTaxJointBrackets : BracketBasedTaxCalc {
-    override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/future-state-tax-joint.csv")
-    }
-}
-
-object CurrentStateTaxSingleBrackets : BracketBasedTaxCalc {
-    override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/current-state-tax-single.csv")
-    }
-}
-
-object FutureStateTaxSingleBrackets : BracketBasedTaxCalc {
-    override val brackets: List<TaxBracket> by lazy {
-        loadBrackets("tables/future-state-tax-single.csv")
-    }
-}
-
-
-
-

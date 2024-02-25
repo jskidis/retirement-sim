@@ -11,23 +11,32 @@ interface BracketBasedTaxCalc : TaxCalculator {
     fun getReader(): CSVReader<TaxBracket> = CSVReader { it: CSVRecord ->
         TaxBracket(
             pct = it[0].toDouble(),
-            start = it[1].toDouble(),
-            end = if (it.size() > 2 && !it[2].isNullOrEmpty()) it[2].toDouble() else Double.MAX_VALUE
+            jointly = BracketCase(
+                it[0].toDouble(), it[1].toDouble(),
+                if (!it[2].isNullOrEmpty()) it[2].toDouble() else Double.MAX_VALUE),
+            household = BracketCase(
+                it[0].toDouble(), it[3].toDouble(),
+                if (!it[4].isNullOrEmpty()) it[4].toDouble() else Double.MAX_VALUE),
+            single = BracketCase(
+                it[0].toDouble(), it[5].toDouble(),
+                if (!it[6].isNullOrEmpty()) it[6].toDouble() else Double.MAX_VALUE),
         )
     }
 
     fun loadBrackets(resourcePath: String): List<TaxBracket> {
-        return getReader().readCsvFromResource(resourcePath).sortedBy { it.start }
+        return getReader().readCsvFromResource(resourcePath).sortedBy { it.pct }
     }
 
-    fun getCmpdInflation(currYear: YearlyDetail): Rate = currYear.inflation.chain.cmpdStart
+    fun getCmpdInflation(currYear: YearlyDetail): Rate = currYear.inflation.std.cmpdStart
 
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail)
         : Amount {
 
+        val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
         val cmpdInflation = getCmpdInflation(currYear)
+
         val inflationAdjAmount = taxableAmount / cmpdInflation
-        return brackets.fold(initial = 0.0) { acc, bracket ->
+        return bracketsBFS.fold(initial = 0.0) { acc, bracket ->
             if (bracket.start > inflationAdjAmount) acc
             else acc + bracket.pct * (Math.min(bracket.end, inflationAdjAmount) - bracket.start)
         } * cmpdInflation
@@ -36,10 +45,19 @@ interface BracketBasedTaxCalc : TaxCalculator {
     override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail)
         : Rate {
 
+        val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
         val cmpdInflation = getCmpdInflation(currYear)
+
         val inflationAdjAmount = taxableAmount / cmpdInflation
-        return brackets.findLast {
+        return bracketsBFS.findLast {
             it.start < inflationAdjAmount && it.end > inflationAdjAmount
         }?.pct ?: 0.0
     }
+
+    fun bracketsByFilingStatus(filingStatus: FilingStatus): List<BracketCase> =
+        when (filingStatus) {
+            FilingStatus.JOINTLY -> brackets.map { it.jointly }
+            FilingStatus.HOUSEHOLD -> brackets.map { it.household }
+            FilingStatus.SINGLE -> brackets.map { it.single }
+        }
 }
