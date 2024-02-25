@@ -2,6 +2,7 @@ import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
+import tax.FilingStatus
 import tax.TaxesRec
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -19,8 +20,10 @@ data class YearlyDetail(
     val assets: List<AssetRec> = ArrayList(),
     val taxes: List<TaxesRec> = ArrayList(),
     val rorRndGaussian: Double = 0.0,
-    var netSpend: Amount = 0.0
+    val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
+    var netSpend: Amount = 0.0
+
     fun totalIncome() = incomes.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
     fun totalTaxes() = taxes.sumOf { it.total() }

@@ -58,8 +58,8 @@ object Smiths : ConfigBuilder {
         val inflationConfig = FixedRateInflationProgression(0.03)
 
         val taxCalcConfig = TaxCalcConfig(
-            fed = CurrentFedTaxJointBrackets,
-            state = CurrentStateTaxJointBrackets,
+            fed = CurrentFedTaxBrackets,
+            state = CurrentStateTaxBrackets,
             socSec = EmployeeSocSecTaxCalc(),
             medicare = EmployeeMedicareTaxCalc(),
         )

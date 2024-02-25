@@ -6,6 +6,10 @@ import Rate
 import YearlyDetail
 import moneyFormat
 
+enum class FilingStatus{
+    JOINTLY, HOUSEHOLD, SINGLE
+}
+
 data class TaxableAmounts(
     val person: Name,
     val fed: Amount = 0.0,
