@@ -28,12 +28,14 @@ class TaxesProcessorTest : ShouldSpec({
     )
 
     val fedTaxCalc = FixedRateTaxCalc(.10)
+    val fedLTGTaxCalc = FixedRateTaxCalc(.05)
     val stateTaxCalc = FixedRateTaxCalc(.04)
     val socSecTaxCalc = FixedRateTaxCalc(.06)
     val medicareTaxCalc = FixedRateTaxCalc(.02)
 
     val config = configFixture().copy(
-        taxConfig = TaxCalcConfig(fedTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc))
+        taxConfig = TaxCalcConfig(
+            fedTaxCalc, fedLTGTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc))
 
     should("processTaxes single wage income only no expense") {
         val currYear = yearlyDetailFixture().copy(
