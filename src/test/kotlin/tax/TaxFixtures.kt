@@ -11,6 +11,7 @@ class taxCalculatorFixture : TaxCalculator {
 
 fun taxConfigFixture() = TaxCalcConfig(
     fed = taxCalculatorFixture(),
+    fedLTG = taxCalculatorFixture(),
     state = taxCalculatorFixture(),
     socSec = taxCalculatorFixture(),
     medicare = taxCalculatorFixture(),
