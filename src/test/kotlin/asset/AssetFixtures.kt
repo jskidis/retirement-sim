@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import Name
+import Year
 import YearlyDetail
 import progression.Progression
 import tax.NonTaxableProfile
@@ -18,21 +19,18 @@ fun assetConfigFixture(
     assetType, assetName, person, taxProfile, attributesSet)
 
 fun assetRecFixture(
+    year: Year =  2024,
     assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
-    startBal: Amount = 0.0, finalBal: Amount = 0.0,
-    gains: Amount = 0.0, taxProfile: TaxabilityProfile = NonTaxableProfile())
-: AssetRec {
-
-    val assetRec = AssetRec(
+    startBal: Amount = 0.0,
+    gains: Amount = 0.0,
+    taxProfile: TaxabilityProfile = NonTaxableProfile()
+) = AssetRec(
+        year = year,
         config = assetConfig,
         startBal = startBal,
-        gains = SimpleAssetChange("Gain", gains)
+        gains = SimpleAssetChange("Gain", gains,
+            taxProfile.calcTaxable(assetConfig.person, gains))
     )
-
-    assetRec.calcValues = AssetCalcValuesRec(finalBal = finalBal, totalGains = gains,
-        taxable = taxProfile.calcTaxable("", gains))
-    return assetRec
-}
 
 fun assetConfigProgressFixture(
     name: Name = "Asset",

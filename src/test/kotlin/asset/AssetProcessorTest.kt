@@ -36,10 +36,8 @@ class AssetProcessorTest : ShouldSpec({
     )
     val config = configFixture(householdConfig = householdConfig)
 
-    val currYear = prevYear.copy(year = prevYear.year +1)
-
     should("process all household and household member assets for the year") {
-        val result: List<AssetRec> = AssetProcessor.process(config, prevYear, currYear)
+        val result: List<AssetRec> = AssetProcessor.process(config, prevYear)
 
         result.size.shouldBe(3)
 

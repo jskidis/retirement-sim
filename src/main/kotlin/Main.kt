@@ -43,7 +43,7 @@ fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDeta
     var currYear = YearlyDetail(year,
         inflation = inflation, incomes = incomes, expenses = expenses)
 
-    val assets = AssetProcessor.process(config, prevYear, currYear)
+    val assets = AssetProcessor.process(config, prevYear)
     currYear = currYear.copy(assets = assets)
 
     val taxesRec = TaxesProcessor.processTaxes(currYear, config)

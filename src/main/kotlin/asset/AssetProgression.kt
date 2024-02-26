@@ -11,19 +11,21 @@ abstract class AssetProgression(
 ) : Progression<AssetRec>, AssetGainCreator {
 
     override fun determineNext(prevYear: YearlyDetail?): AssetRec {
-        val characteristics = config.retrieveAttributesByYear(
+        val year =
             if (prevYear == null) currentDate.year
             else prevYear.year + 1
-        )
+
+        val attributes = config.retrieveAttributesByYear(year)
 
         val balance =
             if (prevYear == null) startBalance
-            else previousRec(prevYear)?.calcValues?.finalBal ?: startBalance
+            else previousRec(prevYear)?.finalBalance() ?: startBalance
 
         return AssetRec(
+            year = year,
             config = config,
             startBal = balance,
-            gains = createGain(balance, characteristics, config, prevYear))
+            gains = createGain(balance, attributes, config, prevYear))
     }
 
     fun previousRec(prevYear: YearlyDetail): AssetRec? =
