@@ -11,11 +11,10 @@ import yearlyDetailFixture
 
 class NetSpendAllocationTest : ShouldSpec({
     val yearInFuture = 2100
-    val baseYearDetail = yearlyDetailFixture(year = yearInFuture)
 
-    fun genAssetRec(name: Name, type: AssetType, finalBal: Amount) : AssetRec {
+    fun genAssetRec(name: Name, type: AssetType, startBalance: Amount) : AssetRec {
         val config = assetConfigFixture(assetName = name, assetType = type)
-        return assetRecFixture(assetConfig = config, startBal = finalBal, finalBal = finalBal)
+        return assetRecFixture(assetConfig = config, startBal = startBalance)
     }
 
     fun genCurrYear(income: Amount, expenses: Amount, assets: List<AssetRec>) =
@@ -34,7 +33,7 @@ class NetSpendAllocationTest : ShouldSpec({
 
         val result = NetSpendAllocation.allocatedNetSpend(currYear)
         result.shouldBe(0.0)
-        savings100k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings100k.finalBalance().shouldBeWithinPercentageOf(
             savings100k.startBal + currYear.netSpend(), .001)
     }
 
@@ -47,9 +46,9 @@ class NetSpendAllocationTest : ShouldSpec({
 
         val result = NetSpendAllocation.allocatedNetSpend(currYear)
         result.shouldBe(0.0)
-        savings90k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings90k.finalBalance().shouldBeWithinPercentageOf(
             savings90k.startBal + (0.9 * currYear.netSpend()), .001)
-        savings10k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings10k.finalBalance().shouldBeWithinPercentageOf(
             savings10k.startBal + (0.1 * currYear.netSpend()), .001)
     }
 
@@ -64,11 +63,11 @@ class NetSpendAllocationTest : ShouldSpec({
 
         val result = NetSpendAllocation.allocatedNetSpend(currYear)
         result.shouldBe(0.0)
-        savings4k.calcValues.finalBal.shouldBe(0.0)
-        savings1k.calcValues.finalBal.shouldBe(0.0)
-        invest90k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings4k.finalBalance().shouldBe(0.0)
+        savings1k.finalBalance().shouldBe(0.0)
+        invest90k.finalBalance().shouldBeWithinPercentageOf(
             invest90k.startBal + (0.5 * 0.9 * currYear.netSpend()), .001)
-        invest10k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        invest10k.finalBalance().shouldBeWithinPercentageOf(
             invest10k.startBal + (0.5 * 0.1 * currYear.netSpend()), .001)
     }
 
@@ -81,8 +80,8 @@ class NetSpendAllocationTest : ShouldSpec({
 
         val result = NetSpendAllocation.allocatedNetSpend(currYear)
         result.shouldBe(currYear.netSpend() + savings5k.startBal + invest10k.startBal)
-        savings5k.calcValues.finalBal.shouldBe(0.0)
-        invest10k.calcValues.finalBal.shouldBe(0.0)
+        savings5k.finalBalance().shouldBe(0.0)
+        invest10k.finalBalance().shouldBe(0.0)
     }
 
     should("Will allocate positive net spend") {
@@ -94,9 +93,9 @@ class NetSpendAllocationTest : ShouldSpec({
 
         val result = NetSpendAllocation.allocatedNetSpend(currYear)
         result.shouldBe(0.0)
-        savings90k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings90k.finalBalance().shouldBeWithinPercentageOf(
             savings90k.startBal + (0.9 * currYear.netSpend()), .001)
-        savings10k.calcValues.finalBal.shouldBeWithinPercentageOf(
+        savings10k.finalBalance().shouldBeWithinPercentageOf(
             savings10k.startBal + (0.1 * currYear.netSpend()), .001)
     }
 })

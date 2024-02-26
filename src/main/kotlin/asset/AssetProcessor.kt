@@ -4,7 +4,7 @@ import YearlyDetail
 import config.SimConfig
 
 object AssetProcessor {
-    fun process(config: SimConfig, prevYear: YearlyDetail?, currYear: YearlyDetail)
+    fun process(config: SimConfig, prevYear: YearlyDetail?)
         : List<AssetRec> {
 
         val assets: List<AssetConfigProgression> =
@@ -12,9 +12,7 @@ object AssetProcessor {
                 config.household.members.people().flatMap { it.assets() }
 
         return assets.map {
-            val assetRec = it.progression.determineNext(prevYear)
-            assetRec.calcValues = AssetCalcValuesRec.create(assetRec, currYear)
-            assetRec
+            it.progression.determineNext(prevYear)
         }
     }
 }

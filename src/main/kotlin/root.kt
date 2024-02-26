@@ -26,7 +26,7 @@ data class YearlyDetail(
     fun totalIncome() = incomes.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
     fun totalTaxes() = taxes.sumOf { it.total() }
-    fun totalAssetValues() = assets.sumOf { it.calcValues.finalBal }
+    fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun netSpend() = (1- PortionOfYearPast.calc(year)) *
         (totalIncome() - totalExpense() - totalTaxes())
 }

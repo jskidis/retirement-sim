@@ -8,11 +8,11 @@ object TaxesProcessor {
 
     fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec {
         val taxable = determineTaxableAmounts(currYear)
-        val tlgTaxes = config.taxConfig.fedLTG.marginalRate(
+        val ltgTaxes = config.taxConfig.fedLTG.marginalRate(
             taxable.fed + taxable.fedLTG, currYear) * taxable.fedLTG
 
         return TaxesRec(
-            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear) + tlgTaxes,
+            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear) + ltgTaxes,
             state = config.taxConfig.state.determineTax(taxable.state, currYear),
             socSec = config.taxConfig.socSec.determineTax(taxable.socSec, currYear),
             medicare = config.taxConfig.medicare.determineTax(taxable.medicare, currYear),
@@ -23,7 +23,7 @@ object TaxesProcessor {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
             currYear.expenses.map { it.taxDeductions } +
-            currYear.assets.map { it.calcValues.taxable }
+            currYear.assets.map { it.taxable() }
 
         return taxableAmounts.filter { it.hasAmounts() }
             .fold(TaxableAmounts(person = nameOfTaxablePerson), { acc, amounts -> acc.plus(amounts) })

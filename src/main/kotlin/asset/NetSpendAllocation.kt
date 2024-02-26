@@ -12,29 +12,26 @@ object NetSpendAllocation {
                 acc + allocateSingleType(
                     amount = acc,
                     assets = currYear.assets.filter { it.config.type == assetType },
-                    currYear = currYear
                 )
             }
         }
     }
 
-    private fun allocateSingleType(
-        amount: Amount, assets: List<AssetRec>, currYear: YearlyDetail,
-    ): Amount {
-        val combinedBalance = assets.sumOf { it.calcValues.finalBal }
+    private fun allocateSingleType(amount: Amount, assets: List<AssetRec>): Amount {
+        val combinedBalance = assets.sumOf { it.finalBalance() }
         if (combinedBalance <= 0.0) return 0.0
 
         return assets.sumOf {
+            val finalBalance = it.finalBalance()
             val tributionAmount =
                 Math.max(
-                    -it.calcValues.finalBal,
-                    (it.calcValues.finalBal) / combinedBalance * amount
+                    -finalBalance,
+                    (finalBalance) / combinedBalance * amount
                 )
 
             if (tributionAmount < 1.0 && tributionAmount > -1.0) 0.0
             else {
                 it.tributions.add(SimpleAssetChange("CoverSpend", tributionAmount))
-                it.calcValues = AssetCalcValuesRec.create(it, currYear)
                 -tributionAmount
             }
         }

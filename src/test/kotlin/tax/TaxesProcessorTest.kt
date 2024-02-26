@@ -82,10 +82,9 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
-        result.fed.shouldBe((wageInc.amount + fedOnlyInc.amount + assetRec.calcValues.totalGains - decductExp.amount) * fedTaxCalc.pct)
-        result.state.shouldBe((wageInc.amount + assetRec.calcValues.totalGains - decductExp.amount) * stateTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount + fedOnlyInc.amount + assetRec.totalGains() - decductExp.amount) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount + assetRec.totalGains() - decductExp.amount) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount * medicareTaxCalc.pct)
     }
-
 })
