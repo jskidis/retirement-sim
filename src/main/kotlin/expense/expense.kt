@@ -2,6 +2,7 @@ package expense
 
 import Amount
 import Name
+import Year
 import config.AmountConfig
 import moneyFormat
 import progression.AmountToRecProvider
@@ -10,6 +11,7 @@ import tax.TaxabilityProfile
 import tax.TaxableAmounts
 
 data class ExpenseRec(
+    val year: Year,
     val config: ExpenseConfig,
     val amount: Amount,
     val taxDeductions: TaxableAmounts,
@@ -35,8 +37,10 @@ data class ExpenseConfigProgression(
 open class ExpenseRecProvider(val config: ExpenseConfig)
     : AmountToRecProvider<ExpenseRec> {
 
-    override fun createRecord(value: Amount) = ExpenseRec(
-        config = config, amount = value,
+    override fun createRecord(value: Amount, year: Year) = ExpenseRec(
+        year = year,
+        config = config,
+        amount = value,
         taxDeductions = config.taxabilityProfile.calcTaxable(config.person, value)
     )
 }

@@ -2,8 +2,8 @@ package asset
 
 import Amount
 import YearlyDetail
-import currentDate
 import progression.Progression
+import util.yearFromPrevYearDetail
 
 abstract class AssetProgression(
     val startBalance: Amount,
@@ -11,10 +11,7 @@ abstract class AssetProgression(
 ) : Progression<AssetRec>, AssetGainCreator {
 
     override fun determineNext(prevYear: YearlyDetail?): AssetRec {
-        val year =
-            if (prevYear == null) currentDate.year
-            else prevYear.year + 1
-
+        val year = yearFromPrevYearDetail(prevYear)
         val attributes = config.retrieveAttributesByYear(year)
 
         val balance =

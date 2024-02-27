@@ -6,6 +6,7 @@ import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
 import tax.TaxesProcessor
+import util.yearFromPrevYearDetail
 
 fun main(args: Array<String>) {
     val years = ArrayList<YearlyDetail>()
@@ -35,7 +36,7 @@ fun main(args: Array<String>) {
 }
 
 fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDetail {
-    val year = if(prevYear == null) config.startYear else prevYear.year + 1
+    val year = yearFromPrevYearDetail(prevYear)
     val inflation = InflationProcessor.process(config, prevYear)
     val incomes = IncomeProcessor.process(config, prevYear)
     val expenses = ExpenseProcessor.process(config, prevYear)
