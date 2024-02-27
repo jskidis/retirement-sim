@@ -2,16 +2,14 @@ package expense
 
 import Amount
 import YearlyDetail
-import progression.AmountAdjusterWithGapFiller
-import progression.AmountToRecProvider
-import progression.ChainedAmountAdjusterWithGapFiller
-import progression.NullablePrevValProviderProgression
+import progression.*
 
 open class BasicExpenseProgression(
     val startAmount: Amount,
     val config: ExpenseConfig,
     val adjusters: List<AmountAdjusterWithGapFiller> = ArrayList(),
-) : NullablePrevValProviderProgression<ExpenseRec>,
+) : NullableAmountProviderProgression<ExpenseRec>,
+    NullablePrevValProvider,
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {
 

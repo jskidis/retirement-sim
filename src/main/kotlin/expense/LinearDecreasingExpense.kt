@@ -2,10 +2,7 @@ package expense
 
 import Amount
 import Year
-import progression.AmountAdjuster
-import progression.AmountToRecProvider
-import progression.ChainedAmountAdjuster
-import progression.LinearDecreasingAmountProgression
+import progression.*
 
 open class LinearDecreasingExpense(
     startAmount: Amount,
@@ -13,6 +10,7 @@ open class LinearDecreasingExpense(
     numYears: Int,
     config: ExpenseConfig,
     adjusters: List<AmountAdjuster> = ArrayList(),
-) : LinearDecreasingAmountProgression<ExpenseRec>(startAmount, startDecYear, numYears),
+) : NullableAmountProviderProgression<ExpenseRec>,
+    LinearDecreasingAmountProvider(startAmount, startDecYear, numYears),
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjuster by ChainedAmountAdjuster(adjusters)

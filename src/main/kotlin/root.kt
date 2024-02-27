@@ -5,8 +5,6 @@ import inflation.InflationRec
 import tax.FilingStatus
 import tax.TaxesRec
 import util.PortionOfYearPast
-import java.text.DecimalFormat
-import java.time.LocalDate
 
 typealias Year = Int
 typealias Amount = Double
@@ -37,24 +35,4 @@ data class YearMonth (
 ) {
     fun toDec(): Double = year + month / 12.0
 }
-
-data class DateRange(
-    val start: YearMonth,
-    val end: YearMonth
-)
-
-val moneyFormat = DecimalFormat("$##,###,###")
-val twoDecimalFormat = DecimalFormat("#0.00")
-val fourDecimalFormat = DecimalFormat(".0000")
-val currentDate = LocalDate.now()
-
-
-/*
-data class RetireContribRec(
-    val amount: Amount,
-    val deductions: TaxableAmounts,
-    val assetName: Name,
-    val person: Name,
-)
-*/
 

@@ -16,7 +16,7 @@ data class SimConfig(
 class EmploymentConfig(
     val name: String,
     val person: Name,
-    val dtRange: DateRange,
+    val dtRange: util.DateRange,
     val incomeConfig: IncomeConfig,
     val medInsProgression: Progression<EmployerMedInsConfig>,
     val retirementConfig: ArrayList<RetireContribConfig>

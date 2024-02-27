@@ -4,11 +4,11 @@ import Amount
 import Name
 import Year
 import config.AmountConfig
-import moneyFormat
 import progression.AmountToRecProvider
-import progression.Progression
+import progression.NullableProgression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
+import util.moneyFormat
 
 data class IncomeRec(
     val year: Year,
@@ -31,7 +31,7 @@ data class IncomeConfig(
 
 data class IncomeConfigProgression(
     val config: IncomeConfig,
-    val progression: Progression<IncomeRec>,
+    val progression: NullableProgression<IncomeRec>,
 )
 
 open class IncomeRecProvider(val config: IncomeConfig)

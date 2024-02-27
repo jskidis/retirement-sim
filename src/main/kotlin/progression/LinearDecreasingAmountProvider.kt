@@ -4,11 +4,11 @@ import Amount
 import Year
 import YearlyDetail
 
-abstract class LinearDecreasingAmountProgression<RecT>(
+abstract class LinearDecreasingAmountProvider(
     val startAmount: Amount,
     val startDecYear: Year,
     val numYears: Int,
-) : NextValProviderProgression<RecT>, AmountAdjuster {
+) : NextValProvider, AmountAdjuster {
 
     override fun initialValue() = startAmount
 

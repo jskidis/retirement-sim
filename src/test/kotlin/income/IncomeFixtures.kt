@@ -4,7 +4,7 @@ import Amount
 import Name
 import Year
 import YearlyDetail
-import progression.Progression
+import progression.NullableAmountProviderProgression
 import tax.TaxabilityProfile
 import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
@@ -49,13 +49,14 @@ fun incomeCfgProgessFixture(
     )
 }
 
-class IncomeProgressionFixture(val amount: Double, val expenseCfg: IncomeConfig)
-    : Progression<IncomeRec> {
+class IncomeProgressionFixture(val amount: Double, val incomeConfig: IncomeConfig)
+    : NullableAmountProviderProgression<IncomeRec> {
 
-    override fun determineNext(prevYear: YearlyDetail?) = IncomeRec(
-        year = prevYear?.year ?:2024,
-        config = expenseCfg,
+    override fun determineAmount(prevYear: YearlyDetail?): Amount = amount
+    override fun createRecord(value: Amount, year: Year) = IncomeRec(
+        year = year,
+        config = incomeConfig,
         amount = amount,
-        taxableIncome = TaxableAmounts(expenseCfg.name)
+        taxableIncome = TaxableAmounts(incomeConfig.name)
     )
 }

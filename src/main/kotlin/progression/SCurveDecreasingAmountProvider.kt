@@ -4,12 +4,11 @@ import Amount
 import Year
 import YearlyDetail
 
-abstract class SCurveDecreasingAmountProgression<RecT>(
+abstract class SCurveDecreasingAmountProvider(
     val startAmount: Amount,
     val startDecYear: Year,
     val numYears: Int,
-) : NextValProviderProgression<RecT>,
-    AmountAdjuster {
+) : NextValProvider, AmountAdjuster {
 
     override fun initialValue() = startAmount
 

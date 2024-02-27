@@ -2,17 +2,12 @@ package progression
 
 import Amount
 import YearlyDetail
-import currentDate
 
-interface NextValProvider {
+interface NextValProvider : AmountProvider {
     fun initialValue(): Amount
     fun nextValue(prevYear: YearlyDetail): Amount
-}
 
-interface NextValProviderProgression<T>
-    : Progression<T>, NextValProvider, AmountToRecProvider<T> {
-
-    override fun determineNext(prevYear: YearlyDetail?): T =
-        if (prevYear == null) createRecord(initialValue(), currentDate.year)
-        else createRecord(nextValue(prevYear), prevYear.year +1)
+    override fun determineAmount(prevYear: YearlyDetail?) =
+        if (prevYear == null) initialValue()
+        else nextValue(prevYear)
 }

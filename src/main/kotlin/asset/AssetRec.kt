@@ -2,9 +2,9 @@ package asset
 
 import Amount
 import Year
-import moneyFormat
 import tax.TaxableAmounts
 import util.PortionOfYearPast
+import util.moneyFormat
 
 data class AssetRec(
     val year: Year,
