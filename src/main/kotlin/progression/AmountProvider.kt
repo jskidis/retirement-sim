@@ -13,14 +13,11 @@ interface AmountToRecProvider<T> {
     fun createRecord(value: Amount, year: Year): T
 }
 
-interface NullableAmountProviderProgression<T> :
-    NullableProgression<T>, AmountProvider, AmountToRecProvider<T> {
+interface AmountProviderProgression<T> :
+    Progression<T>, AmountProvider, AmountToRecProvider<T> {
 
-    override fun determineNextIf(prevYear: YearlyDetail?): T? {
-        val amount = determineAmount(prevYear)
-        return if (amount == 0.0) null
-        else createRecord(amount, yearFromPrevYearDetail(prevYear))
+    override fun determineNext(prevYear: YearlyDetail?): T {
+        return createRecord(determineAmount(prevYear), yearFromPrevYearDetail(prevYear))
     }
-
 }
 

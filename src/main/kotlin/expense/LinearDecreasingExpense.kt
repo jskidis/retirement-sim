@@ -10,7 +10,7 @@ open class LinearDecreasingExpense(
     numYears: Int,
     config: ExpenseConfig,
     adjusters: List<AmountAdjuster> = ArrayList(),
-) : NullableAmountProviderProgression<ExpenseRec>,
+) : AmountProviderProgression<ExpenseRec>,
     LinearDecreasingAmountProvider(startAmount, startDecYear, numYears),
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjuster by ChainedAmountAdjuster(adjusters)

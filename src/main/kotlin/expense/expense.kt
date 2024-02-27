@@ -1,11 +1,12 @@
 package expense
 
 import Amount
+import AmountRec
 import Name
 import Year
 import config.AmountConfig
 import progression.AmountToRecProvider
-import progression.NullableProgression
+import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import util.moneyFormat
@@ -15,7 +16,13 @@ data class ExpenseRec(
     val config: ExpenseConfig,
     val amount: Amount,
     val taxDeductions: TaxableAmounts,
-) {
+): AmountRec {
+
+    override fun year(): Year  = year
+    override fun config(): AmountConfig = config
+    override fun taxable(): TaxableAmounts = taxDeductions
+    override fun retainRec(): Boolean = amount != 0.0
+
     val deductionsStr = if (taxDeductions.hasAmounts()) ", deductions=$taxDeductions" else ""
     override fun toString(): String =
         "($config=${moneyFormat.format(amount)}$deductionsStr)"
@@ -31,7 +38,7 @@ data class ExpenseConfig(
 
 data class ExpenseConfigProgression(
     val config: ExpenseConfig,
-    val progression: NullableProgression<ExpenseRec>,
+    val progression: Progression<ExpenseRec>,
 )
 
 open class ExpenseRecProvider(val config: ExpenseConfig)

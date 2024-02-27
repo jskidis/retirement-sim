@@ -8,7 +8,7 @@ open class BasicIncomeProgression(
     val startAmount: Amount,
     val config: IncomeConfig,
     val adjusters: List<AmountAdjusterWithGapFiller>,
-) : NullableAmountProviderProgression<IncomeRec>,
+) : AmountProviderProgression<IncomeRec>,
     NullablePrevValProvider,
     AmountToRecProvider<IncomeRec> by IncomeRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {

@@ -10,7 +10,7 @@ open class SCurveDecreasingExpense(
     numYears: Int,
     config: ExpenseConfig,
     adjusters: List<AmountAdjuster> = ArrayList(),
-) : NullableAmountProviderProgression<ExpenseRec>,
+) : AmountProviderProgression<ExpenseRec>,
     SCurveDecreasingAmountProvider(startAmount, startDecYear, numYears),
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjuster by ChainedAmountAdjuster(adjusters)
