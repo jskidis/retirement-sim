@@ -12,16 +12,16 @@ class TaxesProcessorTest : ShouldSpec({
     val person = "Person1"
 
     val wageInc = incomeRecFixture(
-        "Wage Income", person, 100000.0, WageTaxableProfile()
+        2024, "Wage Income", person, 100000.0, WageTaxableProfile()
     )
     val fedOnlyInc = incomeRecFixture(
-        "Other Income", person, 10000.0, FedOnlyTaxableProfile()
+        2024, "Other Income", person, 10000.0, FedOnlyTaxableProfile()
     )
     val nonDeductExp = expenseRecFixture(
-        "Non Deductible Expense", person, 50000.0, NonTaxableProfile()
+        2024, "Non Deductible Expense", person, 50000.0, NonTaxableProfile()
     )
     val decductExp = expenseRecFixture(
-        "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
+        2024, "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
     )
     val assetRec = assetRecFixture(
         gains = 500.0, taxProfile = NonWageTaxableProfile()

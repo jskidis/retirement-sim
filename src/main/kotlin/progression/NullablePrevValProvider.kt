@@ -2,6 +2,7 @@ package progression
 
 import Amount
 import YearlyDetail
+import currentDate
 
 interface NullablePrevValProvider {
     fun initialValue(): Amount
@@ -17,12 +18,12 @@ interface NullablePrevValProviderProgression<T> :
     Progression<T>, NullablePrevValProvider,
     NullablePrevNextValProvider, AmountToRecProvider<T> {
 
-    override fun determineNext(prevYear: YearlyDetail?): T {
-        val nextValue: Amount =
-            if (prevYear == null) initialValue()
-            else previousValue(prevYear)
+    override fun determineNext(prevYear: YearlyDetail?): T =
+        if (prevYear == null) createRecord(initialValue(), currentDate.year)
+        else createRecord(
+            value = previousValue(prevYear)
                 ?.let { nextValue(it, prevYear) }
-                ?: gapFillValue(prevYear)
-        return createRecord(nextValue)
-    }
+                ?: gapFillValue(prevYear),
+            year = prevYear.year + 1
+        )
 }

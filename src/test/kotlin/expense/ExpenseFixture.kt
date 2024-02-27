@@ -2,6 +2,7 @@ package expense
 
 import Amount
 import Name
+import Year
 import YearlyDetail
 import progression.Progression
 import tax.TaxabilityProfile
@@ -14,20 +15,27 @@ fun expenseConfigFixture(
 ) = ExpenseConfig(name, person, TaxabilityProfileFixture())
 
 fun expenseRecFixture(
+    year: Year = 2024,
     name: Name = "Expense",
     person: Name = "Person",
     amount: Amount = 0.0,
-) = ExpenseRec(expenseConfigFixture(name, person), amount, TaxableAmounts(person))
+) = ExpenseRec(
+    year = year,
+    config = expenseConfigFixture(name, person),
+    amount = amount,
+    taxDeductions = TaxableAmounts(person))
 
 fun expenseRecFixture(
+    year: Year = 2024,
     name: Name = "Expense",
     person: Name = "Person",
     amount: Amount = 0.0,
     taxProfile: TaxabilityProfile,
 ) = ExpenseRec(
-    ExpenseConfig(name, person, taxProfile),
-    amount,
-    taxProfile.calcTaxable(name, amount)
+    year = year,
+    config = ExpenseConfig(name, person, taxProfile),
+    amount = amount,
+    taxDeductions = taxProfile.calcTaxable(name, amount)
 )
 
 fun expenseCfgProgessFixture(
@@ -45,6 +53,7 @@ class ExpenseProgressionFixture(val amount: Double, val expenseCfg: ExpenseConfi
     : Progression<ExpenseRec> {
 
     override fun determineNext(prevYear: YearlyDetail?) = ExpenseRec(
+        year = prevYear?.year ?:2024,
         config = expenseCfg,
         amount = amount,
         taxDeductions = TaxableAmounts(expenseCfg.name)

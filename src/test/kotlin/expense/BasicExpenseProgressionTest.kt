@@ -29,7 +29,7 @@ class BasicExpenseProgressionTest : ShouldSpec({
 
     should("determineNext applies amount adjuster to previous years amount") {
         val prevYear = yearlyDetailFixture().copy(expenses = listOf(
-            ExpenseRec(expenseConfig, 2000.0, TaxableAmounts(person))
+            ExpenseRec(2024, expenseConfig, 2000.0, TaxableAmounts(person))
         ))
 
         val result = progression.determineNext(prevYear)

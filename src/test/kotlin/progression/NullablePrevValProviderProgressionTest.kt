@@ -1,6 +1,7 @@
 package progression
 
 import Amount
+import Year
 import YearlyDetail
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
@@ -41,7 +42,7 @@ class NullablePrevValProviderProgressionFixture(
     val gapFillVal: Amount,
 ) : NullablePrevValProviderProgression<Amount> {
 
-    override fun createRecord(value: Amount): Amount  = value
+    override fun createRecord(value: Amount, year: Year): Amount  = value
     override fun initialValue(): Amount = initValue
     override fun previousValue(prevYear: YearlyDetail): Amount? = prevValue
     override fun gapFillValue(prevYear: YearlyDetail): Amount = gapFillVal

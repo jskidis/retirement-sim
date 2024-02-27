@@ -1,6 +1,7 @@
 package progression
 
 import Amount
+import Year
 import YearlyDetail
 
 interface Progression<T> {
@@ -9,6 +10,6 @@ interface Progression<T> {
 }
 
 interface AmountToRecProvider<T> {
-    fun createRecord(value: Amount): T
+    fun createRecord(value: Amount, year: Year): T
 }
 
