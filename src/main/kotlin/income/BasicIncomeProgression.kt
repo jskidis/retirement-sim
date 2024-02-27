@@ -2,16 +2,14 @@ package income
 
 import Amount
 import YearlyDetail
-import progression.AmountAdjusterWithGapFiller
-import progression.AmountToRecProvider
-import progression.ChainedAmountAdjusterWithGapFiller
-import progression.NullablePrevValProviderProgression
+import progression.*
 
 open class BasicIncomeProgression(
     val startAmount: Amount,
     val config: IncomeConfig,
     val adjusters: List<AmountAdjusterWithGapFiller>,
-) : NullablePrevValProviderProgression<IncomeRec>,
+) : NullableAmountProviderProgression<IncomeRec>,
+    NullablePrevValProvider,
     AmountToRecProvider<IncomeRec> by IncomeRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {
 

@@ -6,6 +6,7 @@ import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
 import tax.TaxesProcessor
+import util.moneyFormat
 import util.yearFromPrevYearDetail
 
 fun main(args: Array<String>) {

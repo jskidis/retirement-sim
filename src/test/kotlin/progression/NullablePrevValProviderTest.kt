@@ -1,48 +1,46 @@
 package progression
 
 import Amount
-import Year
 import YearlyDetail
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
-class NullablePrevValProviderProgressionTest : ShouldSpec({
+class NullablePrevValProviderTest : ShouldSpec({
     val initVal = 1.0
     val prevVal = 2.0
     val nextValMult = 1.5
     val gapFillVal = 4.0
 
-    val progression = NullablePrevValProviderProgressionFixture(
+    val progression = NullablePrevValProviderFixture(
         initVal, prevVal, nextValMult, gapFillVal)
 
-    val progressWithNullPrev = NullablePrevValProviderProgressionFixture(
+    val progressWithNullPrev = NullablePrevValProviderFixture(
         initVal, null, nextValMult, gapFillVal)
 
     should("determineNext returns initial value when prev Year is null") {
-        progression.determineNext(null).shouldBe(initVal)
+        progression.determineAmount(null).shouldBe(initVal)
     }
 
     should("determineNext returns prevVal times nextValMult when prevYear is provided") {
-        progression.determineNext(yearlyDetailFixture())
+        progression.determineAmount(yearlyDetailFixture())
             .shouldBeWithinPercentageOf(prevVal * nextValMult, 0.001)
     }
 
     should("determineNext returns gapFillVal prevYear is provided but has no prev value") {
-        progressWithNullPrev.determineNext(yearlyDetailFixture())
+        progressWithNullPrev.determineAmount(yearlyDetailFixture())
             .shouldBe(gapFillVal)
     }
 })
 
-class NullablePrevValProviderProgressionFixture(
+class NullablePrevValProviderFixture(
     val initValue: Amount,
     val prevValue: Amount?,
     val nextValMult: Amount,
     val gapFillVal: Amount,
-) : NullablePrevValProviderProgression<Amount> {
+) : NullablePrevValProvider {
 
-    override fun createRecord(value: Amount, year: Year): Amount  = value
     override fun initialValue(): Amount = initValue
     override fun previousValue(prevYear: YearlyDetail): Amount? = prevValue
     override fun gapFillValue(prevYear: YearlyDetail): Amount = gapFillVal

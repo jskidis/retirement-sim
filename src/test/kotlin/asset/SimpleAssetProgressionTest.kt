@@ -2,10 +2,10 @@ package asset
 
 import Amount
 import Name
-import currentDate
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
+import util.currentDate
 import yearlyDetailFixture
 
 class SimpleAssetProgressionTest : ShouldSpec({

@@ -2,8 +2,8 @@ package asset
 
 import Amount
 import Name
-import moneyFormat
 import tax.TaxableAmounts
+import util.moneyFormat
 
 interface AssetChange {
     val name: Name

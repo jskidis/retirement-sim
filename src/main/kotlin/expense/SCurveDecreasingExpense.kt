@@ -2,10 +2,7 @@ package expense
 
 import Amount
 import Year
-import progression.AmountAdjuster
-import progression.AmountToRecProvider
-import progression.ChainedAmountAdjuster
-import progression.SCurveDecreasingAmountProgression
+import progression.*
 
 open class SCurveDecreasingExpense(
     startAmount: Amount,
@@ -13,6 +10,7 @@ open class SCurveDecreasingExpense(
     numYears: Int,
     config: ExpenseConfig,
     adjusters: List<AmountAdjuster> = ArrayList(),
-) : SCurveDecreasingAmountProgression<ExpenseRec>(startAmount, startDecYear, numYears),
+) : NullableAmountProviderProgression<ExpenseRec>,
+    SCurveDecreasingAmountProvider(startAmount, startDecYear, numYears),
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjuster by ChainedAmountAdjuster(adjusters)

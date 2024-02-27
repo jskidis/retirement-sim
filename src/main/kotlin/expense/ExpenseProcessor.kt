@@ -8,6 +8,7 @@ object ExpenseProcessor {
         val expenses: List<ExpenseConfigProgression> = config.household.expenses +
             config.household.members.people().flatMap { it.expenses() }
 
-        return expenses.map { it.progression.determineNext(prevYear) }
+        return expenses.map { it.progression.determineNextIf(prevYear)
+        }.mapNotNull { it }
     }
 }

@@ -1,7 +1,5 @@
 package progression
 
-import Amount
-import Year
 import YearlyDetail
 
 interface Progression<T> {
@@ -9,7 +7,7 @@ interface Progression<T> {
     fun isValid(): Boolean = true
 }
 
-interface AmountToRecProvider<T> {
-    fun createRecord(value: Amount, year: Year): T
+interface NullableProgression<T> {
+    fun determineNextIf(prevYear: YearlyDetail?): T?
 }
 

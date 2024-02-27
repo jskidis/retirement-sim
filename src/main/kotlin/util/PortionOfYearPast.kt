@@ -1,7 +1,6 @@
 package util
 
 import Year
-import currentDate
 
 object PortionOfYearPast {
     fun calc(year: Year): Double {

@@ -2,8 +2,8 @@ package asset
 
 import Name
 import Rate
-import fourDecimalFormat
-import twoDecimalFormat
+import util.fourDecimalFormat
+import util.twoDecimalFormat
 
 data class PortfolAttribs(
     val name: Name, val mean: Rate, val stdDev: Rate,

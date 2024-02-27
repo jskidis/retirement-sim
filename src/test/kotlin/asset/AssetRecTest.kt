@@ -1,10 +1,10 @@
 package asset
 
-import currentDate
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import util.currentDate
 
 class AssetRecTest : ShouldSpec({
     val assetName = "Asset Name"
