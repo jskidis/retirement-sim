@@ -5,10 +5,11 @@ import YearlyDetail
 import progression.Progression
 import util.yearFromPrevYearDetail
 
-abstract class AssetProgression(
+open class AssetProgression(
     val startBalance: Amount,
     val config: AssetConfig,
-) : Progression<AssetRec>, AssetGainCreator {
+    val gainCreator: AssetGainCreator,
+) : Progression<AssetRec> {
 
     override fun determineNext(prevYear: YearlyDetail?): AssetRec {
         val year = yearFromPrevYearDetail(prevYear)
@@ -22,7 +23,7 @@ abstract class AssetProgression(
             year = year,
             config = config,
             startBal = balance,
-            gains = createGain(balance, attributes, config, prevYear))
+            gains = gainCreator.createGain(balance, attributes, config, prevYear))
     }
 
     fun previousRec(prevYear: YearlyDetail): AssetRec? =
@@ -30,15 +31,3 @@ abstract class AssetProgression(
             it.config.person == config.person && it.config.name == config.name
         }
 }
-
-open class SimpleAssetProgression(startBalance: Amount, config: AssetConfig)
-    : AssetProgression(startBalance, config), AssetGainCreator by SimpleAssetGainCreator()
-
-open class TaxableInvestProgression(
-    startBalance: Amount,
-    config: AssetConfig,
-    qualDivRatio: Double = 0.80,
-    regTaxOnGainsPct: Double = 0.10,
-    ltTaxOnGainsPct: Double = 0.10,
-) : AssetProgression(startBalance, config),
-    AssetGainCreator by TaxableInvestGainCreator(qualDivRatio, regTaxOnGainsPct, ltTaxOnGainsPct)

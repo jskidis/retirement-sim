@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class SimpleAssetProgressionTest : ShouldSpec({
+class AssetProgressionTest : ShouldSpec({
 
     val assetName: Name = "Asset Name"
     val person: Name = "Person"
@@ -28,9 +28,11 @@ class SimpleAssetProgressionTest : ShouldSpec({
         val attributeSet = listOf(
             YearlyAssetAttributes(2024, tenPctReturn)
         )
-        val progression = SimpleAssetProgression(
+        val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet))
+            config = baseAssetConfig.copy(attributesSet = attributeSet),
+            gainCreator = SimpleAssetGainCreator()
+        )
 
         val results = progression.determineNext(prevYear.copy(year = 2024))
         results.config.name.shouldBe(assetName)
@@ -45,9 +47,11 @@ class SimpleAssetProgressionTest : ShouldSpec({
             YearlyAssetAttributes(currentDate.year, tenPctReturn),
             YearlyAssetAttributes(2030, onePctReturn)
         )
-        val progression = SimpleAssetProgression(
+        val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet))
+            config = baseAssetConfig.copy(attributesSet = attributeSet),
+            gainCreator = SimpleAssetGainCreator()
+        )
 
         val results2024 = progression.determineNext(prevYear.copy(year = 2024))
         results2024.gains.name.shouldBe(tenPctReturn.name)
@@ -65,9 +69,11 @@ class SimpleAssetProgressionTest : ShouldSpec({
             YearlyAssetAttributes(currentDate.year, tenPctReturn),
             YearlyAssetAttributes(2040, onePctReturn)
         )
-        val progression = SimpleAssetProgression(
+        val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet))
+            config = baseAssetConfig.copy(attributesSet = attributeSet),
+            gainCreator = SimpleAssetGainCreator()
+        )
 
         val results = progression.determineNext(null)
         results.gains.name.shouldBe(tenPctReturn.name)
@@ -79,9 +85,11 @@ class SimpleAssetProgressionTest : ShouldSpec({
         val attributeSet = listOf(
             YearlyAssetAttributes(2024, tenPctReturn)
         )
-        val progression = SimpleAssetProgression(
+        val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet))
+            config = baseAssetConfig.copy(attributesSet = attributeSet),
+            gainCreator = SimpleAssetGainCreator()
+        )
 
         val prevYearMissingAsset = prevYear.copy(assets = listOf())
         val results = progression.determineNext(prevYearMissingAsset)
