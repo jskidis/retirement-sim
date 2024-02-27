@@ -43,8 +43,10 @@ object Household : HouseholdConfigBuilder {
         )
         val jointSavings = AssetConfigProgression(
             config = jointSavingConfig,
-            progression = SimpleAssetProgression(
-                startBalance = Smiths.savingsBal, config = jointSavingConfig
+            progression = AssetProgression(
+                startBalance = Smiths.savingsBal,
+                config = jointSavingConfig,
+                gainCreator = SimpleAssetGainCreator()
             )
         )
 
@@ -62,8 +64,10 @@ object Household : HouseholdConfigBuilder {
         )
         val jointInvest = AssetConfigProgression(
             config = jointInvestConfig,
-            progression = TaxableInvestProgression(
-                startBalance = Smiths.investBal, config = jointInvestConfig)
+            progression = AssetProgression(
+                startBalance = Smiths.investBal,
+                config = jointInvestConfig,
+                gainCreator = TaxableInvestGainCreator())
         )
 
         return listOf(jointSavings, jointInvest)
