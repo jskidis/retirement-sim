@@ -13,6 +13,6 @@ object AssetProcessor {
 
         return assets.map {
             it.progression.determineNext(prevYear)
-        }
+        }.filter { it.retainRec() }
     }
 }

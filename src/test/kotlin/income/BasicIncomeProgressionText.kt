@@ -3,7 +3,6 @@ package income
 import Amount
 import Name
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import progression.AmountAdjusterWithGapFiller
 import progression.GapAmountAdjusterFixture
@@ -22,8 +21,7 @@ class BasicIncomeProgressionTest : ShouldSpec({
         GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
-        val result = progression.determineNextIf(null)
-        result.shouldNotBeNull()
+        val result = progression.determineNext(null)
         result.config.name.shouldBe(incomeName)
         result.config.person.shouldBe(person)
         result.amount.shouldBe(startAmount)
@@ -34,8 +32,7 @@ class BasicIncomeProgressionTest : ShouldSpec({
             IncomeRec(2024, incomeConfig, 2000.0, TaxableAmounts(person))
         ))
 
-        val result = progression.determineNextIf(prevYear)
-        result.shouldNotBeNull()
+        val result = progression.determineNext(prevYear)
         result.config.name.shouldBe(incomeName)
         result.config.person.shouldBe(person)
         result.amount.shouldBe(2000.0 * prevYearMultiplier)
@@ -48,8 +45,7 @@ class BasicIncomeProgressionTest : ShouldSpec({
             incomeRecFixture(name = "Other Expense", person = "Other Person", amount = 3000.0)
         ))
 
-        val result = progression.determineNextIf(prevYear)
-        result.shouldNotBeNull()
+        val result = progression.determineNext(prevYear)
         result.config.name.shouldBe(incomeName)
         result.config.person.shouldBe(person)
         result.amount.shouldBe(startAmount * gapFillerMultipler)

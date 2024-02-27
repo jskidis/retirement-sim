@@ -1,8 +1,10 @@
 import asset.AssetRec
+import config.AmountConfig
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
 import tax.FilingStatus
+import tax.TaxableAmounts
 import tax.TaxesRec
 import util.PortionOfYearPast
 
@@ -27,6 +29,13 @@ data class YearlyDetail(
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun netSpend() = (1- PortionOfYearPast.calc(year)) *
         (totalIncome() - totalExpense() - totalTaxes())
+}
+
+interface AmountRec {
+    fun year(): Year
+    fun config(): AmountConfig
+    fun taxable(): TaxableAmounts
+    fun retainRec(): Boolean
 }
 
 data class YearMonth (

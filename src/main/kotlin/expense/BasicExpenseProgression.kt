@@ -8,7 +8,7 @@ open class BasicExpenseProgression(
     val startAmount: Amount,
     val config: ExpenseConfig,
     val adjusters: List<AmountAdjusterWithGapFiller> = ArrayList(),
-) : NullableAmountProviderProgression<ExpenseRec>,
+) : AmountProviderProgression<ExpenseRec>,
     NullablePrevValProvider,
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {
