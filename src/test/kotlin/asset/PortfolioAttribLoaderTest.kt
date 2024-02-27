@@ -4,9 +4,9 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
 
-class PortfolAttribLoaderTest : ShouldSpec({
+class PortfolioAttribLoaderTest : ShouldSpec({
     should("loadPortfolios loads a (String, AssetROR) map from csv") {
-        val result = PortfolAttribLoader.loadPortfolios()
+        val result = PortfolioAttribLoader.loadPortfolios()
         result.size.shouldBeGreaterThan(10)
         result.values.filter {
             it.mean > 0.25 || it.stdDev > 0.25 ||

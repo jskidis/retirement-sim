@@ -1,9 +1,9 @@
 package config
 
-import asset.PortfolAttribLoader
 import asset.PortfolAttribs
+import asset.PortfolioAttribLoader
 
 object AssetAttributeMap {
-    val portfolioMap by lazy { PortfolAttribLoader.loadPortfolios() }
+    val portfolioMap by lazy { PortfolioAttribLoader.loadPortfolios() }
     fun assetComp(name: String): PortfolAttribs = portfolioMap[name]!!
 }
