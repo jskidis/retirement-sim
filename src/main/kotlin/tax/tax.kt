@@ -63,3 +63,27 @@ interface TaxCalculator {
     fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
     fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate
 }
+
+data class TaxCalcConfig(
+    val fed: TaxCalculator,
+    val fedLTG: TaxCalculator,
+    val state: TaxCalculator,
+    val socSec: TaxCalculator,
+    val medicare: TaxCalculator
+)
+
+data class BracketCase(
+    val pct: Rate = 0.0,
+    val start: Amount = 0.0,
+    val end: Amount= Amount.MAX_VALUE,
+) {
+    fun size() = end - start
+}
+
+data class TaxBracket(
+    val pct: Rate,
+    val jointly: BracketCase = BracketCase(),
+    val household: BracketCase = BracketCase(),
+    val single: BracketCase = BracketCase()
+)
+

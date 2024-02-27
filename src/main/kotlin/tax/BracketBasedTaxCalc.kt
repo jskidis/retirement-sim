@@ -4,6 +4,7 @@ import Amount
 import Rate
 import YearlyDetail
 import org.apache.commons.csv.CSVRecord
+import util.CSVReader
 
 interface BracketBasedTaxCalc : TaxCalculator {
     val brackets: List<TaxBracket>
@@ -60,4 +61,34 @@ interface BracketBasedTaxCalc : TaxCalculator {
             FilingStatus.HOUSEHOLD -> brackets.map { it.household }
             FilingStatus.SINGLE -> brackets.map { it.single }
         }
+}
+
+object CurrentFedTaxBrackets : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> by lazy {
+        loadBrackets("tables/current-fed-tax.csv")
+    }
+}
+
+object RollbackFedTaxBrackets : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> by lazy {
+        loadBrackets("tables/rollback-fed-tax.csv")
+    }
+}
+
+object CurrentStateTaxBrackets : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> by lazy {
+        loadBrackets("tables/current-state-tax.csv")
+    }
+}
+
+object FutureStateTaxBrackets : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> by lazy {
+        loadBrackets("tables/future-state-tax.csv")
+    }
+}
+
+object CurrentFedLTGCalc : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> by lazy {
+        loadBrackets("tables/current-capgains-tax.csv")
+    }
 }

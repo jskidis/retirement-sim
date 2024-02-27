@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 
-class RateAndCompoundTest : ShouldSpec({
+class InflationRACTest : ShouldSpec({
     should("build returns rate as specified rate and compound of (1 + rate) + previous compound") {
         var result = InflationRAC.build(currRate = 0.1,
             prev = InflationRAC(rate = 0.1, cmpdStart = 1.0, cmpdEnd = 1.1))

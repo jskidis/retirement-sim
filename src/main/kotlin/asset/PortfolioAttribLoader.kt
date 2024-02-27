@@ -1,9 +1,9 @@
 package asset
 
 import org.apache.commons.csv.CSVRecord
-import tax.CSVReader
+import util.CSVReader
 
-object PortfolAttribLoader {
+object PortfolioAttribLoader {
     fun getReader(): CSVReader<Pair<String, PortfolAttribs>> =
         CSVReader { it: CSVRecord ->
             it[0].trim() to PortfolAttribs(
