@@ -57,6 +57,7 @@ class IncomeProgressionFixture(val amount: Double, val incomeConfig: IncomeConfi
         year = year,
         config = incomeConfig,
         amount = amount,
-        taxableIncome = TaxableAmounts(incomeConfig.name)
+        taxableIncome = TaxableAmounts(person = incomeConfig.name,
+            fed = amount, fedLTG = 0.0, state = amount, socSec = amount, medicare = amount)
     )
 }
