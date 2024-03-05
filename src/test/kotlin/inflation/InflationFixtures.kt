@@ -15,3 +15,11 @@ fun inflationRateFixture(
         InflationRAC(chainRate),
         InflationRAC(wageRate),
     )
+
+fun inflationRecFixture(
+    stdRAC: InflationRAC = InflationRAC(.03),
+    medRAC: InflationRAC = InflationRAC(.03),
+    chainRAC: InflationRAC = InflationRAC(.03),
+    wageRAC: InflationRAC = InflationRAC(.03),
+) = InflationRec(stdRAC, medRAC, chainRAC, wageRAC)
+
