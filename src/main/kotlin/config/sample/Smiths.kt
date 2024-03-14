@@ -6,6 +6,7 @@ import YearMonth
 import config.*
 import inflation.FixedRateInflationProgression
 import tax.*
+import util.DateRange
 
 
 object Smiths : ConfigBuilder {
@@ -13,9 +14,11 @@ object Smiths : ConfigBuilder {
 
     val janeIncStart: Amount = 135000.0
     val janeExpStart: Amount = 30000.0
+    val janeEmploymentDate: DateRange = DateRange(end = YearMonth(2037, 6))
 
     val richardIncStart: Amount = 30000.0
     val richardExpStart: Amount = 30000.0
+    val richardEmploymentDate: DateRange = DateRange(end = YearMonth(2032, 1))
 
     val suzyExpStart: Amount = 20000.0
     val jonnyExpStart: Amount = 20000.0
