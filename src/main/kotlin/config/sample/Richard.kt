@@ -10,6 +10,7 @@ import income.BasicIncomeProgression
 import income.IncomeConfig
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
+import progression.DateRangeAmountAdjuster
 import tax.NonTaxableProfile
 import tax.WageTaxableProfile
 
@@ -25,7 +26,9 @@ object Richard : ParentConfigBuilder {
                 progression = BasicIncomeProgression(
                     startAmount = Smiths.richardIncStart,
                     config = incomeConfig,
-                    adjusters = listOf(StdInflationAmountAdjuster())
+                    adjusters = listOf(
+                        DateRangeAmountAdjuster(Smiths.richardEmploymentDate),
+                        StdInflationAmountAdjuster())
                 )
             )
         )
