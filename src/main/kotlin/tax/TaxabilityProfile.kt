@@ -26,6 +26,10 @@ class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrol
 class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
 class OverriddenTaxableProfile: NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
 
+class SSBenefitTaxableProfile : NonPayrollTaxableProfile, NotStateTaxableProfile {
+    override fun fed(amount: Amount): Amount = amount * 0.5
+}
+
 interface FedTaxableProfile : TaxabilityProfile {
     override fun fed(amount: Amount): Amount = amount
 }
