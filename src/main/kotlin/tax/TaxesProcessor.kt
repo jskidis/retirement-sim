@@ -22,10 +22,13 @@ object TaxesProcessor {
     fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
-            currYear.expenses.map { it.taxDeductions } +
-            currYear.assets.map { it.taxable() }
+                currYear.expenses.map { it.taxDeductions } +
+                currYear.assets.map { it.taxable() } +
+                currYear.benefits.map { it.taxableAmount }
 
         return taxableAmounts.filter { it.hasAmounts() }
-            .fold(TaxableAmounts(person = nameOfTaxablePerson), { acc, amounts -> acc.plus(amounts) })
+            .fold(
+                TaxableAmounts(person = nameOfTaxablePerson),
+                { acc, amounts -> acc.plus(amounts) })
     }
 }

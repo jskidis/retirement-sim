@@ -3,6 +3,7 @@ package config
 import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
 import income.IncomeConfigProgression
+import socsec.SSBenefitConfigProgression
 
 interface ConfigBuilder {
     fun buildConfig(): SimConfig
@@ -12,6 +13,7 @@ interface PersonConfigBuilder {
     fun incomes(person: Person): List<IncomeConfigProgression> = ArrayList()
     fun expenses(person: Person): List<ExpenseConfigProgression> = ArrayList()
     fun assets(person: Person): List<AssetConfigProgression> = ArrayList()
+    fun benefits(person: Person): List<SSBenefitConfigProgression> = ArrayList()
 }
 
 interface ParentConfigBuilder : PersonConfigBuilder {
@@ -19,7 +21,8 @@ interface ParentConfigBuilder : PersonConfigBuilder {
         person = person,
         incomes = incomes(person),
         expenses = expenses(person),
-        assets = assets(person)
+        assets = assets(person),
+        benefits = benefits(person)
     )
 }
 
@@ -28,7 +31,8 @@ interface DependentConfigBuilder : PersonConfigBuilder {
         person = person,
         incomes = incomes(person),
         expenses = expenses(person),
-        assets = assets(person)
+        assets = assets(person),
+        benefits = benefits(person)
     )
 }
 

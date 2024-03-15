@@ -3,6 +3,7 @@ import config.AmountConfig
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
+import socsec.SSBenefitRec
 import tax.FilingStatus
 import tax.TaxableAmounts
 import tax.TaxesRec
@@ -19,11 +20,12 @@ data class YearlyDetail(
     val incomes: List<IncomeRec> = ArrayList(),
     val expenses: List<ExpenseRec> = ArrayList(),
     val assets: List<AssetRec> = ArrayList(),
+    val benefits: List<SSBenefitRec> = ArrayList(),
     val taxes: List<TaxesRec> = ArrayList(),
     val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
-    fun totalIncome() = incomes.sumOf { it.amount }
+    fun totalIncome() = incomes.sumOf { it.amount } + benefits.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
     fun totalTaxes() = taxes.sumOf { it.total() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }

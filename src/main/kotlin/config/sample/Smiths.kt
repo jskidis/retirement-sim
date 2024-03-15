@@ -15,10 +15,14 @@ object Smiths : ConfigBuilder {
     val janeIncStart: Amount = 135000.0
     val janeExpStart: Amount = 30000.0
     val janeEmploymentDate: DateRange = DateRange(end = YearMonth(2037, 6))
+    val janeTargetCollectSSYM: YearMonth = YearMonth(year = 2042, 6)
+    val janeBaseSSBenefit: Amount = 40500.0
 
     val richardIncStart: Amount = 30000.0
     val richardExpStart: Amount = 30000.0
     val richardEmploymentDate: DateRange = DateRange(end = YearMonth(2032, 1))
+    val richardTargetCollectSSYM: YearMonth = YearMonth(year = 2035, 1)
+    val richardBaseSSBenefit: Amount = 27000.0
 
     val suzyExpStart: Amount = 20000.0
     val jonnyExpStart: Amount = 20000.0

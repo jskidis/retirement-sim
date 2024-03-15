@@ -5,6 +5,7 @@ import config.sample.Smiths
 import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
+import socsec.SSBenefitsProcessor
 import tax.TaxesProcessor
 import util.moneyFormat
 import util.yearFromPrevYearDetail
@@ -28,12 +29,12 @@ fun main(args: Array<String>) {
                 "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
                 "Net Spend=${moneyFormat.format((it.netSpend()))} " +
                 "Incomes:${it.incomes} " +
+                "Benefits:${it.benefits} " +
                 "Expenses:${it.expenses} " +
                 "Assets:{${it.assets} " +
                 "Taxes:${it.taxes} "
         )
     }
-
 }
 
 fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDetail {
@@ -41,9 +42,10 @@ fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDeta
     val inflation = InflationProcessor.process(config, prevYear)
     val incomes = IncomeProcessor.process(config, prevYear)
     val expenses = ExpenseProcessor.process(config, prevYear)
+    val benefits = SSBenefitsProcessor.process(config, prevYear)
 
     var currYear = YearlyDetail(year,
-        inflation = inflation, incomes = incomes, expenses = expenses)
+        inflation = inflation, incomes = incomes, expenses = expenses, benefits = benefits)
 
     val assets = AssetProcessor.process(config, prevYear)
     currYear = currYear.copy(assets = assets)

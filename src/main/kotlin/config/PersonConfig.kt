@@ -5,6 +5,7 @@ import YearMonth
 import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
 import income.IncomeConfigProgression
+import socsec.SSBenefitConfigProgression
 
 data class Person (
     val name: Name,
@@ -18,7 +19,8 @@ open class PersonConfig(
     val person: Person,
     val incomes: List<IncomeConfigProgression>,
     val expenses: List<ExpenseConfigProgression>,
-    val assets: List<AssetConfigProgression>
+    val assets: List<AssetConfigProgression>,
+    val benefits: List<SSBenefitConfigProgression>
 ) {
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
@@ -26,6 +28,7 @@ open class PersonConfig(
     fun incomes(): List<IncomeConfigProgression> = incomes
     fun expenses(): List<ExpenseConfigProgression> = expenses
     fun assets(): List<AssetConfigProgression> = assets
+    fun benefits(): List<SSBenefitConfigProgression> = benefits
 }
 
 open class ParentConfig(
@@ -33,12 +36,14 @@ open class ParentConfig(
     incomes: List<IncomeConfigProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
     assets: List<AssetConfigProgression> = ArrayList(),
-) : PersonConfig(person, incomes, expenses, assets)
+    benefits: List<SSBenefitConfigProgression> = ArrayList(),
+) : PersonConfig(person, incomes, expenses, assets, benefits)
 
 open class DependantConfig(
     person: Person,
     incomes: List<IncomeConfigProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
     assets: List<AssetConfigProgression> = ArrayList(),
-) : PersonConfig(person, incomes, expenses, assets)
+    benefits: List<SSBenefitConfigProgression> = ArrayList(),
+) : PersonConfig(person, incomes, expenses, assets, benefits)
 

@@ -11,7 +11,11 @@ import income.IncomeConfig
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
 import progression.DateRangeAmountAdjuster
+import socsec.FixedDateAmountSSBenefitProgression
+import socsec.SSBenefitConfig
+import socsec.SSBenefitConfigProgression
 import tax.NonTaxableProfile
+import tax.SSBenefitTaxableProfile
 import tax.WageTaxableProfile
 
 object Jane : ParentConfigBuilder {
@@ -49,6 +53,24 @@ object Jane : ParentConfigBuilder {
                         StdInflationAmountAdjuster(),
                         AgeBasedExpenseAdjuster(person.birthYM)
                     )
+                )
+            )
+        )
+    }
+
+    override fun benefits(person: Person): List<SSBenefitConfigProgression> {
+        val benefitConfig = SSBenefitConfig(
+            name = "Primary", person = person.name,
+            taxabilityProfile = SSBenefitTaxableProfile()
+        )
+        return listOf(
+            SSBenefitConfigProgression(
+                config = benefitConfig,
+                progression = FixedDateAmountSSBenefitProgression(
+                    config = benefitConfig,
+                    birthYM = person.birthYM,
+                    targetYM = Smiths.janeTargetCollectSSYM,
+                    baseAmount = Smiths.janeBaseSSBenefit,
                 )
             )
         )
