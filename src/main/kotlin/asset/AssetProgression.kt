@@ -17,7 +17,7 @@ open class AssetProgression(
 
         val balance =
             if (prevYear == null) startBalance
-            else previousRec(prevYear)?.finalBalance() ?: startBalance
+            else previousRec(prevYear)?.finalBalance() ?: 0.0
 
         return AssetRec(
             year = year,
