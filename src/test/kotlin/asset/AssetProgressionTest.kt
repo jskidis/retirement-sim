@@ -81,7 +81,7 @@ class AssetProgressionTest : ShouldSpec({
             startBalance * tenPctReturn.mean, .001)
     }
 
-    should("determineNext uses start amount if asset rec not found in previous year") {
+    should("determineNext assumes 0 if asset rec not found in previous year") {
         val attributeSet = listOf(
             YearlyAssetAttributes(2024, tenPctReturn)
         )
@@ -94,8 +94,7 @@ class AssetProgressionTest : ShouldSpec({
         val prevYearMissingAsset = prevYear.copy(assets = listOf())
         val results = progression.determineNext(prevYearMissingAsset)
         results.gains.name.shouldBe(tenPctReturn.name)
-        results.gains.totalAmount().shouldBeWithinPercentageOf(
-            startBalance * tenPctReturn.mean, .001)
+        results.gains.totalAmount().shouldBe(0.0)
     }
 })
 
