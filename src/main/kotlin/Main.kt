@@ -1,61 +1,21 @@
-import asset.AssetProcessor
-import asset.NetSpendAllocation
-import config.SimConfig
-import config.sample.Smiths
-import expense.ExpenseProcessor
-import income.IncomeProcessor
-import inflation.InflationProcessor
-import socsec.SSBenefitsProcessor
-import tax.TaxesProcessor
-import util.moneyFormat
-import util.yearFromPrevYearDetail
+import config.ConfigBuilder
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 fun main(args: Array<String>) {
-    val years = ArrayList<YearlyDetail>()
+    val configBuilder: ConfigBuilder =
+        SimulationRun.javaClass.classLoader.loadClass(args[0]).newInstance() as ConfigBuilder
 
-    var currYearDetail = generateYearlyDetail(Smiths.buildConfig(), null)
+    val numSims = if (args.size > 1) args[1].toInt() else 1
+    val outputYearly = if (args.size > 2) args[2].toBoolean() else true
 
-    while (currYearDetail.year < 2063) {
-        years.add(currYearDetail)
-        currYearDetail = generateYearlyDetail(Smiths.buildConfig(), currYearDetail)
+    val start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+    for (i in 1..numSims) {
+        SimulationRun.runSim(configBuilder, outputYearly)
     }
-
-    years.forEach {
-        println(
-            "Year: ${it.year} " +
-                "Income=${moneyFormat.format(it.totalIncome())} " +
-                "Expense=${moneyFormat.format(it.totalExpense())} " +
-                "Assets=${moneyFormat.format(it.totalAssetValues())} " +
-                "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
-                "Net Spend=${moneyFormat.format((it.netSpend()))} " +
-                "Incomes:${it.incomes} " +
-                "Benefits:${it.benefits} " +
-                "Expenses:${it.expenses} " +
-                "Assets:{${it.assets} " +
-                "Taxes:${it.taxes} "
-        )
-    }
+    val elapsed = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start
+    println(elapsed)
 }
 
-fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDetail {
-    val year = yearFromPrevYearDetail(prevYear)
-    val inflation = InflationProcessor.process(config, prevYear)
-    val incomes = IncomeProcessor.process(config, prevYear)
-    val expenses = ExpenseProcessor.process(config, prevYear)
-    val benefits = SSBenefitsProcessor.process(config, prevYear)
-
-    var currYear = YearlyDetail(year,
-        inflation = inflation, incomes = incomes, expenses = expenses, benefits = benefits)
-
-    val assets = AssetProcessor.process(config, prevYear)
-    currYear = currYear.copy(assets = assets)
-
-    val taxesRec = TaxesProcessor.processTaxes(currYear, config)
-    currYear = currYear.copy(taxes = listOf(taxesRec))
-
-    NetSpendAllocation.allocatedNetSpend(currYear)
-
-    return currYear
-}
 
 
