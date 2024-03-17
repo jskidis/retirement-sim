@@ -18,13 +18,13 @@ interface TaxabilityProfile {
     )
 }
 
-class NonTaxableProfile : NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
-class WageTaxableProfile : FedTaxableProfile, StateTaxableProfile, PayrollTaxableProfile
-class NonWageTaxableProfile : FedTaxableProfile, StateTaxableProfile, NonPayrollTaxableProfile
-class FedOnlyTaxableProfile : FedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
-class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrollTaxableProfile
-class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
-class OverriddenTaxableProfile: NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+open class NonTaxableProfile : NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+open class WageTaxableProfile : FedTaxableProfile, StateTaxableProfile, PayrollTaxableProfile
+open class NonWageTaxableProfile : FedTaxableProfile, StateTaxableProfile, NonPayrollTaxableProfile
+open class FedOnlyTaxableProfile : FedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+open class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrollTaxableProfile
+open class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
+open class OverriddenTaxableProfile: NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
 
 class SSBenefitTaxableProfile : NonPayrollTaxableProfile, NotStateTaxableProfile {
     override fun fed(amount: Amount): Amount = amount * 0.5

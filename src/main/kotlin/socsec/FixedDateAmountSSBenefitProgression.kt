@@ -4,26 +4,33 @@ import Amount
 import YearMonth
 import YearlyDetail
 import progression.Progression
-import socsec.BenefitAdjustmentCalc.calcBenefitAdjustment
 import util.currentDate
 
 class FixedDateAmountSSBenefitProgression(
-    val config:SSBenefitConfig,
+    val config: SSBenefitConfig,
     val birthYM: YearMonth,
     val targetYM: YearMonth,
     val baseAmount: Amount,
+    val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
 ) : Progression<SSBenefitRec> {
 
     var benefitAdjustment: Double = 0.0
 
     override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
-        val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year) + 1
+        val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
         val cmpInflation = (prevYear?.inflation?.std?.cmpdEnd) ?: 1.0
 
         if (benefitAdjustment == 0.0 && targetYM.year <= year)
-            benefitAdjustment = calcBenefitAdjustment(birthYM, targetYM)
+            benefitAdjustment = benefitAdjustmentF(birthYM, targetYM)
 
-        val value = benefitAdjustment * baseAmount * cmpInflation
+        val pctInYear =
+            if (year != targetYM.year) 1.0
+            else 1 - targetYM.monthFraction()
+
+        val value =
+            if (benefitAdjustment == 0.0) 0.0
+            else benefitAdjustment * baseAmount * cmpInflation * pctInYear
+
         return SSBenefitRec(
             year = year,
             config = config,
