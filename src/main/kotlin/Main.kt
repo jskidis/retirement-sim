@@ -4,7 +4,8 @@ import java.time.ZoneOffset
 
 fun main(args: Array<String>) {
     val configBuilder: ConfigBuilder =
-        SimulationRun.javaClass.classLoader.loadClass(args[0]).newInstance() as ConfigBuilder
+        SimulationRun.javaClass.classLoader.loadClass(args[0])
+            .getDeclaredConstructor().newInstance() as ConfigBuilder
 
     val numSims = if (args.size > 1) args[1].toInt() else 1
     val outputYearly = if (args.size > 2) args[2].toBoolean() else true
