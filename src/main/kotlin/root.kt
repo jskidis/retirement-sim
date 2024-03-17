@@ -44,6 +44,7 @@ data class YearMonth (
     val year: Year,
     val month: Int,
 ) {
-    fun toDec(): Double = year + month / 12.0
+    fun toDec(): Double = year + monthFraction()
+    fun monthFraction(): Double = month / 12.0
 }
 

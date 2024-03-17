@@ -27,8 +27,8 @@ data class TaxableAmounts(
         medicare = this.medicare + addend.medicare,
     )
 
-    fun hasAmounts(): Boolean =
-        fed != 0.0 || fedLTG != 0.0 || state != 0.0 || socSec != 0.0 || medicare != 0.0
+    fun total(): Amount = fed + fedLTG + state + socSec + medicare
+    fun hasAmounts(): Boolean = total() != 0.0
 
     override fun toString(): String {
         val fedStr = if (fed != 0.0) "Fed=${moneyFormat.format(fed)}, " else ""
