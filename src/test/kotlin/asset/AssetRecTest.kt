@@ -21,8 +21,8 @@ class AssetRecTest : ShouldSpec({
         gains = gains)
 
     fun addTributions(copiedRec: AssetRec): AssetRec {
-        copiedRec.tributions.add(SimpleAssetChange("Contrib 1", 3000.0))
-        copiedRec.tributions.add(SimpleAssetChange("Contrib 2", 4000.0))
+        copiedRec.tributions.add(AssetChange("Contrib 1", 3000.0))
+        copiedRec.tributions.add(AssetChange("Contrib 2", 4000.0))
         return copiedRec
     }
     val totalContrib = 7000.0

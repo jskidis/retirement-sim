@@ -28,7 +28,7 @@ fun assetRecFixture(
         year = year,
         config = assetConfig,
         startBal = startBal,
-        gains = SimpleAssetChange("Gain", gains,
+        gains = AssetChange("Gain", gains,
             taxProfile.calcTaxable(assetConfig.person, gains))
     )
 

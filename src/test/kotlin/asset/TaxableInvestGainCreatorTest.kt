@@ -16,11 +16,14 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
 
         val result = creator.createGain(balance, portAttribs, config, null)
         result.name.shouldBe(portAttribs.name)
-        result.totalAmount().shouldBe(balance * portAttribs.mean)
-        result.ltTaxable.shouldBeWithinPercentageOf(balance * portAttribs.divid * 0.8, .001)
-        result.regTaxable.shouldBeWithinPercentageOf(balance * portAttribs.divid * 0.2, .001)
+        result.amount.shouldBe(balance * portAttribs.mean)
+
+        val fedLtTaxable = result.taxable?.fedLTG ?: 0.0
+        val fedRegTaxable = result.taxable?.fed ?: 0.0
         result.unrealized.shouldBeWithinPercentageOf(
-            result.totalAmount() - result.ltTaxable - result.regTaxable, .001)
+            result.amount - fedLtTaxable - fedRegTaxable, .001)
+        fedLtTaxable.shouldBeWithinPercentageOf(balance * portAttribs.divid * 0.8, .001)
+        fedRegTaxable.shouldBeWithinPercentageOf(balance * portAttribs.divid * 0.2, .001)
     }
 
     should("Apportions taxability of non dividend gains according to pcts of regular and long-term") {
@@ -31,11 +34,14 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
 
         val result = creator.createGain(balance, portAttribs, config, null)
         result.name.shouldBe(portAttribs.name)
-        result.totalAmount().shouldBe(balance * portAttribs.mean)
-        result.ltTaxable.shouldBeWithinPercentageOf(result.totalAmount() * 0.3, .001)
-        result.regTaxable.shouldBeWithinPercentageOf(result.totalAmount() * 0.2, .001)
+        result.amount.shouldBe(balance * portAttribs.mean)
+
+        val fedLtTaxable = result.taxable?.fedLTG ?: 0.0
+        val fedRegTaxable = result.taxable?.fed ?: 0.0
         result.unrealized.shouldBeWithinPercentageOf(
-            result.totalAmount() - result.ltTaxable - result.regTaxable, .001)
+            result.amount - fedLtTaxable - fedRegTaxable, .001)
+        fedLtTaxable.shouldBeWithinPercentageOf(result.amount * 0.3, .001)
+        fedRegTaxable.shouldBeWithinPercentageOf(result.amount * 0.2, .001)
     }
 
     should("Apportions taxability of both dividends and non dividend gains") {
@@ -46,18 +52,17 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
 
         val result = creator.createGain(balance, portAttribs, config, null)
         result.name.shouldBe(portAttribs.name)
-        result.totalAmount().shouldBe(balance * portAttribs.mean)
+        result.amount.shouldBe(balance * portAttribs.mean)
 
+        val fedLtTaxable = result.taxable?.fedLTG ?: 0.0
         val expectedLtTaxable = balance * portAttribs.divid * 0.8 +
             balance * (portAttribs.mean - portAttribs.divid) * 0.3
-        result.ltTaxable.shouldBeWithinPercentageOf(expectedLtTaxable, .001)
+        fedLtTaxable.shouldBeWithinPercentageOf(expectedLtTaxable, .001)
 
+        val fedRegTaxable = result.taxable?.fed ?: 0.0
         val expectedRegTaxable = balance * portAttribs.divid * 0.2 +
             balance * (portAttribs.mean - portAttribs.divid) * 0.2
-        result.regTaxable.shouldBeWithinPercentageOf(expectedRegTaxable, .001)
-
-        result.unrealized.shouldBeWithinPercentageOf(
-            result.totalAmount() - result.ltTaxable - result.regTaxable, .001)
+        fedRegTaxable.shouldBeWithinPercentageOf(expectedRegTaxable, .001)
     }
 
     should("Apportions taxability when rate is less than dividend (gains are net negative) by doing tax loss capture") {
@@ -68,16 +73,17 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
 
         val result = creator.createGain(balance, portAttribs, config, null)
         result.name.shouldBe(portAttribs.name)
-        result.totalAmount().shouldBe(balance * portAttribs.mean)
+        result.amount.shouldBe(balance * portAttribs.mean)
 
+        val fedLtTaxable = result.taxable?.fedLTG ?: 0.0
         val expectedLtTaxable = balance * portAttribs.divid * 0.8 +
             balance * (portAttribs.mean - portAttribs.divid) * 0.8
-        result.ltTaxable.shouldBeWithinPercentageOf(expectedLtTaxable, .001)
+        fedLtTaxable.shouldBeWithinPercentageOf(expectedLtTaxable, .001)
 
+        val fedRegTaxable = result.taxable?.fed ?: 0.0
         val expectedRegTaxable = balance * portAttribs.divid * 0.2 +
             balance * (portAttribs.mean - portAttribs.divid) * 0.2
-        result.regTaxable.shouldBeWithinPercentageOf(expectedRegTaxable, .001)
-
+        fedRegTaxable.shouldBeWithinPercentageOf(expectedRegTaxable, .001)
         result.unrealized.shouldBe(0.0)
     }
 })

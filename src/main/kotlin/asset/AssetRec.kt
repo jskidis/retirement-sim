@@ -20,12 +20,12 @@ data class AssetRec(
     override fun config(): AmountConfig = config
     override fun retainRec(): Boolean = startBal != 0.0 || finalBalance() != 0.0
 
-    fun totalGains(): Amount = gains.totalAmount()
+    fun totalGains(): Amount = gains.amount
     fun capturedGains(): Amount = PortionOfYearPast.calc(year) * totalGains()
-    fun totalTributions(): Amount = tributions.sumOf { it.totalAmount() }
+    fun totalTributions(): Amount = tributions.sumOf { it.amount }
 
     override fun taxable(): TaxableAmounts {
-        return (tributions.map { it.taxable() } + gains.taxable())
+        return (tributions.map { it.taxable } + gains.taxable)
             .mapNotNull { it }
             .fold(TaxableAmounts(config.person)) { acc, it ->
                 acc.plus(it)

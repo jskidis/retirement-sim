@@ -46,21 +46,21 @@ class AssetProcessorTest : ShouldSpec({
                 it.config.name == householdProgression1.config.name
         }
         jointAsset.shouldNotBeNull()
-        jointAsset.gains.totalAmount().shouldBe(1000.0)
+        jointAsset.gains.amount.shouldBe(1000.0)
 
         val parent1Asset = result.find {
             it.config.person == parent1Name &&
                 it.config.name == parent1Progression.config.name
         }
         parent1Asset.shouldNotBeNull()
-        parent1Asset.gains.totalAmount().shouldBe(3000.0)
+        parent1Asset.gains.amount.shouldBe(3000.0)
 
         val parent2Asset = result.find {
             it.config.person == parent2Name &&
                 it.config.name == parent2Progression.config.name
         }
         parent2Asset.shouldNotBeNull()
-        parent2Asset.gains.totalAmount().shouldBe(4000.0)
+        parent2Asset.gains.amount.shouldBe(4000.0)
     }
 })
 
