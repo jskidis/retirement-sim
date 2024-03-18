@@ -15,14 +15,19 @@ open class AssetProgression(
         val year = yearFromPrevYearDetail(prevYear)
         val attributes = config.retrieveAttributesByYear(year)
 
+        val prevRec = if(prevYear == null) null else previousRec(prevYear)
+
         val balance =
             if (prevYear == null) startBalance
-            else previousRec(prevYear)?.finalBalance() ?: 0.0
+            else prevRec?.finalBalance() ?: 0.0
+
+        val unrealized = prevRec?.totalUnrealized() ?: 0.0
 
         return AssetRec(
             year = year,
             config = config,
             startBal = balance,
+            startUnrealized = unrealized,
             gains = gainCreator.createGain(balance, attributes, config, prevYear))
     }
 

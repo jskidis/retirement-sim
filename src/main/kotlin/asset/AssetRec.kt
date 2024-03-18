@@ -12,6 +12,7 @@ data class AssetRec(
     val year: Year,
     val config: AssetConfig,
     val startBal: Amount,
+    val startUnrealized: Amount,
     val gains: AssetChange,
 ) : AmountRec {
     val tributions: MutableList<AssetChange> = ArrayList()
@@ -31,10 +32,14 @@ data class AssetRec(
                 acc.plus(it)
             }
     }
+
     fun finalBalance(): Amount {
         val balance = startBal + totalGains() - capturedGains() + totalTributions()
         return if (balance < 100.0) 0.0 else balance
     }
+
+    fun totalUnrealized(): Amount =
+        startUnrealized + (tributions + gains).sumOf { it.unrealized }
 
     override fun toString(): String =
         "($config:(startBal=${moneyFormat.format(startBal)}, " +
@@ -42,6 +47,7 @@ data class AssetRec(
             "TotalGains=${moneyFormat.format(totalGains())}, " +
             "CapturedGains=${moneyFormat.format(capturedGains())}, " +
             "Tributions=$tributions, " +
-            "Tributions=${moneyFormat.format(totalTributions())}, " +
+            "NetTributions=${moneyFormat.format(totalTributions())}, " +
+            "Unrealized=${moneyFormat.format(totalUnrealized())}, " +
             "FinalBal=${moneyFormat.format(finalBalance())})"
 }

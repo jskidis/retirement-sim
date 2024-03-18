@@ -23,11 +23,13 @@ fun assetRecFixture(
     assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
     startBal: Amount = 0.0,
     gains: Amount = 0.0,
-    taxProfile: TaxabilityProfile = NonTaxableProfile()
+    startUnrealized: Amount = 0.0,
+    taxProfile: TaxabilityProfile = NonTaxableProfile(),
 ) = AssetRec(
         year = year,
         config = assetConfig,
         startBal = startBal,
+        startUnrealized = startUnrealized,
         gains = AssetChange("Gain", gains,
             taxProfile.calcTaxable(assetConfig.person, gains))
     )
