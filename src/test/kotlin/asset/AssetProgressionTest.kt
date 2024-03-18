@@ -13,13 +13,14 @@ class AssetProgressionTest : ShouldSpec({
     val assetName: Name = "Asset Name"
     val person: Name = "Person"
     val startBalance: Amount = 1000.0
+    val startUnrealized: Amount = 500.0
 
     val tenPctReturn = PortfolAttribs(name="Ten Pct", mean = 0.10, stdDev = 0.01)
     val onePctReturn = PortfolAttribs(name="One Pct", mean = 0.01, stdDev = 0.001)
 
     val baseAssetConfig = assetConfigFixture(assetName, person)
     val prevAssetRec = assetRecFixture(
-        assetConfig = baseAssetConfig, startBal = startBalance
+        assetConfig = baseAssetConfig, startBal = startBalance, startUnrealized = startUnrealized
     )
 
     val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))
@@ -40,6 +41,7 @@ class AssetProgressionTest : ShouldSpec({
         results.gains.name.shouldBe(tenPctReturn.name)
         results.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
+        results.totalUnrealized().shouldBe(startUnrealized)
     }
 
     should("determineNext returns asset rec for different years)") {
@@ -79,6 +81,7 @@ class AssetProgressionTest : ShouldSpec({
         results.gains.name.shouldBe(tenPctReturn.name)
         results.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
+        results.startUnrealized.shouldBe(0.0)
     }
 
     should("determineNext assumes 0 if asset rec not found in previous year") {
@@ -95,6 +98,7 @@ class AssetProgressionTest : ShouldSpec({
         val results = progression.determineNext(prevYearMissingAsset)
         results.gains.name.shouldBe(tenPctReturn.name)
         results.gains.amount.shouldBe(0.0)
+        results.startUnrealized.shouldBe(0.0)
     }
 })
 
