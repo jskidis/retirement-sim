@@ -97,6 +97,17 @@ class BracketBasedTaxCalcTest : ShouldSpec({
             .shouldBe(brackets[2].pct)
     }
 
+    should("taxes are 0 if taxable income is <= 0") {
+        val currYear = yearlyDetail.copy(
+            inflation = doubledInflation,
+            filingStatus = FilingStatus.JOINTLY
+        )
+
+        // Amount is greater than start of first bracket, but not when adjusted for inflation
+        taxCalc.determineTax(-100000.0, currYear)
+            .shouldBe(0.0)
+    }
+
     should("Successfully load brackets from files") {
         fun validateBracketCases(cases: List<BracketCase>) {
             cases.fold(0.0) { acc, case ->

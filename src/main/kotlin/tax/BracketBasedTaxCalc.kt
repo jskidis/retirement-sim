@@ -36,7 +36,7 @@ interface BracketBasedTaxCalc : TaxCalculator {
         val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
         val cmpdInflation = getCmpdInflation(currYear)
 
-        val inflationAdjAmount = taxableAmount / cmpdInflation
+        val inflationAdjAmount = Math.max(taxableAmount, 0.0) / cmpdInflation
         return bracketsBFS.fold(initial = 0.0) { acc, bracket ->
             if (bracket.start > inflationAdjAmount) acc
             else acc + bracket.pct * (Math.min(bracket.end, inflationAdjAmount) - bracket.start)
