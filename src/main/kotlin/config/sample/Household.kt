@@ -31,7 +31,7 @@ object Household : HouseholdConfigBuilder {
 
         val jointSavingConfig = AssetConfig(
             type = AssetType.CASH,
-            name = "Savings",
+            name = Smiths.savingsAcctName,
             person = "Jane & Dick",
             taxabilityProfile = NonWageTaxableProfile(),
             attributesSet = listOf(
@@ -52,7 +52,7 @@ object Household : HouseholdConfigBuilder {
 
         val jointInvestConfig = AssetConfig(
             type = AssetType.INVEST,
-            name = "Big Inv Bank",
+            name = Smiths.investAcctName,
             person = "Jane & Dick",
             taxabilityProfile = OverriddenTaxableProfile(),
             attributesSet = listOf(
