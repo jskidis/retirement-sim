@@ -3,6 +3,7 @@ package config.sample
 import Amount
 import Year
 import YearMonth
+import asset.NetSpendAllocationConfig
 import config.*
 import inflation.FixedRateInflationProgression
 import tax.*
@@ -29,7 +30,10 @@ class Smiths : ConfigBuilder {
         val jonnyExpStart: Amount = 20000.0
 
         val houseExpStart: Amount = 25000.0
+
+        val savingsAcctName = "Savings"
         val savingsBal: Amount = 50000.0
+        val investAcctName = "BigInvBank"
         val investBal = 200000.0
     }
 
@@ -74,11 +78,24 @@ class Smiths : ConfigBuilder {
             medicare = EmployeeMedicareTaxCalc(),
         )
 
+        val withdrawOrdering = listOf(
+            householdConfig.jointAssets.find { it.config.name == savingsAcctName },
+            householdConfig.jointAssets.find { it.config.name == investAcctName }
+        ).mapNotNull { it }
+
+        val depositOrdering = listOf(
+            householdConfig.jointAssets.find { it.config.name == savingsAcctName },
+            householdConfig.jointAssets.find { it.config.name == investAcctName }
+        ).mapNotNull { it }
+
+        val assetOrdering = NetSpendAllocationConfig(withdrawOrdering, depositOrdering)
+
         return SimConfig(
             startYear = startYear,
             household = householdConfig,
             inflationConfig = inflationConfig,
             taxConfig = taxCalcConfig,
+            assetOrdering = assetOrdering
         )
     }
 }

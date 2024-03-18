@@ -4,6 +4,7 @@ import Name
 import Year
 import YearMonth
 import asset.AssetConfigProgression
+import asset.NetSpendAllocationConfig
 import asset.assetConfigProgressFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
@@ -19,12 +20,14 @@ fun configFixture(
     startYear: Year = 2020,
     householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
-    taxConfig: TaxCalcConfig = taxConfigFixture()) =
+    taxConfig: TaxCalcConfig = taxConfigFixture(),
+    assetOrdering: NetSpendAllocationConfig = assetOrderingFixture(householdConfig)) =
     SimConfig(
         startYear = startYear,
         household = householdConfig,
         inflationConfig = inflationConfig,
-        taxConfig = taxConfig
+        taxConfig = taxConfig,
+        assetOrdering = assetOrdering
     )
 
 fun personFixture(
@@ -38,6 +41,10 @@ fun householdConfigFixture(
     expenses: List<ExpenseConfigProgression> = ArrayList(),
     jointAssets: List<AssetConfigProgression> = ArrayList(),
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
+
+fun assetOrderingFixture(
+    householdConfig: HouseholdConfig
+) = NetSpendAllocationConfig(householdConfig.jointAssets, householdConfig.jointAssets)
 
 fun householdMembersByNameFixture(
     parent1: Name = "Parent 1",
