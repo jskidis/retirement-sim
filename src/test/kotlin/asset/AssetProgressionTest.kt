@@ -38,7 +38,7 @@ class AssetProgressionTest : ShouldSpec({
         results.config.name.shouldBe(assetName)
         results.config.person.shouldBe(person)
         results.gains.name.shouldBe(tenPctReturn.name)
-        results.gains.totalAmount().shouldBeWithinPercentageOf(
+        results.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
     }
 
@@ -55,12 +55,12 @@ class AssetProgressionTest : ShouldSpec({
 
         val results2024 = progression.determineNext(prevYear.copy(year = 2024))
         results2024.gains.name.shouldBe(tenPctReturn.name)
-        results2024.gains.totalAmount().shouldBeWithinPercentageOf(
+        results2024.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
 
         val results2034 = progression.determineNext(prevYear.copy(year = 2034))
         results2034.gains.name.shouldBe(onePctReturn.name)
-        results2034.gains.totalAmount().shouldBeWithinPercentageOf(
+        results2034.gains.amount.shouldBeWithinPercentageOf(
             startBalance * onePctReturn.mean, .001)
     }
 
@@ -77,7 +77,7 @@ class AssetProgressionTest : ShouldSpec({
 
         val results = progression.determineNext(null)
         results.gains.name.shouldBe(tenPctReturn.name)
-        results.gains.totalAmount().shouldBeWithinPercentageOf(
+        results.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
     }
 
@@ -94,7 +94,7 @@ class AssetProgressionTest : ShouldSpec({
         val prevYearMissingAsset = prevYear.copy(assets = listOf())
         val results = progression.determineNext(prevYearMissingAsset)
         results.gains.name.shouldBe(tenPctReturn.name)
-        results.gains.totalAmount().shouldBe(0.0)
+        results.gains.amount.shouldBe(0.0)
     }
 })
 

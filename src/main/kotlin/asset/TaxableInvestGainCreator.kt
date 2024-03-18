@@ -11,7 +11,7 @@ open class TaxableInvestGainCreator(
 ) : AssetGainCreator, GrossGainsCalc {
     override fun createGain(
         balance: Amount, attribs: PortfolAttribs, config: AssetConfig, prevYear: YearlyDetail?,
-    ): TaxableInvestGains {
+    ): AssetChange {
         val gainAmount = calcGrossGains(balance, attribs, prevYear)
         val dividends = attribs.divid * balance
         val netNonDivGains = gainAmount - dividends
@@ -30,10 +30,9 @@ open class TaxableInvestGainCreator(
         val ltTaxable = dividends * qualDivRatio + taxableNonDivGains.second
         val unrealized = gainAmount - regTaxable - ltTaxable
 
-        return TaxableInvestGains(
+        return AssetChange(
             name = attribs.name,
-            regTaxable = regTaxable,
-            ltTaxable = ltTaxable,
+            amount = gainAmount,
             unrealized = unrealized,
             taxable = TaxableAmounts(
                 person = config.person,

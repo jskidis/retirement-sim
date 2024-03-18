@@ -31,7 +31,7 @@ object NetSpendAllocation {
 
             if (tributionAmount < 1.0 && tributionAmount > -1.0) 0.0
             else {
-                it.tributions.add(SimpleAssetChange("CoverSpend", tributionAmount))
+                it.tributions.add(AssetChange("CoverSpend", tributionAmount))
                 -tributionAmount
             }
         }

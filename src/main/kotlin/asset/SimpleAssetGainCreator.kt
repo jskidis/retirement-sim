@@ -9,6 +9,6 @@ open class SimpleAssetGainCreator : AssetGainCreator, GrossGainsCalc {
     ): AssetChange {
         val gainAmount = calcGrossGains(balance, attribs, prevYear)
         val taxable = config.taxabilityProfile.calcTaxable(config.person, gainAmount)
-        return SimpleAssetChange(attribs.name, gainAmount, taxable)
+        return AssetChange(attribs.name, gainAmount, taxable)
     }
 }
