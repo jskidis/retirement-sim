@@ -14,9 +14,8 @@ fun assetConfigFixture(
     person: Name = "Person",
     assetType: AssetType = AssetType.INVEST,
     taxProfile: TaxabilityProfile = NonTaxableProfile(),
-    attributesSet: List<YearlyAssetAttributes> = ArrayList()
 ) = AssetConfig(
-    assetType, assetName, person, taxProfile, attributesSet)
+    assetType, assetName, person, taxProfile)
 
 fun assetRecFixture(
     year: Year =  2024,
@@ -59,6 +58,6 @@ class AssetProgressionFixture(
     override fun determineNext(prevYear: YearlyDetail?) = assetRecFixture(
         startBal = startBal,
         gains = gains,
-        assetConfig = assetConfig
+        assetConfig = assetConfig,
     )
 }

@@ -31,8 +31,9 @@ class AssetProgressionTest : ShouldSpec({
         )
         val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet),
-            gainCreator = SimpleAssetGainCreator()
+            config = baseAssetConfig,
+            gainCreator = SimpleAssetGainCreator(),
+            attributesSet = attributeSet
         )
 
         val results = progression.determineNext(prevYear.copy(year = 2024))
@@ -51,8 +52,9 @@ class AssetProgressionTest : ShouldSpec({
         )
         val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet),
-            gainCreator = SimpleAssetGainCreator()
+            config = baseAssetConfig,
+            gainCreator = SimpleAssetGainCreator(),
+            attributesSet = attributeSet
         )
 
         val results2024 = progression.determineNext(prevYear.copy(year = 2024))
@@ -73,9 +75,9 @@ class AssetProgressionTest : ShouldSpec({
         )
         val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet),
-            gainCreator = SimpleAssetGainCreator()
-        )
+            config = baseAssetConfig,
+            gainCreator = SimpleAssetGainCreator(),
+            attributesSet = attributeSet        )
 
         val results = progression.determineNext(null)
         results.gains.name.shouldBe(tenPctReturn.name)
@@ -90,8 +92,9 @@ class AssetProgressionTest : ShouldSpec({
         )
         val progression = AssetProgression(
             startBalance = startBalance,
-            config = baseAssetConfig.copy(attributesSet = attributeSet),
-            gainCreator = SimpleAssetGainCreator()
+            config = baseAssetConfig,
+            gainCreator = SimpleAssetGainCreator(),
+            attributesSet = attributeSet
         )
 
         val prevYearMissingAsset = prevYear.copy(assets = listOf())
