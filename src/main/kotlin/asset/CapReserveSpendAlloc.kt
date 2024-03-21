@@ -1,11 +1,11 @@
 package asset
 
 import Amount
-import Year
 import YearlyDetail
+import util.YearBasedConfig
 
 open class CapReserveSpendAlloc(
-    val yearlyTargetMult: List<Pair<Year, Double>>,
+    val yearlyTargetMult: YearBasedConfig<Double>,
     val margin: Double,
 ) : SpendAllocHandler {
 
@@ -40,11 +40,8 @@ open class CapReserveSpendAlloc(
     }
 
     open fun determineTarget(currYear: YearlyDetail): Amount {
-        val multiplier = getMultiplierForYear(currYear.year)
+        val multiplier = yearlyTargetMult.getConfigForYear(currYear.year)
         val netExpenses = currYear.totalExpense() - currYear.totalBenefits()
         return multiplier * netExpenses
     }
-
-    open fun getMultiplierForYear(year: Year): Double =
-        (yearlyTargetMult.findLast { year >= it.first } ?: yearlyTargetMult.first()).second
 }

@@ -5,6 +5,8 @@ import Name
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
+import util.YearBasedConfig
+import util.YearConfigPair
 import util.currentDate
 import yearlyDetailFixture
 
@@ -26,9 +28,9 @@ class AssetProgressionTest : ShouldSpec({
     val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))
 
     should("determineNext returns asset rec same gain all years)") {
-        val attributeSet = listOf(
-            YearlyAssetAttributes(2024, tenPctReturn)
-        )
+        val attributeSet = YearBasedConfig(listOf(
+            YearConfigPair(2024, tenPctReturn)
+        ))
         val progression = AssetProgression(
             startBalance = startBalance,
             config = baseAssetConfig,
@@ -46,10 +48,10 @@ class AssetProgressionTest : ShouldSpec({
     }
 
     should("determineNext returns asset rec for different years)") {
-        val attributeSet = listOf(
-            YearlyAssetAttributes(currentDate.year, tenPctReturn),
-            YearlyAssetAttributes(2030, onePctReturn)
-        )
+        val attributeSet = YearBasedConfig(listOf(
+            YearConfigPair(currentDate.year, tenPctReturn),
+            YearConfigPair(2030, onePctReturn)
+        ))
         val progression = AssetProgression(
             startBalance = startBalance,
             config = baseAssetConfig,
@@ -69,15 +71,16 @@ class AssetProgressionTest : ShouldSpec({
     }
 
     should("determineNext uses current year if previous year not provided") {
-        val attributeSet = listOf(
-            YearlyAssetAttributes(currentDate.year, tenPctReturn),
-            YearlyAssetAttributes(2040, onePctReturn)
-        )
+        val attributeSet = YearBasedConfig(listOf(
+            YearConfigPair(currentDate.year, tenPctReturn),
+            YearConfigPair(2040, onePctReturn)
+        ))
         val progression = AssetProgression(
             startBalance = startBalance,
             config = baseAssetConfig,
             gainCreator = SimpleAssetGainCreator(),
-            attributesSet = attributeSet        )
+            attributesSet = attributeSet
+        )
 
         val results = progression.determineNext(null)
         results.gains.name.shouldBe(tenPctReturn.name)
@@ -87,9 +90,9 @@ class AssetProgressionTest : ShouldSpec({
     }
 
     should("determineNext assumes 0 if asset rec not found in previous year") {
-        val attributeSet = listOf(
-            YearlyAssetAttributes(2024, tenPctReturn)
-        )
+        val attributeSet = YearBasedConfig(listOf(
+            YearConfigPair(2024, tenPctReturn)
+        ))
         val progression = AssetProgression(
             startBalance = startBalance,
             config = baseAssetConfig,

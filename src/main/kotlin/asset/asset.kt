@@ -1,7 +1,6 @@
 package asset
 import Amount
 import Name
-import Year
 import YearlyDetail
 import config.AmountConfig
 import progression.Progression
@@ -20,11 +19,6 @@ data class AssetConfigProgression(
     val config: AssetConfig,
     val progression: Progression<AssetRec>,
     val spendAllocHandler: SpendAllocHandler,
-)
-
-data class YearlyAssetAttributes(
-    val startYear: Year,
-    val attributes: PortfolAttribs,
 )
 
 interface AssetGainCreator {

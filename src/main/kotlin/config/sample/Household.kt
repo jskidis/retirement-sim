@@ -10,6 +10,8 @@ import inflation.StdInflationAmountAdjuster
 import tax.NonTaxableProfile
 import tax.NonWageTaxableProfile
 import tax.OverriddenTaxableProfile
+import util.YearBasedConfig
+import util.YearConfigPair
 
 object Household : HouseholdConfigBuilder {
     override fun expenses(): List<ExpenseConfigProgression> {
@@ -39,22 +41,24 @@ object Household : HouseholdConfigBuilder {
             config = jointSavingConfig,
             spendAllocHandler = CapReserveSpendAlloc(
                 margin = .05,
-                yearlyTargetMult = listOf(
-                    2024 to 2.0,
-                    Smiths.janeEmploymentDate.end.year + 1 to 3.0,
-                    Smiths.janeTargetCollectSSYM.year to 4.0
-                )
+                yearlyTargetMult = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(2024, 2.0),
+                        YearConfigPair(Smiths.janeEmploymentDate.end.year + 1, 3.0),
+                        YearConfigPair(Smiths.janeTargetCollectSSYM.year, 4.0)
+                    ))
             ),
             progression = AssetProgression(
                 startBalance = Smiths.savingsBal,
                 config = jointSavingConfig,
                 gainCreator = SimpleAssetGainCreator(),
-                attributesSet = listOf(
-                    YearlyAssetAttributes(
-                        startYear = Smiths.startYear - 1,
-                        attributes = AssetAttributeMap.assetComp("US Cash")
-                    )
-                )
+                attributesSet = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(
+                            startYear = Smiths.startYear - 1,
+                            config = AssetAttributeMap.assetComp("US Cash")
+                        )
+                    ))
             )
         )
 
@@ -70,12 +74,13 @@ object Household : HouseholdConfigBuilder {
                 startBalance = Smiths.investBal,
                 config = jointInvestConfig,
                 gainCreator = TaxableInvestGainCreator(),
-                attributesSet = listOf(
-                    YearlyAssetAttributes(
-                        startYear = Smiths.startYear - 1,
-                        attributes = AssetAttributeMap.assetComp("US Stocks")
-                    )
-                )
+                attributesSet = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(
+                            startYear = Smiths.startYear - 1,
+                            config = AssetAttributeMap.assetComp("US Stocks")
+                        )
+                    ))
             )
         )
 

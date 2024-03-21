@@ -1,22 +1,22 @@
 package asset
 
 import Amount
-import Year
 import YearlyDetail
 import progression.Progression
+import util.YearBasedConfig
 import util.yearFromPrevYearDetail
 
 open class AssetProgression(
     val startBalance: Amount,
     val config: AssetConfig,
     val gainCreator: AssetGainCreator,
-    val attributesSet: List<YearlyAssetAttributes> = ArrayList(),
+    val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
 
 ) : Progression<AssetRec> {
 
     override fun determineNext(prevYear: YearlyDetail?): AssetRec {
         val year = yearFromPrevYearDetail(prevYear)
-        val attributes = retrieveAttributesByYear(year)
+        val attributes = attributesSet.getConfigForYear(year)
 
         val prevRec = if(prevYear == null) null else previousRec(prevYear)
 
@@ -38,9 +38,4 @@ open class AssetProgression(
         prevYear.assets.find {
             it.config.person == config.person && it.config.name == config.name
         }
-
-    fun retrieveAttributesByYear(year: Year): PortfolAttribs =
-        attributesSet.findLast { it.startYear <= year }
-            ?.attributes
-            ?: throw RuntimeException("Unable to find asset composition for year:$year for asset:$config.name")
 }
