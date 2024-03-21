@@ -22,6 +22,7 @@ data class YearlyDetail(
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
     val taxes: List<TaxesRec> = ArrayList(),
+    val carryOverTaxable: List<TaxableAmounts> = ArrayList(),
     val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {

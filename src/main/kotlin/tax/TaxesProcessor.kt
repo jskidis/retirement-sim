@@ -6,8 +6,12 @@ import config.SimConfig
 object TaxesProcessor {
     val nameOfTaxablePerson = "Household"
 
-    fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec {
-        val taxable = determineTaxableAmounts(currYear)
+    fun processTaxes(
+        currYear: YearlyDetail,
+        carryOverTaxable: List<TaxableAmounts>,
+        config: SimConfig,
+    ): TaxesRec {
+        val taxable = determineTaxableAmounts(currYear, carryOverTaxable)
         val ltgTaxes = config.taxConfig.fedLTG.marginalRate(
             taxable.fed + taxable.fedLTG, currYear) * taxable.fedLTG
 
@@ -19,16 +23,28 @@ object TaxesProcessor {
         )
     }
 
-    fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts {
+    fun determineTaxableAmounts(currYear: YearlyDetail, carryOverTaxable: List<TaxableAmounts>)
+        : TaxableAmounts {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
                 currYear.expenses.map { it.taxDeductions } +
                 currYear.assets.map { it.taxable() } +
-                currYear.benefits.map { it.taxableAmount }
+                currYear.benefits.map { it.taxableAmount } +
+                carryOverTaxable
 
         return taxableAmounts.filter { it.hasAmounts() }
             .fold(
                 TaxableAmounts(person = nameOfTaxablePerson),
                 { acc, amounts -> acc.plus(amounts) })
+    }
+
+    fun carryOverTaxable(currYear: YearlyDetail): List<TaxableAmounts> {
+        return currYear.assets.flatMap { asset ->
+            asset.tributions.filter { tribution ->
+                tribution.isCarryOver
+            }.map { tribution ->
+                tribution.taxable
+            }
+        }.mapNotNull { it }
     }
 }
