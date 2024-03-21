@@ -38,6 +38,7 @@ object Household : HouseholdConfigBuilder {
         )
         val jointSavings = AssetConfigProgression(
             config = jointSavingConfig,
+            withdrawDepositHandler = BasicWithdrawDeposit(),
             progression = AssetProgression(
                 startBalance = Smiths.savingsBal,
                 config = jointSavingConfig,
@@ -59,6 +60,7 @@ object Household : HouseholdConfigBuilder {
         )
         val jointInvest = AssetConfigProgression(
             config = jointInvestConfig,
+            withdrawDepositHandler = BasicWithdrawDeposit(),
             progression = AssetProgression(
                 startBalance = Smiths.investBal,
                 config = jointInvestConfig,
