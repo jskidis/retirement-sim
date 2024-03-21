@@ -18,7 +18,7 @@ object SimulationRun {
         do  {
             years.add(currYearDetail)
             currYearDetail = generateYearlyDetail(configBuilder.buildConfig(), currYearDetail)
-        } while (currYearDetail.year < 2063 && metCriteria(currYearDetail))
+        } while (currYearDetail.year <= 2060 && metCriteria(currYearDetail))
 
         if (outputYearDetails) {
             years.forEach {
@@ -27,13 +27,15 @@ object SimulationRun {
                         "Income=${moneyFormat.format(it.totalIncome())} " +
                         "Expense=${moneyFormat.format(it.totalExpense())} " +
                         "Assets=${moneyFormat.format(it.totalAssetValues())} " +
+                        "Inf Adj=${moneyFormat.format(it.totalAssetValues() / it.inflation.std.cmpdEnd)} " +
                         "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
                         "Net Spend=${moneyFormat.format((it.netSpend()))} " +
                         "Incomes:${it.incomes} " +
                         "Benefits:${it.benefits} " +
                         "Expenses:${it.expenses} " +
                         "Assets:{${it.assets} " +
-                        "Taxes:${it.taxes} "
+                        "Taxes:${it.taxes} " +
+                        "Carryover:${it.carryOverTaxable}"
                 )
             }
         }
@@ -59,10 +61,14 @@ object SimulationRun {
         val assets = AssetProcessor.process(config, prevYear)
         currYear = currYear.copy(assets = assets)
 
-        val taxesRec = TaxesProcessor.processTaxes(currYear, config)
+        val prevCarryOver = prevYear?.carryOverTaxable ?: ArrayList()
+        val taxesRec = TaxesProcessor.processTaxes(currYear, prevCarryOver, config)
         currYear = currYear.copy(taxes = listOf(taxesRec))
 
         NetSpendAllocation.allocateNetSpend(currYear.netSpend(), currYear, config.assetOrdering)
+
+        val newCarryOver = TaxesProcessor.carryOverTaxable(currYear)
+        currYear = currYear.copy(carryOverTaxable = newCarryOver)
 
         return currYear
     }
