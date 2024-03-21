@@ -62,7 +62,7 @@ object SimulationRun {
         val taxesRec = TaxesProcessor.processTaxes(currYear, config)
         currYear = currYear.copy(taxes = listOf(taxesRec))
 
-        NetSpendAllocation.allocatedNetSpend(currYear)
+        NetSpendAllocation.allocateNetSpend(currYear.netSpend(), currYear, config.assetOrdering)
 
         return currYear
     }

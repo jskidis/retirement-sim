@@ -1,6 +1,6 @@
 package asset
 
 data class NetSpendAllocationConfig(
-    val withdrawlOrder: List<AssetConfigProgression>,
+    val withdrawOrder: List<AssetConfigProgression>,
     val depositOrder: List<AssetConfigProgression>
 )
