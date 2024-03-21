@@ -8,11 +8,12 @@ import config.*
 import inflation.FixedRateInflationProgression
 import tax.*
 import util.DateRange
+import util.currentDate
 
 
 class Smiths : ConfigBuilder {
     companion object {
-        val startYear: Year = 2024
+        val startYear: Year = currentDate.year
 
         val janeIncStart: Amount = 135000.0
         val janeExpStart: Amount = 30000.0

@@ -47,3 +47,9 @@ object NetSpendAllocation {
         configProgression: AssetConfigProgression,
     ): AssetRec? = currYear.assets.find { it.config == configProgression.config }
 }
+
+data class NetSpendAllocationConfig(
+    val withdrawOrder: List<AssetConfigProgression>,
+    val depositOrder: List<AssetConfigProgression>
+)
+

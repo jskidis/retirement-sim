@@ -6,7 +6,7 @@ import YearlyDetail
 import progression.Progression
 import util.currentDate
 
-class FixedDateAmountSSBenefitProgression(
+open class FixedDateAmountSSBenefitProgression(
     val config: SSBenefitConfig,
     val birthYM: YearMonth,
     val targetYM: YearMonth,
