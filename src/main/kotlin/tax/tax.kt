@@ -43,10 +43,10 @@ data class TaxableAmounts(
 }
 
 data class TaxesRec(
-    val fed: Amount,
-    val state: Amount,
-    val socSec: Amount,
-    val medicare: Amount,
+    val fed: Amount = 0.0,
+    val state: Amount = 0.0,
+    val socSec: Amount = 0.0,
+    val medicare: Amount = 0.0,
 ) {
     fun total(): Amount = fed + state + socSec + medicare
 
