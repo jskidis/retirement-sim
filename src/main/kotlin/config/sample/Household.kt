@@ -17,14 +17,15 @@ object Household : HouseholdConfigBuilder {
             name = "Expenses", person = "Household",
             taxabilityProfile = NonTaxableProfile()
         )
-        return listOf(ExpenseConfigProgression(
-            config = householdExpensesConfig,
-            progression = BasicExpenseProgression(
-                startAmount = Smiths.houseExpStart,
+        return listOf(
+            ExpenseConfigProgression(
                 config = householdExpensesConfig,
-                adjusters = listOf(StdInflationAmountAdjuster())
-            )
-        ))
+                progression = BasicExpenseProgression(
+                    startAmount = Smiths.houseExpStart,
+                    config = householdExpensesConfig,
+                    adjusters = listOf(StdInflationAmountAdjuster())
+                )
+            ))
     }
 
     override fun assets(): List<AssetConfigProgression> {
@@ -34,19 +35,19 @@ object Household : HouseholdConfigBuilder {
             name = Smiths.savingsAcctName,
             person = "Jane & Dick",
             taxabilityProfile = NonWageTaxableProfile(),
-            attributesSet = listOf(
-                YearlyAssetAttributes(
-                    startYear = Smiths.startYear -1,
-                    attributes = AssetAttributeMap.assetComp("US Cash")
-                )
-            )
         )
         val jointSavings = AssetConfigProgression(
             config = jointSavingConfig,
             progression = AssetProgression(
                 startBalance = Smiths.savingsBal,
                 config = jointSavingConfig,
-                gainCreator = SimpleAssetGainCreator()
+                gainCreator = SimpleAssetGainCreator(),
+                attributesSet = listOf(
+                    YearlyAssetAttributes(
+                        startYear = Smiths.startYear - 1,
+                        attributes = AssetAttributeMap.assetComp("US Cash")
+                    )
+                )
             )
         )
 
@@ -55,19 +56,20 @@ object Household : HouseholdConfigBuilder {
             name = Smiths.investAcctName,
             person = "Jane & Dick",
             taxabilityProfile = OverriddenTaxableProfile(),
-            attributesSet = listOf(
-                YearlyAssetAttributes(
-                    startYear = Smiths.startYear -1,
-                    attributes = AssetAttributeMap.assetComp("US Stocks")
-                )
-            )
         )
         val jointInvest = AssetConfigProgression(
             config = jointInvestConfig,
             progression = AssetProgression(
                 startBalance = Smiths.investBal,
                 config = jointInvestConfig,
-                gainCreator = TaxableInvestGainCreator())
+                gainCreator = TaxableInvestGainCreator(),
+                attributesSet = listOf(
+                    YearlyAssetAttributes(
+                        startYear = Smiths.startYear - 1,
+                        attributes = AssetAttributeMap.assetComp("US Stocks")
+                    )
+                )
+            )
         )
 
         return listOf(jointSavings, jointInvest)
