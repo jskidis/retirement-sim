@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
-class BasicWithdrawDepositTest : FunSpec({
+class BasicSpendAllocTest : FunSpec({
 
     val startBalance: Amount = 10000.0
     val gainAmount: Amount = 1000.0
@@ -15,7 +15,7 @@ class BasicWithdrawDepositTest : FunSpec({
     val assetConfig: AssetConfig = assetConfigFixture()
     val gain = AssetChange("Gain", gainAmount)
 
-    val handler = BasicWithdrawDeposit()
+    val handler = BasicSpendAlloc()
 
     test("will withdraw full amount requested if amount request is less than asset balance") {
         val assetRec = AssetRec(currYear.year, assetConfig, startBalance, 0.0, gain)

@@ -24,7 +24,7 @@ data class AssetConfig(
 data class AssetConfigProgression(
     val config: AssetConfig,
     val progression: Progression<AssetRec>,
-    val withdrawDepositHandler: WithdrawDepositHandler,
+    val spendAllocHandler: SpendAllocHandler,
 )
 
 data class YearlyAssetAttributes(

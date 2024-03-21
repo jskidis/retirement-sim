@@ -12,17 +12,17 @@ import yearlyDetailFixture
 class NetSpendAllocationTest : ShouldSpec({
     val year: Year = 2020
 
-    val wdHandler1 = WithdrawDepositHandlerFixture(maxWithdraw = 1000.0)
+    val wdHandler1 = SpendAllocHandlerFixture(maxWithdraw = 1000.0)
     val assetConfig1 = assetConfigProgressFixture(
-        name = "Asset 1", withdrawDepositHandler = wdHandler1
+        name = "Asset 1", spendAllocHandler = wdHandler1
     )
     val assetRec1 = assetRecFixture(
         year = year, assetConfig = assetConfig1.config
     )
 
-    val wdHandler2 = WithdrawDepositHandlerFixture(maxWithdraw = 2000.0, maxDeposit = 3000.0)
+    val wdHandler2 = SpendAllocHandlerFixture(maxWithdraw = 2000.0, maxDeposit = 3000.0)
     val assetConfig2 = assetConfigProgressFixture(
-        name = "Asset 2", withdrawDepositHandler = wdHandler2)
+        name = "Asset 2", spendAllocHandler = wdHandler2)
     val assetRec2 = assetRecFixture(
         year = year, assetConfig = assetConfig2.config
     )
@@ -132,10 +132,10 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 })
 
-class WithdrawDepositHandlerFixture(
+class SpendAllocHandlerFixture(
     val maxWithdraw: Amount = Amount.MAX_VALUE,
     val maxDeposit: Amount = Amount.MAX_VALUE,
-) : WithdrawDepositHandler {
+) : SpendAllocHandler {
     var wasWithdrawCalled = false
     var wasDepositCalled = false
     var lastWithdraw: Amount = 0.0

@@ -24,7 +24,7 @@ object NetSpendAllocation {
             else {
                 val assetRec = findAssetRec(currYear, it)
                 if (assetRec == null) acc
-                else acc + it.withdrawDepositHandler.withdraw(-acc, assetRec, currYear)
+                else acc + it.spendAllocHandler.withdraw(-acc, assetRec, currYear)
             }
         }
 
@@ -38,7 +38,7 @@ object NetSpendAllocation {
             else {
                 val assetRec = findAssetRec(currYear, it)
                 if (assetRec == null) acc
-                else acc - it.withdrawDepositHandler.deposit(acc, assetRec, currYear)
+                else acc - it.spendAllocHandler.deposit(acc, assetRec, currYear)
             }
         }
 
