@@ -6,6 +6,8 @@ import expense.expenseRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import socsec.benefitsRecFixture
+import util.YearBasedConfig
+import util.YearConfigPair
 import yearlyDetailFixture
 
 class CapReserveSpendAllocTest : FunSpec({
@@ -138,7 +140,9 @@ class CapReserveSpendAllocTest : FunSpec({
         val multiplier = 2.0
         val hanlder = CapReserveSpendAlloc(
             margin = .05,
-            yearlyTargetMult = listOf(2020 to multiplier)
+            yearlyTargetMult = YearBasedConfig(listOf(
+                YearConfigPair(2020 , multiplier)
+            ))
         )
 
         val expenseTotal = 100000.0
@@ -157,7 +161,7 @@ class CapReserveSpendAllocTest : FunSpec({
 })
 
 class CapReserveSpendAllocFixture(val target: Amount, margin: Double) :
-    CapReserveSpendAlloc(listOf(), margin) {
+    CapReserveSpendAlloc(YearBasedConfig(listOf()), margin) {
 
     override fun determineTarget(currYear: YearlyDetail): Amount  = target
 }
