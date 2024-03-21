@@ -25,6 +25,7 @@ object SimulationRun {
                 println(
                     "Year: ${it.year} " +
                         "Income=${moneyFormat.format(it.totalIncome())} " +
+                        "Benefits=${moneyFormat.format(it.totalBenefits())} " +
                         "Expense=${moneyFormat.format(it.totalExpense())} " +
                         "Assets=${moneyFormat.format(it.totalAssetValues())} " +
                         "Inf Adj=${moneyFormat.format(it.totalAssetValues() / it.inflation.std.cmpdEnd)} " +
