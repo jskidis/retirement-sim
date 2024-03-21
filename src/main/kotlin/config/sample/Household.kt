@@ -37,7 +37,14 @@ object Household : HouseholdConfigBuilder {
         )
         val jointSavings = AssetConfigProgression(
             config = jointSavingConfig,
-            spendAllocHandler = BasicSpendAlloc(),
+            spendAllocHandler = CapReserveSpendAlloc(
+                margin = .05,
+                yearlyTargetMult = listOf(
+                    2024 to 2.0,
+                    Smiths.janeEmploymentDate.end.year + 1 to 3.0,
+                    Smiths.janeTargetCollectSSYM.year to 4.0
+                )
+            ),
             progression = AssetProgression(
                 startBalance = Smiths.savingsBal,
                 config = jointSavingConfig,
