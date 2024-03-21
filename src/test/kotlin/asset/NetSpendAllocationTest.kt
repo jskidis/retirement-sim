@@ -1,15 +1,170 @@
 package asset
 
 import Amount
-import Name
-import expense.expenseRecFixture
-import income.incomeRecFixture
+import Year
+import YearlyDetail
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
 class NetSpendAllocationTest : ShouldSpec({
+    val year: Year = 2020
+
+    val wdHandler1 = WithdrawDepositHandlerFixture(maxWithdraw = 1000.0)
+    val assetConfig1 = assetConfigProgressFixture(
+        name = "Asset 1", withdrawDepositHandler = wdHandler1
+    )
+    val assetRec1 = assetRecFixture(
+        year = year, assetConfig = assetConfig1.config
+    )
+
+    val wdHandler2 = WithdrawDepositHandlerFixture(maxWithdraw = 2000.0, maxDeposit = 3000.0)
+    val assetConfig2 = assetConfigProgressFixture(
+        name = "Asset 2", withdrawDepositHandler = wdHandler2)
+    val assetRec2 = assetRecFixture(
+        year = year, assetConfig = assetConfig2.config
+    )
+
+    val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
+    val spendAllocationConfig = NetSpendAllocationConfig(
+        withdrawOrder = listOf(assetConfig1, assetConfig2),
+        depositOrder = listOf(assetConfig2, assetConfig1))
+
+    should("not call any handlers if net spend is 0") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = 0.0, currYear, spendAllocationConfig)
+
+        result.shouldBe(0.0)
+        wdHandler1.wasWithdrawCalled.shouldBeFalse()
+        wdHandler1.wasDepositCalled.shouldBeFalse()
+
+        wdHandler2.wasWithdrawCalled.shouldBeFalse()
+        wdHandler2.wasDepositCalled.shouldBeFalse()
+    }
+
+    should("withdraw only from first asset if net spend is less than max withdraw on first asset") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = -wdHandler1.maxWithdraw / 2, currYear, spendAllocationConfig)
+
+        result.shouldBe(0.0)
+
+        wdHandler1.wasWithdrawCalled.shouldBeTrue()
+        wdHandler1.lastWithdraw.shouldBe(wdHandler1.maxWithdraw / 2)
+        wdHandler1.wasDepositCalled.shouldBeFalse()
+
+        wdHandler2.wasWithdrawCalled.shouldBeFalse()
+        wdHandler2.wasDepositCalled.shouldBeFalse()
+    }
+
+    should("withdraw from first & second asset if net spend is more than max withdraw of first asset") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = -wdHandler1.maxWithdraw - 10.0, currYear, spendAllocationConfig)
+
+        result.shouldBe(0.0)
+
+        wdHandler1.wasWithdrawCalled.shouldBeTrue()
+        wdHandler1.lastWithdraw.shouldBe(wdHandler1.maxWithdraw)
+        wdHandler1.wasDepositCalled.shouldBeFalse()
+
+        wdHandler2.wasWithdrawCalled.shouldBeTrue()
+        wdHandler2.lastWithdraw.shouldBe(10.0)
+        wdHandler2.wasDepositCalled.shouldBeFalse()
+    }
+
+    should("return the amount left over after withdrawing max amounts from each asset") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = -wdHandler1.maxWithdraw - wdHandler2.maxWithdraw - 10.0,
+            currYear, spendAllocationConfig)
+
+        result.shouldBe(-10.0)
+
+        wdHandler1.wasWithdrawCalled.shouldBeTrue()
+        wdHandler1.lastWithdraw.shouldBe(wdHandler1.maxWithdraw)
+        wdHandler1.wasDepositCalled.shouldBeFalse()
+
+        wdHandler2.wasWithdrawCalled.shouldBeTrue()
+        wdHandler2.lastWithdraw.shouldBe(wdHandler2.maxWithdraw)
+        wdHandler2.wasDepositCalled.shouldBeFalse()
+    }
+
+    should("deposit only into first asset if net spend is less than max deposit on second asset") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = wdHandler2.maxDeposit / 2, currYear, spendAllocationConfig)
+
+        result.shouldBe(0.0)
+
+        wdHandler2.wasDepositCalled.shouldBeTrue()
+        wdHandler2.lastDeposit.shouldBe(wdHandler2.maxDeposit / 2)
+        wdHandler2.wasWithdrawCalled.shouldBeFalse()
+
+        wdHandler1.wasWithdrawCalled.shouldBeFalse()
+        wdHandler1.wasDepositCalled.shouldBeFalse()
+    }
+
+    should("deposit from first & second asset if net spend is more than max deposit of second asset") {
+        wdHandler1.reset()
+        wdHandler2.reset()
+        val result = NetSpendAllocation.allocateNetSpend(
+            netSpend = wdHandler2.maxDeposit + 10.0, currYear, spendAllocationConfig)
+
+        result.shouldBe(0.0)
+
+        wdHandler2.wasDepositCalled.shouldBeTrue()
+        wdHandler2.lastDeposit.shouldBe(wdHandler2.maxDeposit)
+        wdHandler2.wasWithdrawCalled.shouldBeFalse()
+
+        wdHandler1.wasDepositCalled.shouldBeTrue()
+        wdHandler1.lastDeposit.shouldBe(10.0)
+        wdHandler1.wasWithdrawCalled.shouldBeFalse()
+    }
+})
+
+class WithdrawDepositHandlerFixture(
+    val maxWithdraw: Amount = Amount.MAX_VALUE,
+    val maxDeposit: Amount = Amount.MAX_VALUE,
+) : WithdrawDepositHandler {
+    var wasWithdrawCalled = false
+    var wasDepositCalled = false
+    var lastWithdraw: Amount = 0.0
+    var lastDeposit: Amount = 0.0
+
+    override fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
+        val withdrawAmount = Math.min(maxWithdraw, amount)
+        lastWithdraw = withdrawAmount
+        wasWithdrawCalled = true
+        return withdrawAmount
+    }
+
+    override fun deposit(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
+        val depositAmount = Math.min(maxDeposit, amount)
+        lastDeposit = depositAmount
+        wasDepositCalled = true
+        return depositAmount
+    }
+
+    fun reset() {
+        wasWithdrawCalled = false
+        wasDepositCalled = false
+        lastWithdraw = 0.0
+        lastDeposit = 0.0
+    }
+}
+
+
+/*
     val yearInFuture = 2100
 
     fun genAssetRec(name: Name, type: AssetType, startBalance: Amount) : AssetRec {
@@ -99,4 +254,4 @@ class NetSpendAllocationTest : ShouldSpec({
             savings10k.startBal + (0.1 * currYear.netSpend()), .001)
     }
 })
-
+*/
