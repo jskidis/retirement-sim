@@ -28,14 +28,15 @@ object SimulationRun {
                         "Expense=${moneyFormat.format(it.totalExpense())} " +
                         "Assets=${moneyFormat.format(it.totalAssetValues())} " +
                         "Inf Adj=${moneyFormat.format(it.totalAssetValues() / it.inflation.std.cmpdEnd)} " +
-                        "Taxes=${moneyFormat.format((it.totalTaxes()))} " +
+                        "Taxes=${it.taxes} " +
                         "Net Spend=${moneyFormat.format((it.netSpend()))} " +
                         "Incomes:${it.incomes} " +
                         "Benefits:${it.benefits} " +
                         "Expenses:${it.expenses} " +
                         "Assets:{${it.assets} " +
                         "Taxes:${it.taxes} " +
-                        "Carryover:${it.carryOverTaxable}"
+                        "Carryover:${it.carryOverTaxable} " +
+                        "CO Penalty:${moneyFormat.format(it.carryOverPenalty)}"
                 )
             }
         }
@@ -54,21 +55,22 @@ object SimulationRun {
         val incomes = IncomeProcessor.process(config, prevYear)
         val expenses = ExpenseProcessor.process(config, prevYear)
         val benefits = SSBenefitsProcessor.process(config, prevYear)
+        val prevCOPenalty = prevYear?.carryOverPenalty ?: 0.0
 
         var currYear = YearlyDetail(year,
-            inflation = inflation, incomes = incomes, expenses = expenses, benefits = benefits)
+            inflation = inflation, incomes = incomes, expenses = expenses,
+            benefits = benefits, prevCOPenalty = prevCOPenalty)
 
-        val assets = AssetProcessor.process(config, prevYear)
-        currYear = currYear.copy(assets = assets)
+        currYear = currYear.copy(assets = AssetProcessor.process(config, prevYear))
 
         val prevCarryOver = prevYear?.carryOverTaxable ?: ArrayList()
         val taxesRec = TaxesProcessor.processTaxes(currYear, prevCarryOver, config)
-        currYear = currYear.copy(taxes = listOf(taxesRec))
+        currYear = currYear.copy(taxes = taxesRec)
 
         NetSpendAllocation.allocateNetSpend(currYear.netSpend(), currYear, config.assetOrdering)
 
-        val newCarryOver = TaxesProcessor.carryOverTaxable(currYear)
-        currYear = currYear.copy(carryOverTaxable = newCarryOver)
+        currYear = currYear.copy(carryOverTaxable = TaxesProcessor.carryOverTaxable(currYear))
+        currYear = currYear.copy(carryOverPenalty = TaxesProcessor.carryOverPenalty(currYear, config))
 
         return currYear
     }

@@ -21,17 +21,18 @@ data class YearlyDetail(
     val expenses: List<ExpenseRec> = ArrayList(),
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
-    val taxes: List<TaxesRec> = ArrayList(),
+    val taxes: TaxesRec = TaxesRec(),
     val carryOverTaxable: List<TaxableAmounts> = ArrayList(),
+    val prevCOPenalty: Amount = 0.0,
+    val carryOverPenalty: Amount = 0.0,
     val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
     fun totalIncome() = incomes.sumOf { it.amount } + benefits.sumOf { it.amount }
     fun totalExpense() = expenses.sumOf { it.amount }
-    fun totalTaxes() = taxes.sumOf { it.total() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun netSpend() = (1- PortionOfYearPast.calc(year)) *
-        (totalIncome() - totalExpense() - totalTaxes())
+        (totalIncome() - totalExpense() - taxes.total() - prevCOPenalty)
 }
 
 interface AmountRec {

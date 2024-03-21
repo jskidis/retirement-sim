@@ -7,8 +7,11 @@ import asset.assetRecFixture
 import config.configFixture
 import expense.expenseRecFixture
 import income.incomeRecFixture
+import inflation.InflationRAC
+import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -100,7 +103,6 @@ class TaxesProcessorTest : ShouldSpec({
             incomes = listOf(wageInc)
         )
 
-
         val result = TaxesProcessor.processTaxes(currYear, listOf(carryOver), config)
         result.fed.shouldBe((
             wageInc.amount + carryOver.fed) * fedTaxCalc.pct +
@@ -145,6 +147,33 @@ class TaxesProcessorTest : ShouldSpec({
         result.size.shouldBe(2)
         result.shouldContain(taxable1)
         result.shouldContain(taxable2)
+    }
+
+    should("Determine carry over penalty, taxes include curr year carryover minus taxes without them") {
+        val inflationRate = .04
+        var currYear = yearlyDetailFixture().copy(
+            incomes = listOf(wageInc),
+            inflation = inflationRecFixture(stdRAC = InflationRAC(inflationRate))
+        )
+
+        val assetConfig1 = assetConfigProgressFixture(name = "Asset 1")
+        val taxable1 = TaxableAmounts(person = "Person", fed = 1000.0, state = 1000.0)
+        val assetRec1 = assetRecFixture(year = currYear.year, assetConfig = assetConfig1.config)
+        val tribution1 = AssetChange(name = "W", amount = -1000.0, taxable1, isCarryOver = true)
+        assetRec1.tributions.add(tribution1)
+
+        val taxesWithoutCO = TaxesProcessor.processTaxes(currYear, ArrayList(), config )
+        currYear = currYear.copy(taxes = taxesWithoutCO, assets = listOf(assetRec1))
+
+        val carryOverTaxable = TaxesProcessor.carryOverTaxable(currYear)
+        currYear = currYear.copy(carryOverTaxable = carryOverTaxable)
+
+        val taxesWithCO = TaxesProcessor.processTaxes(currYear, carryOverTaxable, config)
+        val expectedPenalty = 2 * inflationRate *
+            (taxesWithCO.total() - taxesWithoutCO.total())
+
+        TaxesProcessor.carryOverPenalty(currYear, config)
+            .shouldBeWithinPercentageOf(expectedPenalty, .001)
     }
 })
 

@@ -1,5 +1,6 @@
 package tax
 
+import Amount
 import YearlyDetail
 import config.SimConfig
 
@@ -46,5 +47,11 @@ object TaxesProcessor {
                 tribution.taxable
             }
         }.mapNotNull { it }
+    }
+
+    fun carryOverPenalty(currYear: YearlyDetail, config: SimConfig): Amount {
+        val taxesWithCarryOver = processTaxes(currYear, currYear.carryOverTaxable, config)
+        val carryOverTaxes = taxesWithCarryOver.total() - currYear.taxes.total()
+        return carryOverTaxes * currYear.inflation.std.rate * 2
     }
 }

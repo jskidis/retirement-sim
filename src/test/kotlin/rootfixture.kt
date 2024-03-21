@@ -11,7 +11,7 @@ fun yearlyDetailFixture(
     incomes: List<IncomeRec> = ArrayList(),
     expenses: List<ExpenseRec> = ArrayList(),
     assets: List<AssetRec> = ArrayList(),
-    taxes: List<TaxesRec> = ArrayList(),
+    taxes: TaxesRec = TaxesRec(),
     rorRndGaussian: Double = 0.0,
     filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) =
