@@ -7,12 +7,7 @@ import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
 
-enum class AssetType {
-    CASH, INVEST, TIRA, ROTH
-}
-
 data class AssetConfig(
-    val type: AssetType,
     override val name: Name,
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile,

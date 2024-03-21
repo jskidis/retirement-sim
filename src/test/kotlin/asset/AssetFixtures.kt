@@ -12,10 +12,10 @@ import tax.TaxabilityProfileFixture
 fun assetConfigFixture(
     assetName: Name = "Asset",
     person: Name = "Person",
-    assetType: AssetType = AssetType.INVEST,
     taxProfile: TaxabilityProfile = NonTaxableProfile(),
 ) = AssetConfig(
-    assetType, assetName, person, taxProfile)
+    assetName, person, taxProfile
+)
 
 fun assetRecFixture(
     year: Year =  2024,
@@ -42,7 +42,7 @@ fun assetConfigProgressFixture(
 ) : AssetConfigProgression {
 
     val config = AssetConfig(
-        AssetType.CASH, name, person, TaxabilityProfileFixture()
+        name, person, TaxabilityProfileFixture()
     )
 
     return AssetConfigProgression(

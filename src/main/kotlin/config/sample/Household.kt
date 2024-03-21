@@ -31,7 +31,6 @@ object Household : HouseholdConfigBuilder {
     override fun assets(): List<AssetConfigProgression> {
 
         val jointSavingConfig = AssetConfig(
-            type = AssetType.CASH,
             name = Smiths.savingsAcctName,
             person = "Jane & Dick",
             taxabilityProfile = NonWageTaxableProfile(),
@@ -53,7 +52,6 @@ object Household : HouseholdConfigBuilder {
         )
 
         val jointInvestConfig = AssetConfig(
-            type = AssetType.INVEST,
             name = Smiths.investAcctName,
             person = "Jane & Dick",
             taxabilityProfile = OverriddenTaxableProfile(),
