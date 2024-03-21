@@ -58,7 +58,7 @@ object Household : HouseholdConfigBuilder {
         )
         val jointInvest = AssetConfigProgression(
             config = jointInvestConfig,
-            spendAllocHandler = BasicSpendAlloc(),
+            spendAllocHandler = TaxableInvestSpendAllocHandler(),
             progression = AssetProgression(
                 startBalance = Smiths.investBal,
                 config = jointInvestConfig,
