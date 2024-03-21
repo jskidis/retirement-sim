@@ -38,6 +38,7 @@ fun assetConfigProgressFixture(
     person: Name = "Person",
     startBal: Amount = 0.0,
     gains: Amount = 0.0,
+    withdrawDepositHandler: WithdrawDepositHandler = BasicWithdrawDeposit()
 ) : AssetConfigProgression {
 
     val config = AssetConfig(
@@ -45,7 +46,9 @@ fun assetConfigProgressFixture(
     )
 
     return AssetConfigProgression(
-        config, AssetProgressionFixture(startBal, gains, config)
+        config = config,
+        progression = AssetProgressionFixture(startBal, gains, config),
+        withdrawDepositHandler = withdrawDepositHandler
     )
 }
 
