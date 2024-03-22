@@ -1,6 +1,7 @@
 package util
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import org.apache.commons.csv.CSVRecord
 
@@ -22,7 +23,7 @@ class CSVReaderTest : ShouldSpec({
 
     should("readCsvFromResource loads csv from file and populate entities based on passed in conversion function") {
         val result = reader.readCsvFromResource("csvReaderTest.csv")
-        result.size.shouldBe(3)
+        result.shouldHaveSize(3)
         result[0].shouldBe(TestEntity(1, 10.0, "1st string", "default has value"))
         result[1].shouldBe(TestEntity(2, 20.0, "2nd string", "defaulted value"))
         result[2].shouldBe(TestEntity(3, 30.0, "3rd string", "defaulted value"))

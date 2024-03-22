@@ -4,6 +4,7 @@ import config.*
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -32,7 +33,7 @@ class IncomeProcessorTest : ShouldSpec({
         val prevYear = yearlyDetailFixture()
         val result: List<IncomeRec> = IncomeProcessor.process(config, prevYear)
 
-        result.size.shouldBe(2)
+        result.shouldHaveSize(2)
 
         result.find {
             it.config.name == "Parent 1 Inc" &&

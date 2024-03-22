@@ -5,6 +5,7 @@ import config.householdConfigFixture
 import config.householdMembersFixture
 import config.parentConfigFixture
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
@@ -38,7 +39,7 @@ class ExpenseProcessorTest : ShouldSpec({
     should("process all household and household member expenses for the year") {
         val result: List<ExpenseRec> = ExpenseProcessor.process(config, prevYear)
 
-        result.size.shouldBe(4)
+        result.shouldHaveSize(4)
 
         result.find {
             it.config.person == householdName &&
