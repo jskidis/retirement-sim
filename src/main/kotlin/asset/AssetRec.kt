@@ -4,6 +4,8 @@ import Amount
 import AmountRec
 import Year
 import config.AmountConfig
+import income.IncomeConfig
+import income.IncomeRec
 import tax.TaxableAmounts
 import util.PortionOfYearPast
 import util.moneyFormat
@@ -26,7 +28,7 @@ data class AssetRec(
     fun totalTributions(): Amount = tributions.sumOf { it.amount }
 
     override fun taxable(): TaxableAmounts {
-        return (tributions.map { it.taxable } + gains.taxable)
+        return (tributions.filter{ !it.isReqDist }.map { it.taxable } + gains.taxable)
             .mapNotNull { it }
             .fold(TaxableAmounts(config.person)) { acc, it ->
                 acc.plus(it)
@@ -40,6 +42,19 @@ data class AssetRec(
 
     fun totalUnrealized(): Amount =
         startUnrealized + (tributions + gains).sumOf { it.unrealized }
+
+    fun incomeRecs(): List<IncomeRec> =
+        tributions.filter { it.isReqDist }.map {
+            IncomeRec(
+                year = year,
+                config = IncomeConfig(name = it.name,
+                    person = config.person,
+                    config.taxabilityProfile
+                ),
+                amount = -it.amount,
+                taxableIncome = it.taxable ?: TaxableAmounts(config.person)
+            )
+        }
 
     override fun toString(): String =
         "($config:(StartBal=${moneyFormat.format(startBal)}, " +

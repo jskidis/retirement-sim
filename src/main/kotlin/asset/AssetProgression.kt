@@ -27,12 +27,17 @@ open class AssetProgression(
 
         val unrealized = prevRec?.totalUnrealized() ?: 0.0
 
-        return AssetRec(
+        val assetRec = AssetRec(
             year = year,
             config = config,
             startBal = balance,
             startUnrealized = unrealized,
             gains = gainCreator.createGain(balance, attributes, config, prevYear))
+
+        val reqDistribution = requiredDistHandler.generateDistribution(balance, year)
+        if (reqDistribution != null) assetRec.tributions.add(reqDistribution)
+
+        return assetRec
     }
 
     fun previousRec(prevYear: YearlyDetail): AssetRec? =

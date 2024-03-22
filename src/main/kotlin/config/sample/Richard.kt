@@ -1,5 +1,7 @@
 package config.sample
 
+import asset.*
+import config.AssetAttributeMap
 import config.ParentConfigBuilder
 import config.Person
 import expense.AgeBasedExpenseAdjuster
@@ -17,6 +19,8 @@ import socsec.SSBenefitConfigProgression
 import tax.NonTaxableProfile
 import tax.SSBenefitTaxableProfile
 import tax.WageTaxableProfile
+import util.YearBasedConfig
+import util.YearConfigPair
 
 object Richard : ParentConfigBuilder {
     override fun incomes(person: Person): List<IncomeConfigProgression> {
@@ -56,6 +60,37 @@ object Richard : ParentConfigBuilder {
                 )
             )
         )
+    }
+
+    override fun assets(person: Person): List<AssetConfigProgression> {
+        val richardIRAConfig = AssetConfig(
+            name = Smiths.richardIRAAcctName,
+            person = person.name,
+            taxabilityProfile = NonTaxableProfile(),
+        )
+        val richIRAAsset = AssetConfigProgression(
+            config = richardIRAConfig,
+            spendAllocHandler = IRASpendAlloc(person),
+            progression = AssetProgression(
+                startBalance = Smiths.richardIRAAcctBal,
+                config = richardIRAConfig,
+                gainCreator = SimpleAssetGainCreator(),
+                requiredDistHandler = RmdRequiredDistHandler(person),
+                attributesSet = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(
+                            startYear = Smiths.startYear - 1,
+                            config = AssetAttributeMap.assetComp("US Stocks")
+                        ),
+                        YearConfigPair(
+                            startYear = Smiths.richardEmploymentDate.end.year,
+                            config = AssetAttributeMap.assetComp("Stocks/Bonds 60/40")
+                        )
+                    ))
+            )
+        )
+
+        return listOf(richIRAAsset)
     }
 
     override fun benefits(person: Person): List<SSBenefitConfigProgression> {
