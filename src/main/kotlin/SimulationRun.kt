@@ -9,8 +9,6 @@ import socsec.SSBenefitsProcessor
 import tax.TaxesProcessor
 import util.moneyFormat
 import util.yearFromPrevYearDetail
-import kotlin.random.Random
-import kotlin.random.asJavaRandom
 
 object SimulationRun {
     fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Pair<Boolean, Amount> {
@@ -54,15 +52,15 @@ object SimulationRun {
         val inflation = InflationProcessor.process(config, prevYear)
         val incomes = IncomeProcessor.process(config, prevYear)
         val expenses = ExpenseProcessor.process(config, prevYear)
+        val assets = AssetProcessor.process(config, prevYear)
+        val assetIncomes = assets.flatMap { it.incomeRecs() }
         val benefits = SSBenefitsProcessor.process(config, prevYear)
         val prevCOPenalty = prevYear?.carryOverPenalty ?: 0.0
-        val gaussianRnd = Random.asJavaRandom().nextGaussian()
+//        val gaussianRnd = Random.asJavaRandom().nextGaussian()
 
         var currYear = YearlyDetail(year,
-            inflation = inflation, incomes = incomes, expenses = expenses,
+            inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses, assets = assets,
             benefits = benefits, prevCOPenalty = prevCOPenalty, rorRndGaussian = 0.0)//gaussianRnd)
-
-        currYear = currYear.copy(assets = AssetProcessor.process(config, prevYear))
 
         val prevCarryOver = prevYear?.carryOverTaxable ?: ArrayList()
         val taxesRec = TaxesProcessor.processTaxes(currYear, prevCarryOver, config)

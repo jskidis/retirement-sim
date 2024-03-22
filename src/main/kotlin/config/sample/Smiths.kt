@@ -36,6 +36,12 @@ class Smiths : ConfigBuilder {
         val savingsBal: Amount = 50000.0
         val investAcctName = "BigInvBank"
         val investBal = 200000.0
+
+        val janeIRAAcctName: String = "Jane-IRA"
+        val janeIRAAcctBal: Amount = 1000000.0
+
+        val richardIRAAcctName: String = "Richard-IRA"
+        val richardIRAAcctBal: Amount = 500000.0
     }
 
     override fun buildConfig(): SimConfig {

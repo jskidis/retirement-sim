@@ -15,7 +15,7 @@ class NullRequestDist : RequiredDistHandler {
     override fun generateDistribution(balance: Amount, year: Year): AssetChange? = null
 }
 
-open class RmdRequestDistHandler(val person: Person) : RequiredDistHandler, RmdPctLookup {
+open class RmdRequiredDistHandler(val person: Person) : RequiredDistHandler, RmdPctLookup {
 
     override fun generateDistribution(balance: Amount, year: Year): AssetChange? {
         val pct = getRmdPct(age = year - person.birthYM.year)
@@ -26,7 +26,7 @@ open class RmdRequestDistHandler(val person: Person) : RequiredDistHandler, RmdP
     private fun createAssetChange(amount: Amount, person: Person): AssetChange =
         AssetChange(
             name = RequiredDistHandler.CHANGE_NAME,
-            amount = amount,
+            amount = -amount,
             taxable = TaxableAmounts(person = person.name, fed = amount, state = amount),
             isReqDist = true
         )

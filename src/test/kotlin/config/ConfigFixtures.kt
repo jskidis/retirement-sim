@@ -31,7 +31,7 @@ fun configFixture(
     )
 
 fun personFixture(
-    name: Name,
+    name: Name = "Person",
     birthYM: YearMonth = YearMonth(year = 1980, month = 0),
     actuarialGender: ActuarialGender = ActuarialGender.FEMALE,
 ) = Person(name, birthYM, actuarialGender)
@@ -45,16 +45,6 @@ fun householdConfigFixture(
 fun assetOrderingFixture(
     householdConfig: HouseholdConfig
 ) = NetSpendAllocationConfig(householdConfig.jointAssets, householdConfig.jointAssets)
-
-fun householdMembersByNameFixture(
-    parent1: Name = "Parent 1",
-    parent2: Name = "Parent 2",
-    dependants: List<Name> = listOf(),
-) = householdMembersFixture(
-    parent1Config = parentConfigFixture(parent1),
-    parent2Config = parentConfigFixture(parent2),
-    dependantsConfig = dependants.map { dependantConfigFixture(it) }
-)
 
 fun householdMembersFixture(
     parent1Config: ParentConfig = parentConfigFixture("Parent1"),
@@ -71,12 +61,6 @@ fun parentConfigFixture(name: Name,
     expenseConfigs: List<ExpenseConfigProgression> = listOf(expenseCfgProgessFixture("Expense", name)),
     assetConfigs: List<AssetConfigProgression> = listOf(assetConfigProgressFixture("Asset", name))
 ) = ParentConfig(personFixture(name), incomeConfigs,expenseConfigs, assetConfigs)
-
-fun dependantConfigFixture(name: Name,
-    incomeConfigs: List<IncomeConfigProgression> = listOf(incomeCfgProgessFixture("Income", name)),
-    expenseConfigs: List<ExpenseConfigProgression> = listOf(expenseCfgProgessFixture("Expense", name)),
-    assetConfigs: List<AssetConfigProgression> = listOf(assetConfigProgressFixture("Asset", name))
-) = DependantConfig(personFixture(name), incomeConfigs,expenseConfigs, assetConfigs)
 
 
 
