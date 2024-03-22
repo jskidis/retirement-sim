@@ -29,7 +29,7 @@ open class FixedDateAmountSSBenefitProgression(
 
         val value =
             if (benefitAdjustment == 0.0) 0.0
-            else benefitAdjustment * baseAmount * cmpInflation * pctInYear * .77
+            else benefitAdjustment * baseAmount * cmpInflation * pctInYear
 
         return SSBenefitRec(
             year = year,
