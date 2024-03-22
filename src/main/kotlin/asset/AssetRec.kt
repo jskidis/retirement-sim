@@ -41,6 +41,7 @@ data class AssetRec(
     fun totalUnrealized(): Amount =
         startUnrealized + (tributions + gains).sumOf { it.unrealized }
 
+/*
     override fun toString(): String =
         "($config:(StartBal=${moneyFormat.format(startBal)}, " +
             "StartUnrealized=${moneyFormat.format(startUnrealized)}, " +
@@ -51,4 +52,9 @@ data class AssetRec(
             "NetTributions=${moneyFormat.format(totalTributions())}, " +
             "FinalUnrealized=${moneyFormat.format(totalUnrealized())}, " +
             "FinalBal=${moneyFormat.format(finalBalance())})"
+*/
+    override fun toString(): String =
+        "($config:(StartBal=${moneyFormat.format(startBal)})" +
+//            "FinalBal=${moneyFormat.format(finalBalance())})" +
+    ""
 }

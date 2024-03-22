@@ -27,6 +27,6 @@ class TaxableInvestSpendAllocHandler : BasicSpendAlloc() {
             taxable = taxableAmounts,
             isCarryOver = true
         ))
-        return amount - drawAmount
+        return drawAmount
     }
 }
