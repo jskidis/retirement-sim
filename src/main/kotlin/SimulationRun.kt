@@ -11,7 +11,7 @@ import util.moneyFormat
 import util.yearFromPrevYearDetail
 
 object SimulationRun {
-    fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Boolean {
+    fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Pair<Boolean, Amount> {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
         var currYearDetail = generateYearlyDetail(config, null)
@@ -19,7 +19,7 @@ object SimulationRun {
         do  {
             years.add(currYearDetail)
             currYearDetail = generateYearlyDetail(configBuilder.buildConfig(), currYearDetail)
-        } while (currYearDetail.year <= 2060 && metCriteria(currYearDetail))
+        } while (currYearDetail.year <= 2060 && currYearDetail.totalAssetValues() > 0.0)
 
         if (outputYearDetails) {
             years.forEach {
@@ -42,14 +42,10 @@ object SimulationRun {
                 )
             }
         }
-        return metCriteria(currYearDetail)
+        val infAdjAssets = currYearDetail.totalAssetValues() / currYearDetail.inflation.std.cmpdEnd
+        return (infAdjAssets > 1000000.0) to infAdjAssets
     }
 
-    fun metCriteria(currYearDetail: YearlyDetail): Boolean {
-        return currYearDetail.assets.sumOf {
-            it.finalBalance()
-        } > 1000.0
-    }
 
     fun generateYearlyDetail(config: SimConfig, prevYear: YearlyDetail?): YearlyDetail {
         val year = yearFromPrevYearDetail(prevYear)
