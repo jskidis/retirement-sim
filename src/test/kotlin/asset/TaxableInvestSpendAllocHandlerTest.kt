@@ -25,8 +25,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
-        // No remaining spend not withdrawn
-        result.shouldBe(0.0)
+        result.shouldBe(withdrawAmount)
         assetRec.tributions.size.shouldBe(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-withdrawAmount)
@@ -45,8 +44,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
-        // No remaining spend not withdrawn
-        result.shouldBe(0.0)
+        result.shouldBe(withdrawAmount)
         assetRec.tributions.size.shouldBe(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-withdrawAmount)
@@ -65,8 +63,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
-        // No remaining spend not withdrawn
-        result.shouldBe(0.0)
+        result.shouldBe(withdrawAmount)
         assetRec.tributions.size.shouldBe(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-stUnrealized - ltUnrealized)

@@ -9,6 +9,7 @@ import tax.TaxabilityProfile
 data class AssetConfig(
     override val name: Name,
     override val person: Name,
+    // Taxability of gains
     override val taxabilityProfile: TaxabilityProfile,
 ) : AmountConfig {
 

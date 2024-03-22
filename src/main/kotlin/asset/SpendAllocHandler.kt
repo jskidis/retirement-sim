@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import YearlyDetail
+import tax.TaxableAmounts
 
 interface SpendAllocHandler {
     object TributionNames {
@@ -12,13 +13,23 @@ interface SpendAllocHandler {
     fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount
     fun deposit(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount
 
-    fun addWithdrawTribution(amount: Amount, assetRec: AssetRec): Amount {
-        assetRec.tributions.add(AssetChange(TributionNames.WITHDRAW, -amount))
+    fun addWithdrawTribution(
+        amount: Amount, assetRec: AssetRec,
+        taxable: TaxableAmounts? = null,
+        isCarryOver: Boolean = false
+    ): Amount {
+        assetRec.tributions.add(AssetChange(name= TributionNames.WITHDRAW,
+            amount = -amount, taxable = taxable, isCarryOver = isCarryOver))
         return amount
     }
 
-    fun addDepositTribution(amount: Amount, assetRec: AssetRec): Amount {
-        assetRec.tributions.add(AssetChange(TributionNames.DEPOSIT, amount))
+    fun addDepositTribution(
+        amount: Amount, assetRec: AssetRec,
+        taxable: TaxableAmounts? = null,
+        isCarryOver: Boolean = false
+    ): Amount {
+        assetRec.tributions.add(AssetChange(name = TributionNames.DEPOSIT,
+            amount = amount, taxable = taxable, isCarryOver = isCarryOver))
         return amount
     }
 }

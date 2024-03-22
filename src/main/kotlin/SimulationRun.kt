@@ -13,7 +13,8 @@ import util.yearFromPrevYearDetail
 object SimulationRun {
     fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Boolean {
         val years = ArrayList<YearlyDetail>()
-        var currYearDetail = generateYearlyDetail(configBuilder.buildConfig(), null)
+        val config = configBuilder.buildConfig()
+        var currYearDetail = generateYearlyDetail(config, null)
 
         do  {
             years.add(currYearDetail)
