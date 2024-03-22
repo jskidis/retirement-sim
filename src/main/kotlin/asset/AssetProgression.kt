@@ -10,6 +10,7 @@ open class AssetProgression(
     val startBalance: Amount,
     val config: AssetConfig,
     val gainCreator: AssetGainCreator,
+    val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
     val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
 
 ) : Progression<AssetRec> {

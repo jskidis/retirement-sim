@@ -5,7 +5,7 @@ import util.CSVReader
 import util.YearBasedConfig
 import util.YearConfigPair
 
-object RmdPct {
+object RmdPct : RmdPctLookup {
     val ageMap: YearBasedConfig<Double> by lazy {
         YearBasedConfig(loadMap())
     }
@@ -18,6 +18,10 @@ object RmdPct {
         YearConfigPair( startYear = it[0].toInt(), config = it[1].toDouble() )
     }
 
-    fun getRmdPct(age: Int): Double =
+    override fun getRmdPct(age: Int): Double =
         ageMap.getConfigForYear(age)
+}
+
+interface RmdPctLookup {
+    fun getRmdPct(age: Int): Double
 }
