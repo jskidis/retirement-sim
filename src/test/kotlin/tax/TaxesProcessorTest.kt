@@ -11,6 +11,7 @@ import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
@@ -144,7 +145,7 @@ class TaxesProcessorTest : ShouldSpec({
         ))
 
         val result = TaxesProcessor.carryOverTaxable(currYear)
-        result.size.shouldBe(2)
+        result.shouldHaveSize(2)
         result.shouldContain(taxable1)
         result.shouldContain(taxable2)
     }

@@ -4,6 +4,7 @@ import Amount
 import YearlyDetail
 import expense.expenseRecFixture
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import socsec.benefitsRecFixture
 import util.YearBasedConfig
@@ -29,7 +30,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(withdrawAmount)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.finalBalance().shouldBe(startBal - withdrawAmount)
@@ -44,7 +45,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(amountOverTarget)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.finalBalance().shouldBe(target)
@@ -58,7 +59,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(0.0)
 
-        assetRec.tributions.size.shouldBe(0)
+        assetRec.tributions.shouldHaveSize(0)
         assetRec.finalBalance().shouldBe(startBal)
     }
 
@@ -72,7 +73,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(-distanceToTarget)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(distanceToTarget)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.DEPOSIT)
         assetRec.finalBalance().shouldBe(target)
@@ -87,7 +88,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(depositAmount)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.DEPOSIT)
         assetRec.finalBalance().shouldBe(startBal + depositAmount)
@@ -102,7 +103,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(amountUnderTarget)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.DEPOSIT)
         assetRec.finalBalance().shouldBe(target)
@@ -116,7 +117,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(0.0)
 
-        assetRec.tributions.size.shouldBe(0)
+        assetRec.tributions.shouldHaveSize(0)
         assetRec.finalBalance().shouldBe(startBal)
     }
 
@@ -130,7 +131,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(-distanceToTarget)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-distanceToTarget)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.finalBalance().shouldBe(target)

@@ -4,6 +4,7 @@ import YearMonth
 import config.ActuarialGender
 import config.Person
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -36,7 +37,7 @@ class IRASpendAllocTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(withdrawAmount)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.tributions[0].taxable?.fed.shouldBe(withdrawAmount)
@@ -54,7 +55,7 @@ class IRASpendAllocTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(startBal)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.tributions[0].taxable?.fed.shouldBe(startBal)
@@ -72,7 +73,7 @@ class IRASpendAllocTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(withdrawAmount)
 
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-result)
         assetRec.tributions[0].name.shouldBe(SpendAllocHandler.TributionNames.WITHDRAW)
         assetRec.tributions[0].taxable?.fed.shouldBe(withdrawAmount * 1.1)
@@ -88,7 +89,7 @@ class IRASpendAllocTest : FunSpec({
         val result = handler.deposit(100.0, assetRec, currYear)
 
         result.shouldBe(0.0)
-        assetRec.tributions.size.shouldBe(0)
+        assetRec.tributions.shouldHaveSize(0)
         assetRec.finalBalance().shouldBe(startBal)
     }
 })

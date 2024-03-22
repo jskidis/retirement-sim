@@ -2,6 +2,7 @@ package asset
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -26,7 +27,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-withdrawAmount)
         assetRec.tributions[0].taxable?.fed.shouldBe(withdrawAmount)
@@ -45,7 +46,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-withdrawAmount)
         assetRec.tributions[0].taxable?.fed.shouldBe(stUnrealized)
@@ -64,7 +65,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
         assetRec.tributions[0].unrealized.shouldBe(-stUnrealized - ltUnrealized)
         assetRec.tributions[0].taxable?.fed.shouldBe(stUnrealized)

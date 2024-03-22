@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -25,7 +26,7 @@ class BasicSpendAllocTest : FunSpec({
         result.shouldBe(withdrawAmount)
 
         assetRec.finalBalance().shouldBe(balBeforeWD - withdrawAmount)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
     }
 
@@ -37,7 +38,7 @@ class BasicSpendAllocTest : FunSpec({
         result.shouldBe(balBeforeWD)
 
         assetRec.finalBalance().shouldBe(0.0)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(-balBeforeWD)
     }
 
@@ -49,7 +50,7 @@ class BasicSpendAllocTest : FunSpec({
         result.shouldBe(depositAmount)
 
         assetRec.finalBalance().shouldBe(balBeforeWD + depositAmount)
-        assetRec.tributions.size.shouldBe(1)
+        assetRec.tributions.shouldHaveSize(1)
         assetRec.tributions[0].amount.shouldBe(depositAmount)
     }
 })
