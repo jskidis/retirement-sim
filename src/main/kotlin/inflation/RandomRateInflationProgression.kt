@@ -6,10 +6,10 @@ import progression.PrevRecProviderProgression
 import util.GaussianRndProvider
 
 open class RandomRateInflationProgression(
-    val stdMean: Rate = .00253, val stdSD: Rate = .015,
-    val medMean: Rate = .00333, val medSD: Rate = .011,
-    val chainMean: Rate = .00225, val chainSD: Rate = .016,
-    val wageMean: Rate = .0036, val wageSD: Rate = .019,
+    val stdMean: Rate = .0253, val stdSD: Rate = .015,
+    val medMean: Rate = .0333, val medSD: Rate = .011,
+    val chainMean: Rate = .0225, val chainSD: Rate = .016,
+    val wageMean: Rate = .036, val wageSD: Rate = .019,
 ) : PrevRecProviderProgression<InflationRec>,
     GaussianRndProvider {
 
