@@ -5,8 +5,9 @@ import Name
 import Rate
 import YearlyDetail
 import util.moneyFormat
+import util.strWhenNotZero
 
-enum class FilingStatus{
+enum class FilingStatus {
     JOINTLY, HOUSEHOLD, SINGLE
 }
 
@@ -30,16 +31,14 @@ data class TaxableAmounts(
     fun total(): Amount = fed + fedLTG + state + socSec + medicare
     fun hasAmounts(): Boolean = total() != 0.0
 
-    override fun toString(): String {
-        val fedStr = if (fed != 0.0) "Fed=${moneyFormat.format(fed)}, " else ""
-        val fedLTGStr = if (fedLTG != 0.0) "FedLTG=${moneyFormat.format(fedLTG)}, " else ""
-        val stateStr = if (state != 0.0) "State=${moneyFormat.format(state)}, " else ""
-        val socSecStr = if (socSec != 0.0) "SocSec=${moneyFormat.format(socSec)}, " else ""
-        val medicareStr = if (medicare != 0.0) "Medi=${moneyFormat.format(medicare)}, " else ""
-        val fullStr = "$fedStr$fedLTGStr$stateStr$socSecStr$medicareStr"
-        val trimmedStr = if(fullStr.length < 2) fullStr else fullStr.dropLast(2)
-        return "(Person:$person, $trimmedStr)"
-    }
+    override fun toString(): String =
+        ("(Person:$person") +
+            strWhenNotZero(fed == 0.0, ", Fed=${moneyFormat.format(fed)}") +
+            strWhenNotZero(fedLTG == 0.0, ", FedLTG=${moneyFormat.format(fedLTG)}") +
+            strWhenNotZero(state == 0.0, ", State=${moneyFormat.format(state)}") +
+            strWhenNotZero(socSec == 0.0, ", SocSec=${moneyFormat.format(socSec)}") +
+            strWhenNotZero(medicare == 0.0, ", Medi=${moneyFormat.format(medicare)}") +
+            ")"
 }
 
 data class TaxesRec(
@@ -50,13 +49,13 @@ data class TaxesRec(
 ) {
     fun total(): Amount = fed + state + socSec + medicare
 
-    override fun toString(): String {
-        val fedStr = if (fed != 0.0) "Fed:${moneyFormat.format(fed)} " else ""
-        val stateStr = if (state != 0.0) "State:${moneyFormat.format(state)} " else ""
-        val socSecStr = if (socSec != 0.0) "SocSec:${moneyFormat.format(socSec)} " else ""
-        val medicareStr = if (medicare != 0.0) "Medi:${moneyFormat.format(medicare)} " else ""
-        return "(${moneyFormat.format(total())}-$fedStr$stateStr$socSecStr$medicareStr)"
-    }
+    override fun toString(): String =
+        "(Total: ${moneyFormat.format(total())}" +
+            strWhenNotZero(fed == 0.0, ", Fed:${moneyFormat.format(fed)}") +
+            strWhenNotZero(state == 0.0, ", State:${moneyFormat.format(state)}") +
+            strWhenNotZero(socSec == 0.0, ", SocSoc:${moneyFormat.format(socSec)}") +
+            strWhenNotZero(medicare == 0.0, ", Medi:${moneyFormat.format(medicare)}") +
+            ")"
 }
 
 interface TaxCalculator {
@@ -69,13 +68,13 @@ data class TaxCalcConfig(
     val fedLTG: TaxCalculator,
     val state: TaxCalculator,
     val socSec: TaxCalculator,
-    val medicare: TaxCalculator
+    val medicare: TaxCalculator,
 )
 
 data class BracketCase(
     val pct: Rate = 0.0,
     val start: Amount = 0.0,
-    val end: Amount= Amount.MAX_VALUE,
+    val end: Amount = Amount.MAX_VALUE,
 ) {
     fun size() = end - start
 }
@@ -84,6 +83,6 @@ data class TaxBracket(
     val pct: Rate,
     val jointly: BracketCase = BracketCase(),
     val household: BracketCase = BracketCase(),
-    val single: BracketCase = BracketCase()
+    val single: BracketCase = BracketCase(),
 )
 

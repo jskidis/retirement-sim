@@ -58,8 +58,8 @@ data class AssetRec(
             )
         }
 
-    override fun toString(): String {
-        return "($config:(StartBal=${moneyFormat.format(startBal)}, " +
+    override fun toString(): String =
+        "($config:(StartBal=${moneyFormat.format(startBal)}, " +
             strWhenNotZero(
                 startUnrealized == 0.0,
                 "StartUnrealized=${moneyFormat.format(startUnrealized)}, "
@@ -80,7 +80,6 @@ data class AssetRec(
                 "FinalUnrealized=${moneyFormat.format(totalUnrealized())}, "
             ) +
             "FinalBal=${moneyFormat.format(finalBalance())})"
-    }
 
     /*
         override fun toString(): String =

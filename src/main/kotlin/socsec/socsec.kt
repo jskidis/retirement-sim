@@ -9,6 +9,7 @@ import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import util.moneyFormat
+import util.strWhenNotZero
 
 data class SSBenefitRec(
     val year: Year,
@@ -22,9 +23,10 @@ data class SSBenefitRec(
     override fun taxable(): TaxableAmounts = taxableAmount
     override fun retainRec(): Boolean = amount != 0.0
 
-    val taxableStr = if (taxableAmount.hasAmounts()) ", taxable=$taxableAmount" else ""
     override fun toString(): String =
-        "($config=${moneyFormat.format(amount)}$taxableStr)"
+        "($config=${moneyFormat.format(amount)}" +
+            strWhenNotZero(taxableAmount.total() == 0.0, ", taxable=${taxableAmount}") +
+            ")"
 }
 
 data class SSBenefitConfig(
