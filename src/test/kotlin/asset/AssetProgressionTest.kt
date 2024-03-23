@@ -70,7 +70,9 @@ class AssetProgressionTest : ShouldSpec({
         results2024.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
 
-        val results2034 = progression.determineNext(prevYear.copy(year = 2034))
+        val results2034 = progression.determineNext(prevYear.copy(
+            year = 2034, assets = listOf(prevAssetRec.copy(year = 2034)))
+        )
         results2034.gains.name.shouldBe(onePctReturn.name)
         results2034.gains.amount.shouldBeWithinPercentageOf(
             startBalance * onePctReturn.mean, .001)

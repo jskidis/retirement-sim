@@ -1,7 +1,6 @@
 package asset
 
 import Amount
-import YearlyDetail
 import tax.TaxableAmounts
 
 open class TaxableInvestGainCreator(
@@ -9,10 +8,11 @@ open class TaxableInvestGainCreator(
     val regTaxOnGainsPct: Double = 0.1,
     val ltTaxOnGainsPct: Double = 0.1,
 ) : AssetGainCreator, GrossGainsCalc {
+
     override fun createGain(
-        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, prevYear: YearlyDetail?,
+        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, gaussianRnd: Double,
     ): AssetChange {
-        val gainAmount = calcGrossGains(balance, attribs, prevYear)
+        val gainAmount = calcGrossGains(balance, attribs, gaussianRnd)
         val dividends = attribs.divid * balance
         val netNonDivGains = gainAmount - dividends
 
