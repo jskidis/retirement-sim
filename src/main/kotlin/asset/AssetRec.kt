@@ -22,6 +22,7 @@ data class AssetRec(
 
     override fun year(): Year = year
     override fun config(): AmountConfig = config
+    override fun amount(): Amount = finalBalance()
     override fun retainRec(): Boolean = startBal != 0.0 || finalBalance() != 0.0
 
     fun totalGains(): Amount = gains.amount
@@ -53,7 +54,7 @@ data class AssetRec(
                     person = config.person,
                     config.taxabilityProfile
                 ),
-                amount = -it.amount,
+                baseAmount = -it.amount,
                 taxableIncome = it.taxable ?: TaxableAmounts(config.person)
             )
         }

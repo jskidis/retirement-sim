@@ -28,10 +28,10 @@ data class YearlyDetail(
     val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
-    fun totalIncome() = incomes.sumOf { it.amount }
-    fun totalExpense() = expenses.sumOf { it.amount }
+    fun totalIncome() = incomes.sumOf { it.amount() }
+    fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
-    fun totalBenefits() = benefits.sumOf { it.amount }
+    fun totalBenefits() = benefits.sumOf { it.amount() }
     fun netSpend() = (1- PortionOfYearPast.calc(year)) *
         (totalIncome() + totalBenefits() - totalExpense() - taxes.total() - prevCOPenalty)
 }
@@ -39,6 +39,7 @@ data class YearlyDetail(
 interface AmountRec {
     fun year(): Year
     fun config(): AmountConfig
+    fun amount(): Amount
     fun taxable(): TaxableAmounts
     fun retainRec(): Boolean
 }

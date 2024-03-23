@@ -15,17 +15,21 @@ import util.strWhenNotZero
 data class IncomeRec(
     val year: Year,
     val config: IncomeConfig,
-    val amount: Amount,
+    val baseAmount: Amount,
+    val bonus: Amount = 0.0,
     val taxableIncome: TaxableAmounts,
 ): AmountRec {
 
     override fun year(): Year  = year
     override fun config(): AmountConfig = config
+    override fun amount(): Amount = baseAmount + bonus
+
     override fun taxable(): TaxableAmounts = taxableIncome
-    override fun retainRec(): Boolean = amount != 0.0
+    override fun retainRec(): Boolean = baseAmount != 0.0
 
     override fun toString(): String =
-        "($config=${moneyFormat.format(amount)}" +
+        "($config=${moneyFormat.format(baseAmount)}" +
+            strWhenNotZero(bonus == 0.0, ", bonus=${moneyFormat.format(bonus)}") +
             strWhenNotZero(taxableIncome.total() == 0.0, ", taxable=${taxableIncome}") +
             ")"
 }
@@ -49,6 +53,6 @@ open class IncomeRecProvider(val config: IncomeConfig)
     override fun createRecord(value: Amount, year: Year) = IncomeRec(
         year = year,
         config = config,
-        amount = value,
+        baseAmount = value,
         taxableIncome = config.taxabilityProfile.calcTaxable(config.person, value))
 }
