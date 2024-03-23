@@ -20,6 +20,8 @@ data class SSBenefitRec(
 
     override fun year(): Year  = year
     override fun config(): AmountConfig = config
+    override fun amount(): Amount = amount
+
     override fun taxable(): TaxableAmounts = taxableAmount
     override fun retainRec(): Boolean = amount != 0.0
 

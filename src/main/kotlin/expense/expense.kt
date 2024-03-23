@@ -21,6 +21,7 @@ data class ExpenseRec(
 
     override fun year(): Year  = year
     override fun config(): AmountConfig = config
+    override fun amount(): Amount  = amount
     override fun taxable(): TaxableAmounts = taxDeductions
     override fun retainRec(): Boolean = amount != 0.0
 

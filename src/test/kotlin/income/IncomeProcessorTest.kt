@@ -37,12 +37,12 @@ class IncomeProcessorTest : ShouldSpec({
 
         result.find {
             it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount == parent1Income
+                it.config.person == parent1Name && it.amount() == parent1Income
         }.shouldNotBeNull()
 
         result.find {
             it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount == parent2Income
+                it.config.person == parent2Name && it.amount() == parent2Income
         }.shouldNotBeNull()
     }
 
@@ -51,7 +51,7 @@ class IncomeProcessorTest : ShouldSpec({
 
         val parent1Rec = result.find {
             it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount == parent1Income
+                it.config.person == parent1Name && it.amount() == parent1Income
         }
         parent1Rec.shouldNotBeNull()
         // salary above cap
@@ -60,7 +60,7 @@ class IncomeProcessorTest : ShouldSpec({
 
         val parent2Rec = result.find {
             it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount == parent2Income
+                it.config.person == parent2Name && it.amount() == parent2Income
         }
         parent2Rec.shouldNotBeNull()
         // salary above cap
@@ -79,7 +79,7 @@ class IncomeProcessorTest : ShouldSpec({
 
         val parent1Rec = result.find {
             it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount == parent1Income
+                it.config.person == parent1Name && it.amount() == parent1Income
         }
         parent1Rec.shouldNotBeNull()
         // salary below inflation adjusted cap
@@ -87,7 +87,7 @@ class IncomeProcessorTest : ShouldSpec({
 
         val parent2Rec = result.find {
             it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount == parent2Income
+                it.config.person == parent2Name && it.amount() == parent2Income
         }
         parent2Rec.shouldNotBeNull()
         // salary above inflation adjusted cap

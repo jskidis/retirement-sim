@@ -18,7 +18,7 @@ open class BasicIncomeProgression(
     override fun previousAmount(prevYear: YearlyDetail): Amount? =
         prevYear.incomes.find {
             it.config.person == config.person && it.config.name == config.name
-        }?.amount
+        }?.baseAmount
 
     override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount {
         return adjustAmount(prevAmount, prevYear)

@@ -22,7 +22,7 @@ fun incomeRecFixture(
 ) = IncomeRec(
     year = year,
     config = incomeConfigFixture(name = name, person = person),
-    amount = amount,
+    baseAmount = amount,
     taxableIncome = TaxableAmounts(person))
 
 fun incomeRecFixture(
@@ -34,7 +34,7 @@ fun incomeRecFixture(
 ) = IncomeRec(
     year = year,
     config = IncomeConfig(name = name, person = person, taxabilityProfile = taxProfile),
-    amount = amount,
+    baseAmount = amount,
     taxableIncome = taxProfile.calcTaxable(name, amount))
 
 fun incomeCfgProgessFixture(
@@ -56,7 +56,7 @@ class IncomeProgressionFixture(val amount: Double, val incomeConfig: IncomeConfi
     override fun createRecord(value: Amount, year: Year) = IncomeRec(
         year = year,
         config = incomeConfig,
-        amount = amount,
+        baseAmount = amount,
         taxableIncome = TaxableAmounts(person = incomeConfig.name,
             fed = amount, fedLTG = 0.0, state = amount, socSec = amount, medicare = amount)
     )

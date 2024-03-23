@@ -91,7 +91,7 @@ class AssetRecTest : ShouldSpec({
         val results = currRec.incomeRecs()
         results.shouldHaveSize(1)
         results[0].year.shouldBe(currRec.year)
-        results[0].amount.shouldBe(amount)
+        results[0].amount().shouldBe(amount)
         results[0].taxableIncome.shouldBe(taxable)
     }
 })
