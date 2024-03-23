@@ -2,6 +2,7 @@ package config.sample
 
 import asset.*
 import config.AssetAttributeMap
+import config.EmploymentConfig
 import config.ParentConfigBuilder
 import config.Person
 import expense.AgeBasedExpenseAdjuster
@@ -9,6 +10,7 @@ import expense.BasicExpenseProgression
 import expense.ExpenseConfig
 import expense.ExpenseConfigProgression
 import income.BasicIncomeProgression
+import income.EmploymentIncomeProgression
 import income.IncomeConfig
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
@@ -23,23 +25,22 @@ import util.YearBasedConfig
 import util.YearConfigPair
 
 object Richard : ParentConfigBuilder {
-    override fun incomes(person: Person): List<IncomeConfigProgression> {
-        val incomeConfig = IncomeConfig(
+    fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
+        EmploymentConfig(
             name = "PartTime", person = person.name,
-            taxabilityProfile = WageTaxableProfile()
+            startSalary = Smiths.richardIncStart,
+            dateRange = Smiths.richardEmploymentDate,
         )
-        return listOf(
-            IncomeConfigProgression(
-                config = incomeConfig,
-                progression = BasicIncomeProgression(
-                    startAmount = Smiths.richardIncStart,
-                    config = incomeConfig,
-                    adjusters = listOf(
-                        DateRangeAmountAdjuster(Smiths.richardEmploymentDate),
-                        StdInflationAmountAdjuster())
-                )
-            )
-        )
+    )
+
+    override fun incomes(person: Person)
+        : List<IncomeConfigProgression> {
+        val employmentConfigs = employmentConfigs(person)
+        return employmentConfigs.map {
+            val incomeConfig = EmploymentConfig.incomeConfig(it)
+            val progression = EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
+            IncomeConfigProgression(incomeConfig, progression)
+        }
     }
 
     override fun expenses(person: Person): List<ExpenseConfigProgression> {

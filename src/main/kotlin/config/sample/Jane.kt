@@ -2,6 +2,7 @@ package config.sample
 
 import asset.*
 import config.AssetAttributeMap
+import config.EmploymentConfig
 import config.ParentConfigBuilder
 import config.Person
 import expense.AgeBasedExpenseAdjuster
@@ -9,6 +10,7 @@ import expense.BasicExpenseProgression
 import expense.ExpenseConfig
 import expense.ExpenseConfigProgression
 import income.BasicIncomeProgression
+import income.EmploymentIncomeProgression
 import income.IncomeConfig
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
@@ -23,23 +25,22 @@ import util.YearBasedConfig
 import util.YearConfigPair
 
 object Jane : ParentConfigBuilder {
-    override fun incomes(person: Person): List<IncomeConfigProgression> {
-        val janeIncomeConfig = IncomeConfig(
-            name = "BigCo", person = person.name,
-            taxabilityProfile = WageTaxableProfile()
+    fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
+        EmploymentConfig(
+            name = "Accenture", person = person.name,
+            startSalary = Smiths.janeIncStart,
+            dateRange = Smiths.janeEmploymentDate,
         )
-        return listOf(
-            IncomeConfigProgression(
-                config = janeIncomeConfig,
-                progression = BasicIncomeProgression(
-                    startAmount = Smiths.janeIncStart,
-                    config = janeIncomeConfig,
-                    adjusters = listOf(
-                        DateRangeAmountAdjuster(Smiths.janeEmploymentDate),
-                        StdInflationAmountAdjuster())
-                )
-            )
-        )
+    )
+
+    override fun incomes(person: Person)
+        : List<IncomeConfigProgression> {
+        val employmentConfigs = employmentConfigs(person)
+        return employmentConfigs.map {
+            val incomeConfig = EmploymentConfig.incomeConfig(it)
+            val progression = EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
+            IncomeConfigProgression(incomeConfig, progression)
+        }
     }
 
     override fun expenses(person: Person): List<ExpenseConfigProgression> {
