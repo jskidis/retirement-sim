@@ -9,21 +9,21 @@ open class BasicExpenseProgression(
     val config: ExpenseConfig,
     val adjusters: List<AmountAdjusterWithGapFiller> = ArrayList(),
 ) : AmountProviderProgression<ExpenseRec>,
-    NullablePrevValProvider,
+    AmountProviderFromPrev,
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {
 
-    override fun initialValue() = startAmount
+    override fun initialAmount() = startAmount
 
-    override fun previousValue(prevYear: YearlyDetail): Amount? =
+    override fun previousAmount(prevYear: YearlyDetail): Amount? =
         prevYear.expenses.find {
             it.config.name == config.name && it.config.person == config.person
         }?.amount
 
-    override fun nextValue(prevVal: Amount, prevYear: YearlyDetail): Amount =
-        adjustAmount(prevVal, prevYear)
+    override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount =
+        adjustAmount(prevAmount, prevYear)
 
-    override fun gapFillValue(prevYear: YearlyDetail): Amount =
+    override fun nextAmount(prevYear: YearlyDetail): Amount =
         adjustGapFillValue(startAmount, prevYear)
 }
 

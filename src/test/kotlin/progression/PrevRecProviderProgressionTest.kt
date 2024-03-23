@@ -37,6 +37,6 @@ class PrevRecProviderProgressionFixture(
 
     override fun previousRec(prevYear: YearlyDetail): Double? = prevValue
     override fun initialRec(): Double = initValue
-    override fun nextRec(prevYear: YearlyDetail): Double = 0.0
-    override fun nextRec(prevRec: Double, prevYear: YearlyDetail): Double = (prevValue ?: 0.0) * nextValMult
+    override fun nextRecFromPrev(prevYear: YearlyDetail): Double = 0.0
+    override fun nextRecFromPrev(prevRec: Double, prevYear: YearlyDetail): Double = (prevValue ?: 0.0) * nextValMult
 }

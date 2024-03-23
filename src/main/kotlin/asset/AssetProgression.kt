@@ -28,7 +28,7 @@ open class AssetProgression(
             gaussianRnd = 0.0
         )
 
-    override fun nextRec(prevYear: YearlyDetail): AssetRec =
+    override fun nextRecFromPrev(prevYear: YearlyDetail): AssetRec =
         buildRec(
             year = prevYear.year +1,
             balance = 0.0,
@@ -36,7 +36,7 @@ open class AssetProgression(
             gaussianRnd = 0.0
         )
 
-    override fun nextRec(prevRec: AssetRec, prevYear: YearlyDetail): AssetRec =
+    override fun nextRecFromPrev(prevRec: AssetRec, prevYear: YearlyDetail): AssetRec =
         buildRec(
             year = prevYear.year +1,
             balance = prevRec.finalBalance(),
