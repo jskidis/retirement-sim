@@ -14,10 +14,9 @@ interface AmountToRecProvider<T> {
 }
 
 interface AmountProviderProgression<T> :
-    Progression<T>, AmountProvider, AmountToRecProvider<T> {
+    PrevYearProgression<T>, AmountProvider, AmountToRecProvider<T> {
 
-    override fun determineNext(prevYear: YearlyDetail?): T {
-        return createRecord(determineAmount(prevYear), yearFromPrevYearDetail(prevYear))
-    }
+    override fun determineFromPrev(prevYear: YearlyDetail?): T =
+        createRecord(determineAmount(prevYear), yearFromPrevYearDetail(prevYear))
 }
 
