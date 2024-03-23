@@ -13,9 +13,9 @@ open class RandomRateInflationProgression(
 ) : PrevRecProviderProgression<InflationRec>,
     GaussianRndProvider {
 
-    override fun previousValue(prevYear: YearlyDetail): InflationRec = prevYear.inflation
+    override fun previousRec(prevYear: YearlyDetail): InflationRec = prevYear.inflation
 
-    override fun initialValue(): InflationRec {
+    override fun initialRec(): InflationRec {
         val gaussianRnd = gaussianRndValue()
         return InflationRec(
             std = InflationRAC(rate = gaussianAdjValue(gaussianRnd, stdMean, stdSD)),
@@ -26,25 +26,28 @@ open class RandomRateInflationProgression(
             )
     }
 
-    override fun next(prevVal: InflationRec): InflationRec {
+    override fun nextRec(prevYear: YearlyDetail): InflationRec =
+        throw RuntimeException("Unalbe to find previous inflation rec")
+
+    override fun nextRec(prevRec: InflationRec, prevYear: YearlyDetail): InflationRec {
         val gaussianRnd = gaussianRndValue()
 
         return InflationRec(
             std = InflationRAC.build(
                 currRate = gaussianAdjValue(gaussianRnd, stdMean, stdSD),
-                prev = prevVal.std
+                prev = prevRec.std
             ),
             med = InflationRAC.build(
                 currRate = gaussianAdjValue(gaussianRnd, medMean, medSD),
-                prev = prevVal.med
+                prev = prevRec.med
             ),
             chain = InflationRAC.build(
                 currRate = gaussianAdjValue(gaussianRnd, chainMean, chainSD),
-                prev = prevVal.chain
+                prev = prevRec.chain
             ),
             wage = InflationRAC.build(
                 currRate = gaussianAdjValue(gaussianRnd, wageMean, wageSD),
-                prev = prevVal.wage
+                prev = prevRec.wage
             ),
         )
     }

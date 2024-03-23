@@ -11,17 +11,20 @@ open class FixedRateInflationProgression(
     val fixedWageRate: Rate = fixedMedRate,
 ) : PrevRecProviderProgression<InflationRec> {
 
-    override fun previousValue(prevYear: YearlyDetail): InflationRec = prevYear.inflation
+    override fun previousRec(prevYear: YearlyDetail): InflationRec = prevYear.inflation
 
-    override fun next(prevVal: InflationRec): InflationRec =
+    override fun nextRec(prevRec: InflationRec, prevYear: YearlyDetail): InflationRec =
         InflationRec(
-            std = InflationRAC.build(fixedStdRate, prevVal.std),
-            med = InflationRAC.build(fixedMedRate, prevVal.med),
-            chain = InflationRAC.build(fixedChainedRate, prevVal.chain),
-            wage = InflationRAC.build(fixedWageRate, prevVal.wage),
+            std = InflationRAC.build(fixedStdRate, prevRec.std),
+            med = InflationRAC.build(fixedMedRate, prevRec.med),
+            chain = InflationRAC.build(fixedChainedRate, prevRec.chain),
+            wage = InflationRAC.build(fixedWageRate, prevRec.wage),
         )
 
-    override fun initialValue(): InflationRec =
+    override fun nextRec(prevYear: YearlyDetail): InflationRec =
+        throw RuntimeException("Unalbe to find previous inflation rec")
+
+    override fun initialRec(): InflationRec =
         InflationRec(
             std = InflationRAC(fixedStdRate),
             med = InflationRAC(fixedMedRate),

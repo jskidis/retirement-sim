@@ -14,7 +14,7 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
         val creator = TaxableInvestGainCreator(
             qualDivRatio = 0.80, regTaxOnGainsPct = 0.0, ltTaxOnGainsPct = 0.0)
 
-        val result = creator.createGain(balance, portAttribs, config, null)
+        val result = creator.createGain(balance, portAttribs, config, 0.0)
         result.name.shouldBe(portAttribs.name)
         result.amount.shouldBe(balance * portAttribs.mean)
 
@@ -32,7 +32,7 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
         val creator = TaxableInvestGainCreator(
             qualDivRatio = 0.00, regTaxOnGainsPct = 0.2, ltTaxOnGainsPct = 0.3)
 
-        val result = creator.createGain(balance, portAttribs, config, null)
+        val result = creator.createGain(balance, portAttribs, config, 0.0)
         result.name.shouldBe(portAttribs.name)
         result.amount.shouldBe(balance * portAttribs.mean)
 
@@ -50,7 +50,7 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
         val creator = TaxableInvestGainCreator(
             qualDivRatio = 0.80, regTaxOnGainsPct = 0.2, ltTaxOnGainsPct = 0.3)
 
-        val result = creator.createGain(balance, portAttribs, config, null)
+        val result = creator.createGain(balance, portAttribs, config, 0.0)
         result.name.shouldBe(portAttribs.name)
         result.amount.shouldBe(balance * portAttribs.mean)
 
@@ -71,7 +71,7 @@ class TaxableInvestGainCreatorTest : ShouldSpec({
         val creator = TaxableInvestGainCreator(
             qualDivRatio = 0.80, regTaxOnGainsPct = 0.2, ltTaxOnGainsPct = 0.3)
 
-        val result = creator.createGain(balance, portAttribs, config, null)
+        val result = creator.createGain(balance, portAttribs, config, 0.0)
         result.name.shouldBe(portAttribs.name)
         result.amount.shouldBe(balance * portAttribs.mean)
 

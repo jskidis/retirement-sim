@@ -5,12 +5,17 @@ import YearlyDetail
 interface PrevRecProviderProgression<T> :
     Progression<T> {
 
-    fun initialValue(): T
-    fun previousValue(prevYear: YearlyDetail): T
-    fun next(prevVal: T): T
+    fun initialRec(): T
+    fun previousRec(prevYear: YearlyDetail): T?
+    fun nextRec(prevYear: YearlyDetail): T
+    fun nextRec(prevRec: T, prevYear: YearlyDetail): T
 
     override fun determineNext(prevYear: YearlyDetail?): T =
-        if (prevYear == null) initialValue()
-        else next(previousValue(prevYear))
+        if (prevYear == null) initialRec()
+        else {
+            val prevRec = previousRec(prevYear)
+            if (prevRec == null) nextRec(prevYear)
+            else nextRec(prevRec, prevYear)
+        }
 }
 

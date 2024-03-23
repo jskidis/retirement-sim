@@ -35,7 +35,7 @@ object SimulationRun {
                         "Incomes:${it.incomes} " +
                         "Benefits:${it.benefits} " +
                         "Expenses:${it.expenses} " +
-                        "Assets:{${it.assets} " +
+                        "Assets:${it.assets} " +
                         "Taxes:${it.taxes} " +
                         "Carryover:${it.carryOverTaxable} " +
                         "CO Penalty:${moneyFormat.format(it.carryOverPenalty)}"

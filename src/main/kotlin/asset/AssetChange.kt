@@ -4,6 +4,7 @@ import Amount
 import Name
 import tax.TaxableAmounts
 import util.moneyFormat
+import util.strWhenNotZero
 
 data class AssetChange(
     val name: Name,
@@ -14,9 +15,9 @@ data class AssetChange(
     val isReqDist: Boolean = false,
 ) {
     override fun toString(): String {
-        val amountStr = "$name:Amount=${moneyFormat.format(amount)}"
-        val unrealStr = if (unrealized != 0.0) ", Unrealized=${moneyFormat.format(unrealized)}" else ""
-        val taxableStr = if (taxable != null && taxable.hasAmounts()) ", Taxable=$taxable" else ""
-        return "($amountStr$unrealStr$taxableStr)"
+        return "$name:Amount=(${moneyFormat.format(amount)}" +
+            strWhenNotZero(unrealized == 0.0, ", Unrealized=${moneyFormat.format(unrealized)}") +
+            strWhenNotZero(taxable == null, ", Taxable=$taxable") +
+            ")"
     }
 }

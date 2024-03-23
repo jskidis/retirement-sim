@@ -1,7 +1,6 @@
 package asset
 import Amount
 import Name
-import YearlyDetail
 import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
@@ -24,13 +23,13 @@ data class AssetConfigProgression(
 
 interface AssetGainCreator {
     fun createGain(
-        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, prevYear: YearlyDetail?,
+        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, gaussianRnd: Double,
     ): AssetChange
 }
 
 interface GrossGainsCalc {
     fun calcGrossGains(
-        balance: Amount, attribs: PortfolAttribs, prevYear: YearlyDetail?,
-    ): Amount = balance * (attribs.mean + (attribs.stdDev * (prevYear?.rorRndGaussian ?: 0.0)))
+        balance: Amount, attribs: PortfolAttribs, gaussianRnd: Double,
+    ): Amount = balance * (attribs.mean + (attribs.stdDev * gaussianRnd))
 }
 

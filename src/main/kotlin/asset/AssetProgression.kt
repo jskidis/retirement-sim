@@ -1,10 +1,11 @@
 package asset
 
 import Amount
+import Year
 import YearlyDetail
-import progression.Progression
+import progression.PrevRecProviderProgression
 import util.YearBasedConfig
-import util.yearFromPrevYearDetail
+import util.currentDate
 
 open class AssetProgression(
     val startBalance: Amount,
@@ -12,36 +13,50 @@ open class AssetProgression(
     val gainCreator: AssetGainCreator,
     val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
     val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
+) : PrevRecProviderProgression<AssetRec> {
 
-) : Progression<AssetRec> {
+    override fun previousRec(prevYear: YearlyDetail): AssetRec? =
+        prevYear.assets.find {
+            it.config.person == config.person && it.config.name == config.name
+        }
 
-    override fun determineNext(prevYear: YearlyDetail?): AssetRec {
-        val year = yearFromPrevYearDetail(prevYear)
+    override fun initialRec(): AssetRec =
+        buildRec(
+            year = currentDate.year,
+            balance = startBalance,
+            unrealized = 0.0,
+            gaussianRnd = 0.0
+        )
+
+    override fun nextRec(prevYear: YearlyDetail): AssetRec =
+        buildRec(
+            year = prevYear.year +1,
+            balance = 0.0,
+            unrealized = 0.0,
+            gaussianRnd = 0.0
+        )
+
+    override fun nextRec(prevRec: AssetRec, prevYear: YearlyDetail): AssetRec =
+        buildRec(
+            year = prevYear.year +1,
+            balance = prevRec.finalBalance(),
+            unrealized = prevRec.totalUnrealized(),
+            gaussianRnd = prevYear.rorRndGaussian
+        )
+
+    fun buildRec(year: Year, balance: Amount, unrealized: Amount, gaussianRnd: Double): AssetRec {
         val attributes = attributesSet.getConfigForYear(year)
-
-        val prevRec = if(prevYear == null) null else previousRec(prevYear)
-
-        val balance =
-            if (prevYear == null) startBalance
-            else prevRec?.finalBalance() ?: 0.0
-
-        val unrealized = prevRec?.totalUnrealized() ?: 0.0
 
         val assetRec = AssetRec(
             year = year,
             config = config,
             startBal = balance,
             startUnrealized = unrealized,
-            gains = gainCreator.createGain(balance, attributes, config, prevYear))
+            gains = gainCreator.createGain(balance, attributes, config, gaussianRnd))
 
         val reqDistribution = requiredDistHandler.generateDistribution(balance, year)
         if (reqDistribution != null) assetRec.tributions.add(reqDistribution)
 
         return assetRec
     }
-
-    fun previousRec(prevYear: YearlyDetail): AssetRec? =
-        prevYear.assets.find {
-            it.config.person == config.person && it.config.name == config.name
-        }
 }
