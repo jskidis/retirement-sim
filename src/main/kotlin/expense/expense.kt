@@ -10,6 +10,7 @@ import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import util.moneyFormat
+import util.strWhenNotZero
 
 data class ExpenseRec(
     val year: Year,
@@ -23,9 +24,10 @@ data class ExpenseRec(
     override fun taxable(): TaxableAmounts = taxDeductions
     override fun retainRec(): Boolean = amount != 0.0
 
-    val deductionsStr = if (taxDeductions.hasAmounts()) ", deductions=$taxDeductions" else ""
     override fun toString(): String =
-        "($config=${moneyFormat.format(amount)}$deductionsStr)"
+        "($config=${moneyFormat.format(amount)}" +
+        strWhenNotZero(taxDeductions.total() == 0.0, ", deductions=$taxDeductions") +
+        ")"
 }
 
 data class ExpenseConfig(

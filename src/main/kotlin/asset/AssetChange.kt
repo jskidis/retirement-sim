@@ -14,10 +14,9 @@ data class AssetChange(
     val isCarryOver: Boolean = false,
     val isReqDist: Boolean = false,
 ) {
-    override fun toString(): String {
-        return "$name:Amount=(${moneyFormat.format(amount)}" +
+    override fun toString(): String =
+        "$name:Amount=(${moneyFormat.format(amount)}" +
             strWhenNotZero(unrealized == 0.0, ", Unrealized=${moneyFormat.format(unrealized)}") +
             strWhenNotZero(taxable == null, ", Taxable=$taxable") +
             ")"
-    }
 }
