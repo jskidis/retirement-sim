@@ -3,7 +3,7 @@ package socsec
 import Amount
 import YearMonth
 import YearlyDetail
-import progression.Progression
+import progression.PrevYearProgression
 import util.currentDate
 
 open class FixedDateAmountSSBenefitProgression(
@@ -12,11 +12,11 @@ open class FixedDateAmountSSBenefitProgression(
     val targetYM: YearMonth,
     val baseAmount: Amount,
     val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
-) : Progression<SSBenefitRec> {
+) : PrevYearProgression<SSBenefitRec> {
 
     var benefitAdjustment: Double = 0.0
 
-    override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
+    override fun determineFromPrev(prevYear: YearlyDetail?): SSBenefitRec {
         val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
         val cmpInflation = (prevYear?.inflation?.std?.cmpdEnd) ?: 1.0
 

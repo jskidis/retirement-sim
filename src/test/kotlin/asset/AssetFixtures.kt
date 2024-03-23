@@ -4,7 +4,7 @@ import Amount
 import Name
 import Year
 import YearlyDetail
-import progression.Progression
+import progression.PrevYearProgression
 import tax.NonTaxableProfile
 import tax.TaxabilityProfile
 import tax.TaxabilityProfileFixture
@@ -56,9 +56,9 @@ class AssetProgressionFixture(
     val startBal: Amount,
     val gains: Amount,
     val assetConfig: AssetConfig,
-) : Progression<AssetRec> {
+) : PrevYearProgression<AssetRec> {
 
-    override fun determineNext(prevYear: YearlyDetail?) = assetRecFixture(
+    override fun determineFromPrev(prevYear: YearlyDetail?) = assetRecFixture(
         startBal = startBal,
         gains = gains,
         assetConfig = assetConfig,
