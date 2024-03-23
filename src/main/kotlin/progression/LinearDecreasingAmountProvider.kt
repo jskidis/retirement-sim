@@ -8,11 +8,11 @@ abstract class LinearDecreasingAmountProvider(
     val startAmount: Amount,
     val startDecYear: Year,
     val numYears: Int,
-) : NextValProvider, AmountAdjuster {
+) : NextAmountProvider, AmountAdjuster {
 
-    override fun initialValue() = startAmount
+    override fun initialAmount() = startAmount
 
-    override fun nextValue(prevYear: YearlyDetail): Amount =
+    override fun nextAmount(prevYear: YearlyDetail): Amount =
         adjustAmount(nominalNextValue(prevYear), prevYear)
 
     fun nominalNextValue(prevYear: YearlyDetail): Amount =

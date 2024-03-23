@@ -13,10 +13,10 @@ class NullablePrevValProviderTest : ShouldSpec({
     val nextValMult = 1.5
     val gapFillVal = 4.0
 
-    val progression = NullablePrevValProviderFixture(
+    val progression = AmountProviderFromPrevFixture(
         initVal, prevVal, nextValMult, gapFillVal)
 
-    val progressWithNullPrev = NullablePrevValProviderFixture(
+    val progressWithNullPrev = AmountProviderFromPrevFixture(
         initVal, null, nextValMult, gapFillVal)
 
     should("determineNext returns initial value when prev Year is null") {
@@ -34,16 +34,16 @@ class NullablePrevValProviderTest : ShouldSpec({
     }
 })
 
-class NullablePrevValProviderFixture(
+class AmountProviderFromPrevFixture(
     val initValue: Amount,
     val prevValue: Amount?,
     val nextValMult: Amount,
     val gapFillVal: Amount,
-) : NullablePrevValProvider {
+) : AmountProviderFromPrev {
 
-    override fun initialValue(): Amount = initValue
-    override fun previousValue(prevYear: YearlyDetail): Amount? = prevValue
-    override fun gapFillValue(prevYear: YearlyDetail): Amount = gapFillVal
-    override fun nextValue(prevVal: Amount, prevYear: YearlyDetail): Amount =
+    override fun initialAmount(): Amount = initValue
+    override fun previousAmount(prevYear: YearlyDetail): Amount? = prevValue
+    override fun nextAmount(prevYear: YearlyDetail): Amount = gapFillVal
+    override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount =
         prevValue?.let { it * nextValMult} ?: 0.0
 }

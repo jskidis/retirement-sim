@@ -9,22 +9,22 @@ open class BasicIncomeProgression(
     val config: IncomeConfig,
     val adjusters: List<AmountAdjusterWithGapFiller>,
 ) : AmountProviderProgression<IncomeRec>,
-    NullablePrevValProvider,
+    AmountProviderFromPrev,
     AmountToRecProvider<IncomeRec> by IncomeRecProvider(config),
     AmountAdjusterWithGapFiller by ChainedAmountAdjusterWithGapFiller(adjusters) {
 
-    override fun initialValue() = startAmount
+    override fun initialAmount() = startAmount
 
-    override fun previousValue(prevYear: YearlyDetail): Amount? =
+    override fun previousAmount(prevYear: YearlyDetail): Amount? =
         prevYear.incomes.find {
             it.config.person == config.person && it.config.name == config.name
         }?.amount
 
-    override fun nextValue(prevVal: Amount, prevYear: YearlyDetail): Amount {
-        return adjustAmount(prevVal, prevYear)
+    override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount {
+        return adjustAmount(prevAmount, prevYear)
     }
 
-    override fun gapFillValue(prevYear: YearlyDetail): Amount {
+    override fun nextAmount(prevYear: YearlyDetail): Amount {
         return adjustGapFillValue(startAmount, prevYear)
     }
 }

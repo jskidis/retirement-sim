@@ -26,10 +26,10 @@ open class RandomRateInflationProgression(
             )
     }
 
-    override fun nextRec(prevYear: YearlyDetail): InflationRec =
+    override fun nextRecFromPrev(prevYear: YearlyDetail): InflationRec =
         throw RuntimeException("Unalbe to find previous inflation rec")
 
-    override fun nextRec(prevRec: InflationRec, prevYear: YearlyDetail): InflationRec {
+    override fun nextRecFromPrev(prevRec: InflationRec, prevYear: YearlyDetail): InflationRec {
         val gaussianRnd = gaussianRndValue()
 
         return InflationRec(
