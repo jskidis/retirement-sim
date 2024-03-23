@@ -2,6 +2,7 @@ package config
 
 import Amount
 import Name
+import income.BonusCalculator
 import income.IncomeConfig
 import tax.WageTaxableProfile
 import util.DateRange
@@ -11,6 +12,7 @@ data class EmploymentConfig(
     val person: Name,
     val dateRange: DateRange,
     val startSalary: Amount,
+    val bonusCalc: BonusCalculator? = null,
 ) {
     companion object {
         fun incomeConfig(config: EmploymentConfig): IncomeConfig =
