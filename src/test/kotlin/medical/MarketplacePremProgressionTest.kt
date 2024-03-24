@@ -28,7 +28,7 @@ class MarketplacePremProgressionTest : FunSpec({
 
         val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation
         val results = progression.determineNext(currYear)
-        results.annualPrem.shouldBe(expectedPremium)
+        results.premium.shouldBe(expectedPremium)
         results.monthsCovered.shouldBe(12)
         results.fullyDeduct.shouldBeFalse()
     }
@@ -41,7 +41,7 @@ class MarketplacePremProgressionTest : FunSpec({
         val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.2
 
         val results = progression.determineNext(currYear)
-        results.annualPrem.shouldBe(expectedPremium)
+        results.premium.shouldBe(expectedPremium)
     }
 
     test("determineNext should factor in medal type into premium") {
@@ -52,7 +52,7 @@ class MarketplacePremProgressionTest : FunSpec({
         val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.1
 
         val results = progression.determineNext(currYear)
-        results.annualPrem.shouldBe(expectedPremium)
+        results.premium.shouldBe(expectedPremium)
     }
 
     test("determineNext should factor plan type into premium") {
@@ -63,7 +63,7 @@ class MarketplacePremProgressionTest : FunSpec({
         val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.2
 
         val results = progression.determineNext(currYear)
-        results.annualPrem.shouldBe(expectedPremium)
+        results.premium.shouldBe(expectedPremium)
     }
 })
 
