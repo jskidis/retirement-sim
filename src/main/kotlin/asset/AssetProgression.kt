@@ -4,6 +4,7 @@ import Amount
 import Year
 import YearlyDetail
 import progression.PrevRecProviderProgression
+import util.GaussianRndFromPrevYear
 import util.YearBasedConfig
 import util.currentDate
 
@@ -13,7 +14,7 @@ open class AssetProgression(
     val gainCreator: AssetGainCreator,
     val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
     val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
-) : PrevRecProviderProgression<AssetRec> {
+) : PrevRecProviderProgression<AssetRec>, GaussianRndFromPrevYear {
 
     override fun previousRec(prevYear: YearlyDetail): AssetRec? =
         prevYear.assets.find {
@@ -41,7 +42,7 @@ open class AssetProgression(
             year = prevYear.year +1,
             balance = prevRec.finalBalance(),
             unrealized = prevRec.totalUnrealized(),
-            gaussianRnd = prevYear.rorRndGaussian
+            gaussianRnd = gaussianRndValue(prevYear)
         )
 
     fun buildRec(year: Year, balance: Amount, unrealized: Amount, gaussianRnd: Double): AssetRec {
