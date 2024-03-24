@@ -1,8 +1,9 @@
-package expense
+package medical
 
 import YearMonth
 import YearlyDetail
 import config.ConfigConstants
+import expense.InsurancePrem
 import org.apache.commons.csv.CSVRecord
 import progression.CYProgression
 import util.CSVReader

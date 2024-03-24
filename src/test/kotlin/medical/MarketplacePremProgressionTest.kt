@@ -1,4 +1,4 @@
-package expense
+package medical
 
 import YearMonth
 import config.ConfigConstants
