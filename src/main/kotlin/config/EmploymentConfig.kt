@@ -13,6 +13,7 @@ data class EmploymentConfig(
     val dateRange: DateRange,
     val startSalary: Amount,
     val bonusCalc: BonusCalculator? = null,
+    val employerInsurance: EmployerInsurance? = null,
 ) {
     companion object {
         fun incomeConfig(config: EmploymentConfig): IncomeConfig =
@@ -22,11 +23,11 @@ data class EmploymentConfig(
             )
     }
 }
-/*
+
 data class EmployerInsurance(
     val selfCost: Amount,
     val spouseCost: Amount,
     val dependantCost: Amount,
-    val isSingleCostAllDependants: Boolean = false
+    val cobraLength: Int = 18,
+    val cobraMult: Double = 2.04
 )
-*/

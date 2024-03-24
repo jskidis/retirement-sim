@@ -46,7 +46,7 @@ interface AmountRec {
 
 data class YearMonth (
     val year: Year,
-    val month: Int,
+    val month: Int = 0,
 ) {
     fun toDec(): Double = year + monthFraction()
     fun monthFraction(): Double = month / 12.0

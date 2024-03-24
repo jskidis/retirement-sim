@@ -1,5 +1,6 @@
 package config
 
+import Amount
 import Name
 import Year
 import YearMonth
@@ -8,6 +9,7 @@ import asset.NetSpendAllocationConfig
 import asset.assetConfigProgressFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
+import income.BonusCalculator
 import income.IncomeConfigProgression
 import income.incomeCfgProgessFixture
 import inflation.InflationRec
@@ -15,13 +17,15 @@ import inflationConfigFixture
 import progression.Progression
 import tax.TaxCalcConfig
 import tax.taxConfigFixture
+import util.DateRange
 
 fun configFixture(
     startYear: Year = 2020,
     householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: TaxCalcConfig = taxConfigFixture(),
-    assetOrdering: NetSpendAllocationConfig = assetOrderingFixture(householdConfig)) =
+    assetOrdering: NetSpendAllocationConfig = assetOrderingFixture(householdConfig),
+) =
     SimConfig(
         startYear = startYear,
         household = householdConfig,
@@ -43,24 +47,45 @@ fun householdConfigFixture(
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
 
 fun assetOrderingFixture(
-    householdConfig: HouseholdConfig
+    householdConfig: HouseholdConfig,
 ) = NetSpendAllocationConfig(householdConfig.jointAssets, householdConfig.jointAssets)
 
 fun householdMembersFixture(
     parent1Config: ParentConfig = parentConfigFixture("Parent1"),
     parent2Config: ParentConfig = parentConfigFixture("Parent2"),
-    dependantsConfig: List<DependantConfig> = listOf()
+    dependantsConfig: List<DependantConfig> = listOf(),
 ) = HouseholdMembers(
     parent1 = parent1Config,
     parent2 = parent2Config,
     dependants = dependantsConfig
 )
 
-fun parentConfigFixture(name: Name,
-    incomeConfigs: List<IncomeConfigProgression> = listOf(incomeCfgProgessFixture("Income", name)),
-    expenseConfigs: List<ExpenseConfigProgression> = listOf(expenseCfgProgessFixture("Expense", name)),
-    assetConfigs: List<AssetConfigProgression> = listOf(assetConfigProgressFixture("Asset", name))
-) = ParentConfig(personFixture(name), incomeConfigs,expenseConfigs, assetConfigs)
+fun parentConfigFixture(
+    name: Name,
+    incomeConfigs: List<IncomeConfigProgression> = listOf(
+        incomeCfgProgessFixture("Income", name)),
+    expenseConfigs: List<ExpenseConfigProgression> = listOf(
+        expenseCfgProgessFixture("Expense", name)),
+    assetConfigs: List<AssetConfigProgression> = listOf(
+        assetConfigProgressFixture("Asset", name)),
+) =
+    ParentConfig(personFixture(name), incomeConfigs, expenseConfigs, assetConfigs)
 
+fun employmentConfigFixture(
+    name: Name = "Employment",
+    person: Name = "Person",
+    dateRange: DateRange = DateRange(),
+    startSalary: Amount = 0.0,
+    bonusCalc: BonusCalculator? = null,
+    employerInsurance: EmployerInsurance? = EmployerInsurance(0.0, 0.0, 0.0)
+): EmploymentConfig=
+    EmploymentConfig(
+        name = name,
+        person = person,
+        dateRange = dateRange,
+        startSalary = startSalary,
+        bonusCalc = bonusCalc,
+        employerInsurance = employerInsurance
+    )
 
 
