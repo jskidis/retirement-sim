@@ -3,7 +3,6 @@ package medical
 import YearMonth
 import YearlyDetail
 import config.ConfigConstants
-import expense.InsurancePrem
 import org.apache.commons.csv.CSVRecord
 import progression.CYProgression
 import util.CSVReader
@@ -23,7 +22,7 @@ open class MarketplacePremProgression(
             getAgeFactor(currYear.year - birthYM.year) *
             getMedalPlanFactor(medalType, planType)
 
-        return InsurancePrem(annualPrem =  premium, monthsCovered = 12, fullyDeduct = false)
+        return InsurancePrem(premium =  premium, monthsCovered = 12, fullyDeduct = false)
     }
 
     override fun getAgeFactor(age: Int): Double =

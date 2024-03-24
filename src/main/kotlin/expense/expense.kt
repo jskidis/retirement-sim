@@ -55,9 +55,4 @@ open class ExpenseRecProvider(val config: ExpenseConfig)
     )
 }
 
-data class InsurancePrem(
-    val annualPrem: Amount,
-    val monthsCovered: Int,
-    val fullyDeduct: Boolean
-)
 
