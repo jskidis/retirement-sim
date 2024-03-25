@@ -4,12 +4,13 @@ import Name
 import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
+import tax.UnusedProfile
 
 data class AssetConfig(
     override val name: Name,
     override val person: Name,
     // Taxability of gains
-    override val taxabilityProfile: TaxabilityProfile,
+    override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
 
     override fun toString(): String = "$person-$name"

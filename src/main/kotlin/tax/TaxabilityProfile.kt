@@ -18,13 +18,16 @@ interface TaxabilityProfile {
     )
 }
 
-open class NonTaxableProfile : NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
 open class WageTaxableProfile : FedTaxableProfile, StateTaxableProfile, PayrollTaxableProfile
 open class NonWageTaxableProfile : FedTaxableProfile, StateTaxableProfile, NonPayrollTaxableProfile
 open class FedOnlyTaxableProfile : FedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
 open class FedAndStateDeductProfile : FedDeductProfile, StateDeductProfile, NonPayrollTaxableProfile
 open class FullyDeductProfile : FedDeductProfile, StateDeductProfile, PayrollTaxDeductProfile
 open class OverriddenTaxableProfile: NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+
+open class UnusedProfile : NotFedTaxableProfile, NotStateTaxableProfile, NonPayrollTaxableProfile
+typealias NonTaxableProfile = UnusedProfile
+typealias NonDeductProfile = NonTaxableProfile
 
 class SSBenefitTaxableProfile : NonPayrollTaxableProfile, NotStateTaxableProfile {
     override fun fed(amount: Amount): Amount = amount * 0.5

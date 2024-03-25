@@ -6,13 +6,12 @@ import Year
 import YearlyDetail
 import progression.AmountProviderProgression
 import tax.TaxabilityProfile
-import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
 
 fun incomeConfigFixture(
     name: Name = "Income",
     person: Name = "Person",
-) = IncomeConfig(name, person, TaxabilityProfileFixture())
+) = IncomeConfig(name, person)
 
 fun incomeRecFixture(
     year: Year = 2024,
@@ -42,7 +41,7 @@ fun incomeCfgProgessFixture(
     person: Name = "Person",
     amount: Amount = 0.0
 ): IncomeConfigProgression {
-    val config = IncomeConfig(name, person, TaxabilityProfileFixture())
+    val config = IncomeConfig(name, person)
 
     return IncomeConfigProgression(
         config, IncomeProgressionFixture(amount, config)

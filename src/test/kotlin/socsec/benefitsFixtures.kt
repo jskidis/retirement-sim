@@ -4,21 +4,20 @@ import Amount
 import Name
 import Year
 import YearlyDetail
-import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
 import util.yearFromPrevYearDetail
 
 fun benefitsConfigFixture(
     name: Name = "Benefit",
     person: Name = "Person",
-) = SSBenefitConfig(name, person, TaxabilityProfileFixture())
+) = SSBenefitConfig(name, person)
 
 fun benefitsConfigProgressFixture(
     name: Name = "Benefit",
     person: Name = "Person",
     amount: Amount = 0.0,
 ): SSBenefitConfigProgression {
-    val config = SSBenefitConfig(name, person, TaxabilityProfileFixture())
+    val config = SSBenefitConfig(name, person)
     val progression = SSBenefitProgressionFixture(amount, person, config)
     return SSBenefitConfigProgression(config, progression)
 }
