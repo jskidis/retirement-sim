@@ -30,6 +30,7 @@ class MarketplacePremProgressionTest : FunSpec({
         results.premium.shouldBe(expectedPremium)
         results.monthsCovered.shouldBe(12)
         results.fullyDeductAmount.shouldBe(0.0)
+        results.name.shouldBe(MarketplacePremProgression.DESCRIPTION)
     }
 
     test("determineNext should factor in age into premium") {

@@ -27,6 +27,7 @@ class MedicareProgressionTest : FunSpec({
         results.premium.shouldBe(ConfigConstants.baseMedicarePrem * inflation.med.cmpdStart)
         results.monthsCovered.shouldBe(12)
         results.fullyDeductAmount.shouldBe(0.0)
+        results.name.shouldBe(MedicareProgression.DESCRIPTION)
     }
 
     test("determineNext return 'empty' premium object is person is less an 65") {

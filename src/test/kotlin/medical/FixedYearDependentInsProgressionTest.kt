@@ -13,15 +13,18 @@ class FixedYearDependentInsProgressionTest : FunSpec({
         val beforeYearResult = progression.determineNext(yearBeforeStart)
         beforeYearResult.monthsCovered.shouldBe(0)
         beforeYearResult.premium.shouldBe(0.0)
+        beforeYearResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
 
         val yearAfterStart = yearlyDetailFixture(year = startYear +1)
         val afterYearResult = progression.determineNext(yearAfterStart)
         afterYearResult.monthsCovered.shouldBe(12)
         afterYearResult.premium.shouldBe(0.0)
+        afterYearResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
 
         val yearOfStart = yearlyDetailFixture(year = startYear)
         val yearOfResult = progression.determineNext(yearOfStart)
         yearOfResult.monthsCovered.shouldBe(12)
         yearOfResult.premium.shouldBe(0.0)
+        yearOfResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
     }
 })
