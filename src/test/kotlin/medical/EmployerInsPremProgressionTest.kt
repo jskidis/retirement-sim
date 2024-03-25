@@ -6,7 +6,6 @@ import config.employmentConfigFixture
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import util.DateRange
 import yearlyDetailFixture
@@ -46,7 +45,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         val resultsSelf = progSelf.determineNext(currYear)
         resultsSelf.premium.shouldBe(empInsurance.selfCost * cmpdInflation)
         resultsSelf.monthsCovered.shouldBe(12)
-        resultsSelf.fullyDeduct.shouldBeTrue()
+        resultsSelf.fullyDeductAmount.shouldBe(resultsSelf.premium)
 
         val progSpouse = EmployerInsPremProgression(listOf(config), RelationToInsured.SPOUSE)
         val resultsSpouse = progSpouse.determineNext(currYear)

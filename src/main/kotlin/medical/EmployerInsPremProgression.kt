@@ -36,7 +36,9 @@ class EmployerInsPremProgression(
                 InsurancePrem(
                     premium = acc.premium + prem,
                     monthsCovered = acc.monthsCovered + monthsNeedingCover,
-                    fullyDeduct = fullyDeduct)
+                    fullyDeductAmount = acc.fullyDeductAmount +
+                        if (fullyDeduct) prem else 0.0
+                )
             }
         }
     }

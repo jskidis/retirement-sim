@@ -5,7 +5,6 @@ import config.ConfigConstants
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -27,7 +26,7 @@ class MedicareProgressionTest : FunSpec({
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(ConfigConstants.baseMedicarePrem * inflation.med.cmpdStart)
         results.monthsCovered.shouldBe(12)
-        results.fullyDeduct.shouldBeFalse()
+        results.fullyDeductAmount.shouldBe(0.0)
     }
 
     test("determineNext return 'empty' premium object is person is less an 65") {

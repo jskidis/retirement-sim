@@ -22,7 +22,7 @@ open class MarketplacePremProgression(
             getAgeFactor(currYear.year - birthYM.year) *
             getMedalPlanFactor(medalType, planType)
 
-        return InsurancePrem(premium =  premium, monthsCovered = 12, fullyDeduct = false)
+        return InsurancePrem(premium =  premium, monthsCovered = 12, fullyDeductAmount = premium)
     }
 
     override fun getAgeFactor(age: Int): Double =
