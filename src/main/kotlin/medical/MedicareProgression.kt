@@ -8,11 +8,16 @@ import progression.CYProgression
 class MedicareProgression(val birthYM: YearMonth) : CYProgression<InsurancePrem> {
     override fun determineNext(currYear: YearlyDetail): InsurancePrem {
         val monthsCovered = determineMonthsCovered(currYear)
-        return if (monthsCovered == 0) InsurancePrem()
+        return if (monthsCovered == 0) InsurancePrem(name = DESCRIPTION)
         else InsurancePrem(
+            name = DESCRIPTION,
             premium = getBasePremium(currYear) * (monthsCovered / 12.0),
             monthsCovered = monthsCovered
         )
+    }
+
+    companion object {
+        const val DESCRIPTION = "Medicare"
     }
 
     fun getBasePremium(currYear: YearlyDetail): Double {

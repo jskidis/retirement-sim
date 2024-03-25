@@ -22,7 +22,8 @@ open class MarketplacePremProgression(
             getAgeFactor(currYear.year - birthYM.year) *
             getMedalPlanFactor(medalType, planType)
 
-        return InsurancePrem(premium =  premium, monthsCovered = 12, fullyDeductAmount = premium)
+        return InsurancePrem(
+            name = DESCRIPTION, premium = premium, monthsCovered = 12)
     }
 
     override fun getAgeFactor(age: Int): Double =
@@ -30,6 +31,10 @@ open class MarketplacePremProgression(
 
     override fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double =
         MPMedalPlanMap.getMedalPlanFactor(medal, plan)
+
+    companion object {
+        const val DESCRIPTION = "Marketplace"
+    }
 }
 
 interface MPAgeFactorRetrieval {

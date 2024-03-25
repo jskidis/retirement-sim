@@ -21,7 +21,7 @@ class EmployerInsPremProgression(
                 it.dateRange.pctInYear(currYear.year).value > 0.0
         }
 
-        return currEmployers.fold(InsurancePrem()) { acc, it ->
+        return currEmployers.fold(InsurancePrem(DESCRIPTION)) { acc, it ->
             if (acc.monthsCovered >= 12 || it.employerInsurance == null) acc
             else {
                 val monthsCovered = Math.round(
@@ -34,6 +34,7 @@ class EmployerInsPremProgression(
                     currYear.inflation.med.cmpdStart
 
                 InsurancePrem(
+                    name = acc.name,
                     premium = acc.premium + prem,
                     monthsCovered = acc.monthsCovered + monthsNeedingCover,
                     fullyDeductAmount = acc.fullyDeductAmount +
@@ -41,6 +42,10 @@ class EmployerInsPremProgression(
                 )
             }
         }
+    }
+
+    companion object {
+        const val DESCRIPTION = "EmpProvIns"
     }
 
     private fun premBasedOnRelation(empInsurance: EmployerInsurance, relation: RelationToInsured)
