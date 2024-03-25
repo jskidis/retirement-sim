@@ -3,6 +3,7 @@ package config
 import asset.AssetConfigProgression
 import expense.ExpenseConfigProgression
 import income.IncomeConfigProgression
+import medical.MedInsuranceProgression
 import socsec.SSBenefitConfigProgression
 
 interface ConfigBuilder {
@@ -14,6 +15,7 @@ interface PersonConfigBuilder {
     fun expenses(person: Person): List<ExpenseConfigProgression> = ArrayList()
     fun assets(person: Person): List<AssetConfigProgression> = ArrayList()
     fun benefits(person: Person): List<SSBenefitConfigProgression> = ArrayList()
+    fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
 }
 
 interface ParentConfigBuilder : PersonConfigBuilder {
@@ -22,7 +24,8 @@ interface ParentConfigBuilder : PersonConfigBuilder {
         incomes = incomes(person),
         expenses = expenses(person),
         assets = assets(person),
-        benefits = benefits(person)
+        benefits = benefits(person),
+        medInsurance = medInsurance(person)
     )
 }
 
@@ -32,7 +35,8 @@ interface DependentConfigBuilder : PersonConfigBuilder {
         incomes = incomes(person),
         expenses = expenses(person),
         assets = assets(person),
-        benefits = benefits(person)
+        benefits = benefits(person),
+        medInsurance = medInsurance(person)
     )
 }
 

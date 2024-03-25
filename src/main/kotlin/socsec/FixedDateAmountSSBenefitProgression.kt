@@ -3,7 +3,6 @@ package socsec
 import Amount
 import YearMonth
 import YearlyDetail
-import progression.Progression
 import util.currentDate
 
 open class FixedDateAmountSSBenefitProgression(
@@ -12,7 +11,7 @@ open class FixedDateAmountSSBenefitProgression(
     val targetYM: YearMonth,
     val baseAmount: Amount,
     val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
-) : Progression<SSBenefitRec> {
+) : SSBenefitProgression {
 
     var benefitAdjustment: Double = 0.0
 

@@ -4,7 +4,6 @@ import YearMonth
 import YearlyDetail
 import config.ConfigConstants
 import org.apache.commons.csv.CSVRecord
-import progression.CYProgression
 import util.CSVReader
 import util.YearBasedConfig
 import util.YearConfigPair
@@ -13,7 +12,7 @@ open class MarketplacePremProgression(
     val birthYM: YearMonth,
     val medalType: MPMedalType,
     val planType: MPPlanType,
-) : CYProgression<InsurancePrem>,
+) : MedInsuranceProgression,
     MPAgeFactorRetrieval, MPMealPlanFactorRetrieval
 {
     override fun determineNext(currYear: YearlyDetail): InsurancePrem {
@@ -43,14 +42,6 @@ interface MPAgeFactorRetrieval {
 
 interface MPMealPlanFactorRetrieval {
     fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double
-}
-
-enum class MPMedalType {
-    BRONZE, SILVER, GOLD, PLATINUM
-}
-
-enum class MPPlanType {
-    HMO, EPO, PPO
 }
 
 data class MedalPlanFactor(
