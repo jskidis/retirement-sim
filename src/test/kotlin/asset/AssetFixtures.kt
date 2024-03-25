@@ -7,7 +7,6 @@ import YearlyDetail
 import progression.Progression
 import tax.NonTaxableProfile
 import tax.TaxabilityProfile
-import tax.TaxabilityProfileFixture
 
 fun assetConfigFixture(
     assetName: Name = "Asset",
@@ -41,9 +40,7 @@ fun assetConfigProgressFixture(
     spendAllocHandler: SpendAllocHandler = BasicSpendAlloc()
 ) : AssetConfigProgression {
 
-    val config = AssetConfig(
-        name, person, TaxabilityProfileFixture()
-    )
+    val config = AssetConfig(name, person)
 
     return AssetConfigProgression(
         config = config,

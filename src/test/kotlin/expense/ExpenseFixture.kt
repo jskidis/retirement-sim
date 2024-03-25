@@ -6,13 +6,12 @@ import Year
 import YearlyDetail
 import progression.AmountProviderProgression
 import tax.TaxabilityProfile
-import tax.TaxabilityProfileFixture
 import tax.TaxableAmounts
 
 fun expenseConfigFixture(
     name: Name = "Expense",
     person: Name = "Person",
-) = ExpenseConfig(name, person, TaxabilityProfileFixture())
+) = ExpenseConfig(name, person)
 
 fun expenseRecFixture(
     year: Year = 2024,
@@ -43,7 +42,7 @@ fun expenseCfgProgessFixture(
     person: Name = "Person",
     amount: Amount = 0.0,
 ): ExpenseConfigProgression {
-    val config = ExpenseConfig(name, person, TaxabilityProfileFixture())
+    val config = ExpenseConfig(name, person)
     return ExpenseConfigProgression(
         config, ExpenseProgressionFixture(amount, config)
     )

@@ -8,6 +8,7 @@ import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
+import tax.UnusedProfile
 import util.moneyFormat
 import util.strWhenNotZero
 
@@ -34,7 +35,7 @@ data class SSBenefitRec(
 data class SSBenefitConfig(
     override val name: Name,
     override val person: Name,
-    override val taxabilityProfile: TaxabilityProfile,
+    override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
     override fun toString(): String = "$person-$name"
 }

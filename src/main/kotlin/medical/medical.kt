@@ -9,7 +9,7 @@ data class InsurancePrem(
     val monthsCovered: Int = 0,
     val fullyDeductAmount: Amount = 0.0
 ) {
-//    fun hasCoverage(): Boolean = monthsCovered > 0
+    fun hasCoverage(): Boolean = monthsCovered > 0
 }
 
 interface MedInsuranceProgression : CYProgression<InsurancePrem>
