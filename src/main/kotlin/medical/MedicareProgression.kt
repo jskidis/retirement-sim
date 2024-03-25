@@ -3,9 +3,8 @@ package medical
 import YearMonth
 import YearlyDetail
 import config.ConfigConstants
-import progression.CYProgression
 
-class MedicareProgression(val birthYM: YearMonth) : CYProgression<InsurancePrem> {
+class MedicareProgression(val birthYM: YearMonth) : MedInsuranceProgression {
     override fun determineNext(currYear: YearlyDetail): InsurancePrem {
         val monthsCovered = determineMonthsCovered(currYear)
         return if (monthsCovered == 0) InsurancePrem(name = DESCRIPTION)

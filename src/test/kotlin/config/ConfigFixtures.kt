@@ -14,7 +14,10 @@ import income.IncomeConfigProgression
 import income.incomeCfgProgessFixture
 import inflation.InflationRec
 import inflationConfigFixture
+import medical.MedInsuranceProgression
 import progression.Progression
+import socsec.SSBenefitConfigProgression
+import socsec.benefitsConfigProgressFixture
 import tax.TaxCalcConfig
 import tax.taxConfigFixture
 import util.DateRange
@@ -68,8 +71,17 @@ fun parentConfigFixture(
         expenseCfgProgessFixture("Expense", name)),
     assetConfigs: List<AssetConfigProgression> = listOf(
         assetConfigProgressFixture("Asset", name)),
+    benefitConfigs: List<SSBenefitConfigProgression> = listOf(
+        benefitsConfigProgressFixture("SSBenefits")),
+    medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
 ) =
-    ParentConfig(personFixture(name), incomeConfigs, expenseConfigs, assetConfigs)
+    ParentConfig(
+        personFixture(name),
+        incomeConfigs,
+        expenseConfigs,
+        assetConfigs,
+        benefitConfigs,
+        medInsuranceConfigs)
 
 fun employmentConfigFixture(
     name: Name = "Employment",
@@ -77,8 +89,8 @@ fun employmentConfigFixture(
     dateRange: DateRange = DateRange(),
     startSalary: Amount = 0.0,
     bonusCalc: BonusCalculator? = null,
-    employerInsurance: EmployerInsurance? = EmployerInsurance(0.0, 0.0, 0.0)
-): EmploymentConfig=
+    employerInsurance: EmployerInsurance? = EmployerInsurance(0.0, 0.0, 0.0),
+): EmploymentConfig =
     EmploymentConfig(
         name = name,
         person = person,

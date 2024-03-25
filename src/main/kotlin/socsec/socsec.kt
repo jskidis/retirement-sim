@@ -41,5 +41,7 @@ data class SSBenefitConfig(
 
 data class SSBenefitConfigProgression(
     val config: SSBenefitConfig,
-    val progression: Progression<SSBenefitRec>,
+    val progression: SSBenefitProgression,
 )
+
+interface SSBenefitProgression : Progression<SSBenefitRec>

@@ -3,17 +3,12 @@ package medical
 import YearlyDetail
 import config.EmployerInsurance
 import config.EmploymentConfig
-import progression.CYProgression
-
-enum class RelationToInsured {
-    SELF, SPOUSE, DEPENDANT
-}
 
 class EmployerInsPremProgression(
     val employments: List<EmploymentConfig>,
     val relation: RelationToInsured,
     val fullyDeduct: Boolean = true
-) : CYProgression<InsurancePrem> {
+) : MedInsuranceProgression {
 
     override fun determineNext(currYear: YearlyDetail): InsurancePrem {
         val currEmployers = employments.filter {
