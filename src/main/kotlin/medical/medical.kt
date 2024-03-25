@@ -5,7 +5,7 @@ import Amount
 data class InsurancePrem(
     val premium: Amount = 0.0,
     val monthsCovered: Int = 0,
-    val fullyDeduct: Boolean = false
+    val fullyDeductAmount: Amount = 0.0
 ) {
     fun hasCoverage(): Boolean = monthsCovered > 0
 }
