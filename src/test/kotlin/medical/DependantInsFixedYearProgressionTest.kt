@@ -4,27 +4,27 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
-class FixedYearDependentInsProgressionTest : FunSpec({
+class DependantInsFixedYearProgressionTest : FunSpec({
     val startYear = 2030
-    val progression = FixedYearDependentInsProgression(startYear = startYear)
+    val progression = DependantInsFixedYearProgression(startYear = startYear)
 
     test("determineNext returns months coverage based on whether start year of dependant of having own insurance") {
         val yearBeforeStart = yearlyDetailFixture(year = startYear -1)
         val beforeYearResult = progression.determineNext(yearBeforeStart)
         beforeYearResult.monthsCovered.shouldBe(0)
         beforeYearResult.premium.shouldBe(0.0)
-        beforeYearResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
+        beforeYearResult.name.shouldBe(DependantInsFixedYearProgression.DESCRIPTION)
 
         val yearAfterStart = yearlyDetailFixture(year = startYear +1)
         val afterYearResult = progression.determineNext(yearAfterStart)
         afterYearResult.monthsCovered.shouldBe(12)
         afterYearResult.premium.shouldBe(0.0)
-        afterYearResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
+        afterYearResult.name.shouldBe(DependantInsFixedYearProgression.DESCRIPTION)
 
         val yearOfStart = yearlyDetailFixture(year = startYear)
         val yearOfResult = progression.determineNext(yearOfStart)
         yearOfResult.monthsCovered.shouldBe(12)
         yearOfResult.premium.shouldBe(0.0)
-        yearOfResult.name.shouldBe(FixedYearDependentInsProgression.DESCRIPTION)
+        yearOfResult.name.shouldBe(DependantInsFixedYearProgression.DESCRIPTION)
     }
 })

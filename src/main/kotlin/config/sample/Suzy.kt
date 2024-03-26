@@ -1,5 +1,6 @@
 package config.sample
 
+import Amount
 import config.DependentConfigBuilder
 import config.Person
 import expense.ExpenseConfig
@@ -9,6 +10,8 @@ import inflation.StdInflationAmountAdjuster
 import tax.NonTaxableProfile
 
 object Suzy: DependentConfigBuilder {
+    val expenseStart: Amount = 20000.0
+
     override fun expenses(person: Person): List<ExpenseConfigProgression> {
         val config = ExpenseConfig(
             name = "Expenses", person = person.name,
@@ -18,7 +21,7 @@ object Suzy: DependentConfigBuilder {
             ExpenseConfigProgression(
                 config = config,
                 progression = SCurveDecreasingExpense(
-                    startAmount = Smiths.suzyExpStart,
+                    startAmount = expenseStart,
                     startDecYear = Smiths.startYear,
                     numYears = 10,
                     config = config,

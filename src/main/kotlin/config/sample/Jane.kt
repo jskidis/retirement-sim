@@ -1,5 +1,7 @@
 package config.sample
 
+import Amount
+import YearMonth
 import asset.*
 import config.AssetAttributeMap
 import config.EmploymentConfig
@@ -17,15 +19,25 @@ import socsec.SSBenefitConfig
 import socsec.SSBenefitConfigProgression
 import tax.NonTaxableProfile
 import tax.SSBenefitTaxableProfile
+import util.DateRange
 import util.YearBasedConfig
 import util.YearConfigPair
 
 object Jane : ParentConfigBuilder {
-    fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
+    val incomeStart: Amount = 135000.0
+    val expenseStart: Amount = 30000.0
+    val employmentDates: DateRange = DateRange(end = YearMonth(2037, 6))
+    val targetSSDate: YearMonth = YearMonth(year = 2042, 6)
+    val baseSSBenefit: Amount = 40500.0
+
+    val iraAcctName: String = "Jane-IRA"
+    val iraAcctBal: Amount = 1000000.0
+
+    override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
         EmploymentConfig(
             name = "Accenture", person = person.name,
-            startSalary = Smiths.janeIncStart,
-            dateRange = Smiths.janeEmploymentDate,
+            startSalary = incomeStart,
+            dateRange = employmentDates,
         )
     )
 
@@ -48,7 +60,7 @@ object Jane : ParentConfigBuilder {
             ExpenseConfigProgression(
                 config = janeExpenseConfig,
                 progression = BasicExpenseProgression(
-                    startAmount = Smiths.janeExpStart,
+                    startAmount = expenseStart,
                     config = janeExpenseConfig,
                     adjusters = listOf(
                         StdInflationAmountAdjuster(),
@@ -61,7 +73,7 @@ object Jane : ParentConfigBuilder {
 
     override fun assets(person: Person): List<AssetConfigProgression> {
         val janeIRAConfig = AssetConfig(
-            name = Smiths.janeIRAAcctName,
+            name = iraAcctName,
             person = person.name,
             taxabilityProfile = NonTaxableProfile(),
         )
@@ -69,7 +81,7 @@ object Jane : ParentConfigBuilder {
             config = janeIRAConfig,
             spendAllocHandler = IRASpendAlloc(person),
             progression = AssetProgression(
-                startBalance = Smiths.janeIRAAcctBal,
+                startBalance = iraAcctBal,
                 config = janeIRAConfig,
                 gainCreator = SimpleAssetGainCreator(),
                 requiredDistHandler = RmdRequiredDistHandler(person),
@@ -80,7 +92,7 @@ object Jane : ParentConfigBuilder {
                             config = AssetAttributeMap.assetComp("US Stocks")
                         ),
                         YearConfigPair(
-                            startYear = Smiths.janeEmploymentDate.end.year,
+                            startYear = employmentDates.end.year,
                             config = AssetAttributeMap.assetComp("Stocks/Bonds 60/40")
                         )
                     ))
@@ -101,8 +113,8 @@ object Jane : ParentConfigBuilder {
                 progression = FixedDateAmountSSBenefitProgression(
                     config = benefitConfig,
                     birthYM = person.birthYM,
-                    targetYM = Smiths.janeTargetCollectSSYM,
-                    baseAmount = Smiths.janeBaseSSBenefit,
+                    targetYM = targetSSDate,
+                    baseAmount = baseSSBenefit,
                 )
             )
         )

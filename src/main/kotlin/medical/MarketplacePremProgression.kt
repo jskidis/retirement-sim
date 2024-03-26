@@ -32,7 +32,7 @@ open class MarketplacePremProgression(
         MPMedalPlanMap.getMedalPlanFactor(medal, plan)
 
     companion object {
-        const val DESCRIPTION = "Marketplace"
+        const val DESCRIPTION = "MedIns-Marketplace"
     }
 }
 
