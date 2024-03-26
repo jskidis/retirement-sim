@@ -40,7 +40,7 @@ class EmployerInsPremProgression(
     }
 
     companion object {
-        const val DESCRIPTION = "EmpProvIns"
+        const val DESCRIPTION = "MedIns-EmpProv"
     }
 
     private fun premBasedOnRelation(empInsurance: EmployerInsurance, relation: RelationToInsured)

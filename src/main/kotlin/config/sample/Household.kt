@@ -1,5 +1,6 @@
 package config.sample
 
+import Amount
 import asset.*
 import config.AssetAttributeMap
 import config.HouseholdConfigBuilder
@@ -14,6 +15,15 @@ import util.YearBasedConfig
 import util.YearConfigPair
 
 object Household : HouseholdConfigBuilder {
+    val expenseStart: Amount = 25000.0
+
+    val savingsAcctName = "Savings"
+    val savingsBal: Amount = 50000.0
+
+    val investAcctName = "BigInvBank"
+    val investBal = 200000.0
+
+
     override fun expenses(): List<ExpenseConfigProgression> {
         val householdExpensesConfig = ExpenseConfig(
             name = "Expenses", person = "Household",
@@ -23,7 +33,7 @@ object Household : HouseholdConfigBuilder {
             ExpenseConfigProgression(
                 config = householdExpensesConfig,
                 progression = BasicExpenseProgression(
-                    startAmount = Smiths.houseExpStart,
+                    startAmount = expenseStart,
                     config = householdExpensesConfig,
                     adjusters = listOf(StdInflationAmountAdjuster())
                 )
@@ -33,7 +43,7 @@ object Household : HouseholdConfigBuilder {
     override fun assets(): List<AssetConfigProgression> {
 
         val jointSavingConfig = AssetConfig(
-            name = Smiths.savingsAcctName,
+            name = savingsAcctName,
             person = "Jane & Dick",
             taxabilityProfile = NonWageTaxableProfile(),
         )
@@ -44,12 +54,12 @@ object Household : HouseholdConfigBuilder {
                 yearlyTargetMult = YearBasedConfig(
                     listOf(
                         YearConfigPair(2024, 2.0),
-                        YearConfigPair(Smiths.janeEmploymentDate.end.year + 1, 3.0),
-                        YearConfigPair(Smiths.janeTargetCollectSSYM.year, 4.0)
+                        YearConfigPair(Jane.employmentDates.end.year, 3.0),
+                        YearConfigPair(Jane.targetSSDate.year, 4.0)
                     ))
             ),
             progression = AssetProgression(
-                startBalance = Smiths.savingsBal,
+                startBalance = savingsBal,
                 config = jointSavingConfig,
                 gainCreator = SimpleAssetGainCreator(),
                 attributesSet = YearBasedConfig(
@@ -63,7 +73,7 @@ object Household : HouseholdConfigBuilder {
         )
 
         val jointInvestConfig = AssetConfig(
-            name = Smiths.investAcctName,
+            name = investAcctName,
             person = "Jane & Dick",
             taxabilityProfile = OverriddenTaxableProfile(),
         )
@@ -71,7 +81,7 @@ object Household : HouseholdConfigBuilder {
             config = jointInvestConfig,
             spendAllocHandler = TaxableInvestSpendAllocHandler(),
             progression = AssetProgression(
-                startBalance = Smiths.investBal,
+                startBalance = investBal,
                 config = jointInvestConfig,
                 gainCreator = TaxableInvestGainCreator(),
                 attributesSet = YearBasedConfig(

@@ -5,6 +5,7 @@ import config.SimConfig
 import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
+import medical.MedInsuranceProcessor
 import socsec.SSBenefitsProcessor
 import tax.TaxesProcessor
 import util.moneyFormat
@@ -14,6 +15,7 @@ object SimulationRun {
     fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Pair<Boolean, Amount> {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
+        config.household.members.parent1
         var currYearDetail = generateYearlyDetail(config, null)
 
         do  {
@@ -36,9 +38,9 @@ object SimulationRun {
                         "Benefits:${it.benefits} " +
                         "Expenses:${it.expenses} " +
                         "Assets:${it.assets} " +
-                        "Taxes:${it.taxes} " +
                         "Carryover:${it.carryOverTaxable} " +
-                        "CO Penalty:${moneyFormat.format(it.carryOverPenalty)}"
+                        "CO Penalty:${moneyFormat.format(it.carryOverPenalty)}" +
+                    ""
                 )
             }
         }
@@ -56,11 +58,14 @@ object SimulationRun {
         val assetIncomes = assets.flatMap { it.incomeRecs() }
         val benefits = SSBenefitsProcessor.process(config, prevYear)
         val prevCOPenalty = prevYear?.carryOverPenalty ?: 0.0
-//        val gaussianRnd = Random.asJavaRandom().nextGaussian()
+        val gaussianRnd = getGaussianRnd()
 
         var currYear = YearlyDetail(year,
             inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses, assets = assets,
-            benefits = benefits, prevCOPenalty = prevCOPenalty, rorRndGaussian = 0.0)//gaussianRnd)
+            benefits = benefits, prevCOPenalty = prevCOPenalty, rorRndGaussian = gaussianRnd)
+
+        val medInsurance = MedInsuranceProcessor.process(config, currYear)
+        currYear = currYear.copy(expenses = currYear.expenses + medInsurance)
 
         val prevCarryOver = prevYear?.carryOverTaxable ?: ArrayList()
         val taxesRec = TaxesProcessor.processTaxes(currYear, prevCarryOver, config)
@@ -73,4 +78,8 @@ object SimulationRun {
 
         return currYear
     }
+
+    fun getGaussianRnd() =
+        0.0
+//        Random.asJavaRandom().nextGaussian()
 }

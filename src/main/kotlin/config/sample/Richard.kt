@@ -1,5 +1,7 @@
 package config.sample
 
+import Amount
+import YearMonth
 import asset.*
 import config.AssetAttributeMap
 import config.EmploymentConfig
@@ -17,15 +19,26 @@ import socsec.SSBenefitConfig
 import socsec.SSBenefitConfigProgression
 import tax.NonTaxableProfile
 import tax.SSBenefitTaxableProfile
+import util.DateRange
 import util.YearBasedConfig
 import util.YearConfigPair
 
 object Richard : ParentConfigBuilder {
-    fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
+    val incomeStart: Amount = 30000.0
+    val expenseStart: Amount = 30000.0
+    val employmentDates: DateRange = DateRange(end = YearMonth(2032, 1))
+    val targetSSDate: YearMonth = YearMonth(year = 2035, 1)
+    val baseSSBenefit: Amount = 27000.0
+
+    val iraAcctName: String = "Richard-IRA"
+    val iraAcctBal: Amount = 500000.0
+
+
+    override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
         EmploymentConfig(
             name = "PartTime", person = person.name,
-            startSalary = Smiths.richardIncStart,
-            dateRange = Smiths.richardEmploymentDate,
+            startSalary = incomeStart,
+            dateRange = employmentDates
         )
     )
 
@@ -48,7 +61,7 @@ object Richard : ParentConfigBuilder {
             ExpenseConfigProgression(
                 config = expenseConfig,
                 progression = BasicExpenseProgression(
-                    startAmount = Smiths.richardExpStart,
+                    startAmount = expenseStart,
                     config = expenseConfig,
                     adjusters = listOf(
                         StdInflationAmountAdjuster(),
@@ -61,7 +74,7 @@ object Richard : ParentConfigBuilder {
 
     override fun assets(person: Person): List<AssetConfigProgression> {
         val richardIRAConfig = AssetConfig(
-            name = Smiths.richardIRAAcctName,
+            name = iraAcctName,
             person = person.name,
             taxabilityProfile = NonTaxableProfile(),
         )
@@ -69,7 +82,7 @@ object Richard : ParentConfigBuilder {
             config = richardIRAConfig,
             spendAllocHandler = IRASpendAlloc(person),
             progression = AssetProgression(
-                startBalance = Smiths.richardIRAAcctBal,
+                startBalance = iraAcctBal,
                 config = richardIRAConfig,
                 gainCreator = SimpleAssetGainCreator(),
                 requiredDistHandler = RmdRequiredDistHandler(person),
@@ -80,7 +93,7 @@ object Richard : ParentConfigBuilder {
                             config = AssetAttributeMap.assetComp("US Stocks")
                         ),
                         YearConfigPair(
-                            startYear = Smiths.richardEmploymentDate.end.year,
+                            startYear = employmentDates.end.year,
                             config = AssetAttributeMap.assetComp("Stocks/Bonds 60/40")
                         )
                     ))
@@ -101,8 +114,8 @@ object Richard : ParentConfigBuilder {
                 progression = FixedDateAmountSSBenefitProgression(
                     config = benefitConfig,
                     birthYM = person.birthYM,
-                    targetYM = Smiths.richardTargetCollectSSYM,
-                    baseAmount = Smiths.richardBaseSSBenefit,
+                    targetYM = targetSSDate,
+                    baseAmount = baseSSBenefit,
                 )
             )
         )

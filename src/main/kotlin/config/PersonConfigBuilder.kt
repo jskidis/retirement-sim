@@ -27,6 +27,8 @@ interface ParentConfigBuilder : PersonConfigBuilder {
         benefits = benefits(person),
         medInsurance = medInsurance(person)
     )
+
+    fun employmentConfigs(person: Person): List<EmploymentConfig>
 }
 
 interface DependentConfigBuilder : PersonConfigBuilder {
