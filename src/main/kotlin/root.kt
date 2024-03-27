@@ -22,10 +22,10 @@ data class YearlyDetail(
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
     val taxes: TaxesRec = TaxesRec(),
+    val randomValues: Map<String, Double> = mapOf(),
     val carryOverTaxable: List<TaxableAmounts> = ArrayList(),
     val prevCOPenalty: Amount = 0.0,
     val carryOverPenalty: Amount = 0.0,
-    val rorRndGaussian: Double = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
     fun totalIncome() = incomes.sumOf { it.amount() }

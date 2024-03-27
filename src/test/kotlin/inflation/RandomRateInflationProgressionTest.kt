@@ -9,18 +9,6 @@ import kotlin.math.pow
 
 class RandomRateInflationProgressionTest : ShouldSpec({
     val mockRndVal = 2.0
-
-    class MockRandomRateInflationProgress(
-        stdMean: Rate, stdSD: Rate,
-        medMean: Rate, medSD: Rate,
-        chainMean: Rate, chainSD: Rate,
-        wageMean: Rate, wageSD: Rate,
-    ) : RandomRateInflationProgression(
-        stdMean, stdSD, medMean, medSD, chainMean, chainSD, wageMean, wageSD
-    ) {
-        override fun gaussianRndValue(): Double = mockRndVal
-    }
-
     val stdMean: Rate = 0.03
     val medMean: Rate = 0.04
     val chainMean: Rate = 0.025
@@ -30,7 +18,7 @@ class RandomRateInflationProgressionTest : ShouldSpec({
     val chainSD: Rate = 0.20
     val wageSD: Rate = 0.20
 
-    val progression = MockRandomRateInflationProgress(
+    val progression = RandomRateInflationProgressFixture(mockRndVal,
         stdMean, stdSD, medMean, medSD, chainMean, chainSD, wageMean, wageSD
     )
 
@@ -82,3 +70,16 @@ class RandomRateInflationProgressionTest : ShouldSpec({
         nextValue.wage.cmpdEnd.shouldBeWithinPercentageOf((1.0 + nextValue.wage.rate).pow(2), .001)
     }
 })
+
+class RandomRateInflationProgressFixture(
+    val mockRndVal: Double,
+    stdMean: Rate, stdSD: Rate,
+    medMean: Rate, medSD: Rate,
+    chainMean: Rate, chainSD: Rate,
+    wageMean: Rate, wageSD: Rate,
+) : RandomRateInflationProgression(
+    stdMean, stdSD, medMean, medSD, chainMean, chainSD, wageMean, wageSD
+) {
+    override fun getInflRandom(prevYear: YearlyDetail?): Double = mockRndVal
+}
+

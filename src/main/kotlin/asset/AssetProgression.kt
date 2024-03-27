@@ -4,7 +4,8 @@ import Amount
 import Year
 import YearlyDetail
 import progression.PrevRecProviderProgression
-import util.GaussianRndFromPrevYear
+import util.RandomizerFactory
+import util.RoiRandomProvider
 import util.YearBasedConfig
 import util.currentDate
 
@@ -14,7 +15,7 @@ open class AssetProgression(
     val gainCreator: AssetGainCreator,
     val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
     val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
-) : PrevRecProviderProgression<AssetRec>, GaussianRndFromPrevYear {
+) : PrevRecProviderProgression<AssetRec>, RoiRandomProvider {
 
     override fun previousRec(prevYear: YearlyDetail): AssetRec? =
         prevYear.assets.find {
@@ -26,26 +27,26 @@ open class AssetProgression(
             year = currentDate.year,
             balance = startBalance,
             unrealized = 0.0,
-            gaussianRnd = 0.0
+            roiGaussRnd = 0.0
         )
 
     override fun nextRecFromPrev(prevYear: YearlyDetail): AssetRec =
         buildRec(
-            year = prevYear.year +1,
+            year = prevYear.year + 1,
             balance = 0.0,
             unrealized = 0.0,
-            gaussianRnd = 0.0
+            roiGaussRnd = 0.0
         )
 
     override fun nextRecFromPrev(prevRec: AssetRec, prevYear: YearlyDetail): AssetRec =
         buildRec(
-            year = prevYear.year +1,
+            year = prevYear.year + 1,
             balance = prevRec.finalBalance(),
             unrealized = prevRec.totalUnrealized(),
-            gaussianRnd = gaussianRndValue(prevYear)
+            roiGaussRnd = getRoiRandom(prevYear)
         )
 
-    fun buildRec(year: Year, balance: Amount, unrealized: Amount, gaussianRnd: Double): AssetRec {
+    fun buildRec(year: Year, balance: Amount, unrealized: Amount, roiGaussRnd: Double): AssetRec {
         val attributes = attributesSet.getConfigForYear(year)
 
         val assetRec = AssetRec(
@@ -53,11 +54,14 @@ open class AssetProgression(
             config = config,
             startBal = balance,
             startUnrealized = unrealized,
-            gains = gainCreator.createGain(balance, attributes, config, gaussianRnd))
+            gains = gainCreator.createGain(balance, attributes, config, roiGaussRnd))
 
         val reqDistribution = requiredDistHandler.generateDistribution(balance, year)
         if (reqDistribution != null) assetRec.tributions.add(reqDistribution)
 
         return assetRec
     }
+
+    override fun getRoiRandom(prevYear: YearlyDetail?): Double =
+        RandomizerFactory.getRoiRandom(prevYear)
 }

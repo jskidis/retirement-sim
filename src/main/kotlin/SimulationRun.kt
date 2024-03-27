@@ -8,6 +8,7 @@ import inflation.InflationProcessor
 import medical.MedInsuranceProcessor
 import socsec.SSBenefitsProcessor
 import tax.TaxesProcessor
+import util.RandomizerFactory
 import util.moneyFormat
 import util.yearFromPrevYearDetail
 
@@ -57,12 +58,13 @@ object SimulationRun {
         val assets = AssetProcessor.process(config, prevYear)
         val assetIncomes = assets.flatMap { it.incomeRecs() }
         val benefits = SSBenefitsProcessor.process(config, prevYear)
+        val randomValues = RandomizerFactory.createNewValues(config)
         val prevCOPenalty = prevYear?.carryOverPenalty ?: 0.0
-        val gaussianRnd = getGaussianRnd()
 
         var currYear = YearlyDetail(year,
-            inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses, assets = assets,
-            benefits = benefits, prevCOPenalty = prevCOPenalty, rorRndGaussian = gaussianRnd)
+            inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses,
+            assets = assets, benefits = benefits, randomValues = randomValues,
+            prevCOPenalty = prevCOPenalty)
 
         val medInsurance = MedInsuranceProcessor.process(config, currYear)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance)
@@ -78,8 +80,4 @@ object SimulationRun {
 
         return currYear
     }
-
-    fun getGaussianRnd() =
-        0.0
-//        Random.asJavaRandom().nextGaussian()
 }

@@ -29,5 +29,5 @@ class BonusPctByMarketRorTest : FunSpec({
 
 class BonusPctByMarketRorFixture(avgPct: Double, stdDev: Double, val gaussianRnd: Double)
     : BonusPctByMarketRor(avgPct, stdDev) {
-    override fun gaussianRndValue(prevYear: YearlyDetail?): Double = gaussianRnd
+    override fun getRoiRandom(prevYear: YearlyDetail?): Double = gaussianRnd
 }

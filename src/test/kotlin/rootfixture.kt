@@ -12,7 +12,6 @@ fun yearlyDetailFixture(
     expenses: List<ExpenseRec> = ArrayList(),
     assets: List<AssetRec> = ArrayList(),
     taxes: TaxesRec = TaxesRec(),
-    rorRndGaussian: Double = 0.0,
     filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) =
     YearlyDetail(
@@ -22,6 +21,5 @@ fun yearlyDetailFixture(
         expenses = expenses,
         assets = assets,
         taxes = taxes,
-        rorRndGaussian = rorRndGaussian,
         filingStatus = filingStatus
 )

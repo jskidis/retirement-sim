@@ -3,7 +3,8 @@ package inflation
 import Rate
 import YearlyDetail
 import progression.PrevRecProviderProgression
-import util.GaussianRndProvider
+import util.InflRandomProvider
+import util.RandomizerFactory
 
 open class RandomRateInflationProgression(
     val stdMean: Rate = .0253, val stdSD: Rate = .015,
@@ -11,12 +12,12 @@ open class RandomRateInflationProgression(
     val chainMean: Rate = .0225, val chainSD: Rate = .016,
     val wageMean: Rate = .036, val wageSD: Rate = .019,
 ) : PrevRecProviderProgression<InflationRec>,
-    GaussianRndProvider {
+    InflRandomProvider {
 
     override fun previousRec(prevYear: YearlyDetail): InflationRec = prevYear.inflation
 
     override fun initialRec(): InflationRec {
-        val gaussianRnd = gaussianRndValue()
+        val gaussianRnd = getInflRandom(prevYear = null)
         return InflationRec(
             std = InflationRAC(rate = gaussianAdjValue(gaussianRnd, stdMean, stdSD)),
             med = InflationRAC(rate = gaussianAdjValue(gaussianRnd, medMean, medSD)),
@@ -30,7 +31,7 @@ open class RandomRateInflationProgression(
         throw RuntimeException("Unalbe to find previous inflation rec")
 
     override fun nextRecFromPrev(prevRec: InflationRec, prevYear: YearlyDetail): InflationRec {
-        val gaussianRnd = gaussianRndValue()
+        val gaussianRnd = getInflRandom(prevYear)
 
         return InflationRec(
             std = InflationRAC.build(
@@ -55,4 +56,6 @@ open class RandomRateInflationProgression(
     private fun gaussianAdjValue(rndValue: Double, mean: Double, stdDev: Double) =
         rndValue * stdDev + mean
 
+    override fun getInflRandom(prevYear: YearlyDetail?): Double =
+        RandomizerFactory.getInflRandom(prevYear)
 }
