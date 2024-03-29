@@ -14,7 +14,9 @@ class AssetRecTest : ShouldSpec({
     val startBal = 10000.0
 
     val config = assetConfigFixture(assetName, person)
-    val futureYear = 2090
+    val currentYear = currentDate.year
+    val futureYear = currentYear + 10
+    val pastYear = currentYear - 10
 
     val gains = 1000.0
     val startUnrealized = 5000.0
@@ -58,10 +60,10 @@ class AssetRecTest : ShouldSpec({
         val futureRec = rec.copy(year = futureYear)
         futureRec.capturedGains().shouldBe(0)
 
-        val pastRec = rec.copy(year = 2000)
+        val pastRec = rec.copy(year = pastYear)
         pastRec.capturedGains().shouldBe(gains)
 
-        val presentRec = rec.copy(year = currentDate.year)
+        val presentRec = rec.copy(year = currentYear)
         presentRec.capturedGains().shouldBeGreaterThan(0.0)
         presentRec.capturedGains().shouldBeLessThan(gains)
     }
@@ -70,9 +72,8 @@ class AssetRecTest : ShouldSpec({
         val futureRec = addTributions(rec.copy(year = futureYear))
         futureRec.finalBalance().shouldBe(startBal + gains + totalContrib)
 
-        val presentRec = addTributions(rec.copy(year = currentDate.year))
-        presentRec.finalBalance().shouldBeLessThan(startBal + gains + totalContrib)
-        presentRec.finalBalance().shouldBeGreaterThan(startBal + totalContrib)
+        val presentRec = addTributions(rec.copy(year = futureYear))
+        presentRec.finalBalance().shouldBe(startBal + gains + totalContrib)
     }
 
     should("generate income recs from req dist asset changes") {

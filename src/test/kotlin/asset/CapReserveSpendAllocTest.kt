@@ -9,11 +9,12 @@ import io.kotest.matchers.shouldBe
 import socsec.benefitsRecFixture
 import util.YearBasedConfig
 import util.YearConfigPair
+import util.currentDate
 import yearlyDetailFixture
 
 class CapReserveSpendAllocTest : FunSpec({
 
-    val year = 2099
+    val year = currentDate.year + 1
     val currYear = yearlyDetailFixture(year)
     val assetConfig = assetConfigFixture()
 

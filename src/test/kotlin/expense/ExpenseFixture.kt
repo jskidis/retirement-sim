@@ -7,6 +7,7 @@ import YearlyDetail
 import progression.AmountProviderProgression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
+import util.currentDate
 
 fun expenseConfigFixture(
     name: Name = "Expense",
@@ -14,7 +15,7 @@ fun expenseConfigFixture(
 ) = ExpenseConfig(name, person)
 
 fun expenseRecFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     name: Name = "Expense",
     person: Name = "Person",
     amount: Amount = 0.0,
@@ -25,7 +26,7 @@ fun expenseRecFixture(
     taxDeductions = TaxableAmounts(person))
 
 fun expenseRecFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     name: Name = "Expense",
     person: Name = "Person",
     amount: Amount = 0.0,

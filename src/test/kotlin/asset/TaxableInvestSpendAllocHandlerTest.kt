@@ -4,11 +4,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import util.currentDate
 import yearlyDetailFixture
 
 class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
-    val year = 2020
+    val year = currentDate.year + 1
     val stUnrealized = 2000.0
     val ltUnrealized = 10000.0
 

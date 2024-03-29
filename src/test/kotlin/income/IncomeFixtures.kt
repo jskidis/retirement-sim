@@ -7,6 +7,7 @@ import YearlyDetail
 import progression.AmountProviderProgression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
+import util.currentDate
 
 fun incomeConfigFixture(
     name: Name = "Income",
@@ -14,7 +15,7 @@ fun incomeConfigFixture(
 ) = IncomeConfig(name, person)
 
 fun incomeRecFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0,
@@ -25,7 +26,7 @@ fun incomeRecFixture(
     taxableIncome = TaxableAmounts(person))
 
 fun incomeRecFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0,

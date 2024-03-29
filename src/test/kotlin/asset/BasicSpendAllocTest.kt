@@ -4,6 +4,7 @@ import Amount
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import util.currentDate
 import yearlyDetailFixture
 
 class BasicSpendAllocTest : FunSpec({
@@ -12,7 +13,7 @@ class BasicSpendAllocTest : FunSpec({
     val gainAmount: Amount = 1000.0
     val balBeforeWD: Amount = startBalance + gainAmount
 
-    val currYear = yearlyDetailFixture(year = 2099)
+    val currYear = yearlyDetailFixture(year = currentDate.year + 1)
     val assetConfig: AssetConfig = assetConfigFixture()
     val gain = AssetChange("Gain", gainAmount)
 

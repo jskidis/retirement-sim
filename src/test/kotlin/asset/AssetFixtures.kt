@@ -7,6 +7,7 @@ import YearlyDetail
 import progression.Progression
 import tax.NonTaxableProfile
 import tax.TaxabilityProfile
+import util.currentDate
 
 fun assetConfigFixture(
     assetName: Name = "Asset",
@@ -17,7 +18,7 @@ fun assetConfigFixture(
 )
 
 fun assetRecFixture(
-    year: Year =  2024,
+    year: Year =  currentDate.year + 1,
     assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
     startBal: Amount = 0.0,
     gains: Amount = 0.0,

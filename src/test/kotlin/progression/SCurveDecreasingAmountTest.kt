@@ -5,10 +5,11 @@ import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
+import util.currentDate
 
 class SCurveDecreasingAmountTest : ShouldSpec({
     val startAmount = 10000.0
-    val startYear = 2024
+    val startYear = currentDate.year + 1
     val numYears = 10
 
     should("calcAmount returns appropriate amounts") {

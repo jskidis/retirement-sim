@@ -17,6 +17,8 @@ import yearlyDetailFixture
 
 class AssetProgressionTest : ShouldSpec({
 
+    val nextYear = currentDate.year + 1
+
     val assetName: Name = "Asset Name"
     val person: Name = "Person"
     val startBalance: Amount = 1000.0
@@ -43,7 +45,7 @@ class AssetProgressionTest : ShouldSpec({
             attributesSet = attributeSet
         )
 
-        val results = progression.determineNext(prevYear.copy(year = 2024))
+        val results = progression.determineNext(prevYear.copy(year = nextYear))
         results.config.name.shouldBe(assetName)
         results.config.person.shouldBe(person)
         results.gains.name.shouldBe(tenPctReturn.name)
@@ -56,7 +58,7 @@ class AssetProgressionTest : ShouldSpec({
     should("determineNext returns asset rec for different years)") {
         val attributeSet = YearBasedConfig(listOf(
             YearConfigPair(currentDate.year, tenPctReturn),
-            YearConfigPair(2030, onePctReturn)
+            YearConfigPair(nextYear + 5, onePctReturn)
         ))
         val progression = AssetProgression(
             startBalance = startBalance,
@@ -65,23 +67,23 @@ class AssetProgressionTest : ShouldSpec({
             attributesSet = attributeSet
         )
 
-        val results2024 = progression.determineNext(prevYear.copy(year = 2024))
-        results2024.gains.name.shouldBe(tenPctReturn.name)
-        results2024.gains.amount.shouldBeWithinPercentageOf(
+        val resultsNextYear = progression.determineNext(prevYear.copy(year = nextYear))
+        resultsNextYear.gains.name.shouldBe(tenPctReturn.name)
+        resultsNextYear.gains.amount.shouldBeWithinPercentageOf(
             startBalance * tenPctReturn.mean, .001)
 
-        val results2034 = progression.determineNext(prevYear.copy(
-            year = 2034, assets = listOf(prevAssetRec.copy(year = 2034)))
+        val results10YearsAhead = progression.determineNext(prevYear.copy(
+            year = nextYear + 10, assets = listOf(prevAssetRec.copy(year = nextYear + 10)))
         )
-        results2034.gains.name.shouldBe(onePctReturn.name)
-        results2034.gains.amount.shouldBeWithinPercentageOf(
+        results10YearsAhead.gains.name.shouldBe(onePctReturn.name)
+        results10YearsAhead.gains.amount.shouldBeWithinPercentageOf(
             startBalance * onePctReturn.mean, .001)
     }
 
     should("determineNext uses current year if previous year not provided") {
         val attributeSet = YearBasedConfig(listOf(
             YearConfigPair(currentDate.year, tenPctReturn),
-            YearConfigPair(2040, onePctReturn)
+            YearConfigPair(nextYear + 100, onePctReturn)
         ))
         val progression = AssetProgression(
             startBalance = startBalance,
@@ -100,7 +102,7 @@ class AssetProgressionTest : ShouldSpec({
 
     should("determineNext assumes 0 if asset rec not found in previous year") {
         val attributeSet = YearBasedConfig(listOf(
-            YearConfigPair(2024, tenPctReturn)
+            YearConfigPair(nextYear, tenPctReturn)
         ))
         val progression = AssetProgression(
             startBalance = startBalance,
@@ -122,7 +124,7 @@ class AssetProgressionTest : ShouldSpec({
 
         val attributeSet = YearBasedConfig(
             listOf(
-                YearConfigPair(2024, tenPctReturn)
+                YearConfigPair(nextYear, tenPctReturn)
             ))
         val progression = AssetProgression(
             startBalance = startBalance,

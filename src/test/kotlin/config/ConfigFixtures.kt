@@ -21,9 +21,10 @@ import socsec.benefitsConfigProgressFixture
 import tax.TaxCalcConfig
 import tax.taxConfigFixture
 import util.DateRange
+import util.currentDate
 
 fun configFixture(
-    startYear: Year = 2020,
+    startYear: Year = currentDate.year + 1,
     householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: TaxCalcConfig = taxConfigFixture(),

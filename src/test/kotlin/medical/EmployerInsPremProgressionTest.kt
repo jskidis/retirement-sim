@@ -8,11 +8,12 @@ import inflationRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import util.DateRange
+import util.currentDate
 import yearlyDetailFixture
 
 class EmployerInsPremProgressionTest : FunSpec({
 
-    val year = 2025
+    val year = currentDate.year + 1
     val empInsurance = EmployerInsurance(
         selfCost = 5000.0,
         spouseCost = 2500.0,

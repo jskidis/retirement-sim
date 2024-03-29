@@ -5,6 +5,7 @@ import Name
 import Year
 import YearlyDetail
 import tax.TaxableAmounts
+import util.currentDate
 import util.yearFromPrevYearDetail
 
 fun benefitsConfigFixture(
@@ -23,7 +24,7 @@ fun benefitsConfigProgressFixture(
 }
 
 fun benefitsRecFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     name: Name = "Benefit",
     person: Name = "Person",
     amount: Amount = 0.0,

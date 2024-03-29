@@ -5,6 +5,7 @@ import config.*
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import util.currentDate
 import yearlyDetailFixture
 
 class MedInsuranceProcessorTest : FunSpec({
@@ -13,7 +14,7 @@ class MedInsuranceProcessorTest : FunSpec({
     val householdConfig = householdConfigFixture()
     val baseConfig = configFixture()
 
-    val year = 2024
+    val year = currentDate.year + 1
     val currentYear = yearlyDetailFixture(year = year)
 
     val personName = "Person1"

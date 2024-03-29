@@ -6,11 +6,12 @@ import config.Person
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import util.currentDate
 import yearlyDetailFixture
 
 class IRASpendAllocTest : FunSpec({
 
-    val year = 2024
+    val year = currentDate.year + 1
     val currYear = yearlyDetailFixture(year)
     val assetConfig = assetConfigFixture()
 
