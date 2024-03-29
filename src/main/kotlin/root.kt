@@ -7,7 +7,6 @@ import socsec.SSBenefitRec
 import tax.FilingStatus
 import tax.TaxableAmounts
 import tax.TaxesRec
-import util.PortionOfYearPast
 
 typealias Year = Int
 typealias Amount = Double
@@ -22,18 +21,16 @@ data class YearlyDetail(
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
     val taxes: TaxesRec = TaxesRec(),
+    val secondPassTaxes: TaxesRec = TaxesRec(),
+    val netSpend: Amount = 0.0,
     val randomValues: Map<String, Double> = mapOf(),
-    val carryOverTaxable: List<TaxableAmounts> = ArrayList(),
-    val prevCOPenalty: Amount = 0.0,
-    val carryOverPenalty: Amount = 0.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
     fun totalIncome() = incomes.sumOf { it.amount() }
     fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun totalBenefits() = benefits.sumOf { it.amount() }
-    fun netSpend() = (1- PortionOfYearPast.calc(year)) *
-        (totalIncome() + totalBenefits() - totalExpense() - taxes.total() - prevCOPenalty)
+    fun netSpend() = netSpend
 }
 
 interface AmountRec {

@@ -1,6 +1,5 @@
 package tax
 
-import Amount
 import YearlyDetail
 import config.SimConfig
 import util.ConstantsProvider
@@ -11,10 +10,9 @@ object TaxesProcessor {
 
     fun processTaxes(
         currYear: YearlyDetail,
-        carryOverTaxable: List<TaxableAmounts>,
         config: SimConfig,
     ): TaxesRec {
-        val taxable = determineTaxableAmounts(currYear, carryOverTaxable)
+        val taxable = determineTaxableAmounts(currYear)
 
         val stdDeduct = determineStdDeduct(currYear)
 
@@ -30,14 +28,13 @@ object TaxesProcessor {
         )
     }
 
-    fun determineTaxableAmounts(currYear: YearlyDetail, carryOverTaxable: List<TaxableAmounts>)
+    fun determineTaxableAmounts(currYear: YearlyDetail)
         : TaxableAmounts {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
                 currYear.expenses.map { it.taxDeductions } +
                 currYear.assets.map { it.taxable() } +
-                currYear.benefits.map { it.taxableAmount } +
-                carryOverTaxable
+                currYear.benefits.map { it.taxableAmount }
 
         return taxableAmounts.filter { it.hasAmounts() }
             .fold(
@@ -51,20 +48,4 @@ object TaxesProcessor {
             FilingStatus.SINGLE -> ConstantsProvider.getValue(STD_DEDUCT_SINGLE)
             FilingStatus.HOUSEHOLD -> ConstantsProvider.getValue(STD_DEDUCT_HOUSEHOLD)
         } * currYear.inflation.std.cmpdStart
-
-    fun carryOverTaxable(currYear: YearlyDetail): List<TaxableAmounts> {
-        return currYear.assets.flatMap { asset ->
-            asset.tributions.filter { tribution ->
-                tribution.isCarryOver
-            }.map { tribution ->
-                tribution.taxable
-            }
-        }.mapNotNull { it }
-    }
-
-    fun carryOverPenalty(currYear: YearlyDetail, config: SimConfig): Amount {
-        val taxesWithCarryOver = processTaxes(currYear, currYear.carryOverTaxable, config)
-        val carryOverTaxes = taxesWithCarryOver.total() - currYear.taxes.total()
-        return carryOverTaxes * currYear.inflation.std.rate * 2
-    }
 }

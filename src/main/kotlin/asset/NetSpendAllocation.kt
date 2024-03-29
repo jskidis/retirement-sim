@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import YearlyDetail
+import util.PortionOfYearPast
 
 object NetSpendAllocation {
 
@@ -13,6 +14,15 @@ object NetSpendAllocation {
         if (netSpend < -1.0) processesWithdraws(netSpend, currYear, config.withdrawOrder)
         else if (netSpend > 1.0) processesDeposits(netSpend, currYear, config.depositOrder)
         else 0.0
+
+    fun determineNetSpend(currYear: YearlyDetail, prevYear: YearlyDetail?): Amount {
+        val carryOverTaxes = prevYear?.let {
+            (it.secondPassTaxes.total() - it.taxes.total()) * (1 + currYear.inflation.std.rate)
+        } ?: 0.0
+        val netSpend = (currYear.totalIncome() + currYear.totalBenefits() -
+            currYear.totalExpense() - currYear.taxes.total() - carryOverTaxes)
+        return (1- PortionOfYearPast.calc(currYear.year)) * netSpend
+    }
 
     private fun processesWithdraws(
         netSpend: Amount,

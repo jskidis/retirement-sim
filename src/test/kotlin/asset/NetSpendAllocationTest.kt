@@ -3,14 +3,21 @@ package asset
 import Amount
 import Year
 import YearlyDetail
+import expense.expenseRecFixture
+import income.incomeRecFixture
+import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
+import socsec.benefitsRecFixture
+import tax.TaxesRec
+import util.PortionOfYearPast
+import util.currentDate
 import yearlyDetailFixture
 
 class NetSpendAllocationTest : ShouldSpec({
-    val year: Year = 2020
+    val year: Year = currentDate.year + 1
 
     val wdHandler1 = SpendAllocHandlerFixture(maxWithdraw = 1000.0)
     val assetConfig1 = assetConfigProgressFixture(
@@ -27,13 +34,21 @@ class NetSpendAllocationTest : ShouldSpec({
         year = year, assetConfig = assetConfig2.config
     )
 
-    val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
-
     val spendAllocationConfig = NetSpendAllocationConfig(
         withdrawOrder = listOf(assetConfig1, assetConfig2),
         depositOrder = listOf(assetConfig2, assetConfig1))
 
+    val inflation = inflationRecFixture()
+    val income = incomeRecFixture(year, amount = 100000.0)
+    val expense = expenseRecFixture(year, amount = 80000.0)
+    val benefit = benefitsRecFixture(year, amount = 20000.0)
+    val thisYearTaxes = TaxesRec(fed = 25000.0)
+    val lastYearTaxes = TaxesRec(fed = 20000.0)
+    val lastYearCarryOverTaxes = TaxesRec(fed = 30000.0)
+
     should("not call any handlers if net spend is 0") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -48,6 +63,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("withdraw only from first asset if net spend is less than max withdraw on first asset") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -64,6 +81,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("withdraw from first & second asset if net spend is more than max withdraw of first asset") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -81,6 +100,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("return the amount left over after withdrawing max amounts from each asset") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -99,6 +120,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("deposit only into first asset if net spend is less than max deposit on second asset") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -115,6 +138,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("deposit from first & second asset if net spend is more than max deposit of second asset") {
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec1, assetRec2))
+
         wdHandler1.reset()
         wdHandler2.reset()
         val result = NetSpendAllocation.allocateNetSpend(
@@ -130,6 +155,59 @@ class NetSpendAllocationTest : ShouldSpec({
         wdHandler1.lastDeposit.shouldBe(10.0)
         wdHandler1.wasWithdrawCalled.shouldBeFalse()
     }
+
+    should("determine net spend") {
+        val currYear = yearlyDetailFixture(year = year,
+            inflation = inflation,
+            incomes = listOf(income),
+            expenses = listOf(expense),
+            benefits = listOf(benefit),
+            taxes = thisYearTaxes
+        )
+
+        val prevYear = yearlyDetailFixture(year = year -1,
+            taxes = lastYearTaxes,
+            secondPassTaxes = lastYearCarryOverTaxes
+        )
+
+        val expectedResult = income.baseAmount + benefit.amount -
+            expense.amount - thisYearTaxes.total() -
+            ((lastYearCarryOverTaxes.total() - lastYearTaxes.total()) * (1 + inflation.std.rate))
+
+        NetSpendAllocation.determineNetSpend(currYear, prevYear).shouldBe(expectedResult)
+    }
+
+    should("determine net spend when prev year is null") {
+        val currYear = yearlyDetailFixture(year = year,
+            inflation = inflation,
+            incomes = listOf(income),
+            expenses = listOf(expense),
+            benefits = listOf(benefit),
+            taxes = thisYearTaxes
+        )
+
+        val expectedResult = income.baseAmount + benefit.amount -
+            expense.amount - thisYearTaxes.total()
+
+        NetSpendAllocation.determineNetSpend(currYear, null).shouldBe(expectedResult)
+    }
+
+    should("determine net spend when curr year is actually the current year") {
+        val currYear = yearlyDetailFixture(year = currentDate.year,
+            inflation = inflation,
+            incomes = listOf(income),
+            expenses = listOf(expense),
+            benefits = listOf(benefit),
+            taxes = thisYearTaxes
+        )
+
+        val expectedResult = (income.baseAmount + benefit.amount -
+            expense.amount - thisYearTaxes.total()) *
+            (1 - PortionOfYearPast.calc(currentDate.year))
+
+        NetSpendAllocation.determineNetSpend(currYear, null).shouldBe(expectedResult)
+    }
+
 })
 
 class SpendAllocHandlerFixture(
@@ -164,94 +242,3 @@ class SpendAllocHandlerFixture(
 }
 
 
-/*
-    val yearInFuture = 2100
-
-    fun genAssetRec(name: Name, type: AssetType, startBalance: Amount) : AssetRec {
-        val config = assetConfigFixture(assetName = name, assetType = type)
-        return assetRecFixture(assetConfig = config, startBal = startBalance)
-    }
-
-    fun genCurrYear(income: Amount, expenses: Amount, assets: List<AssetRec>) =
-        yearlyDetailFixture(
-            year = yearInFuture,
-            incomes = listOf(incomeRecFixture(amount = income)),
-            expenses = listOf(expenseRecFixture(amount = expenses)),
-            assets = assets
-        )
-
-    should("Allocate loss when single asset") {
-        val savings100k = genAssetRec("Savings-100K", AssetType.CASH, 100000.0)
-        val currYear = genCurrYear(income = 50000.0, expenses = 60000.0,
-            assets = listOf(savings100k)
-        )
-
-        val result = NetSpendAllocation.allocatedNetSpend(currYear)
-        result.shouldBe(0.0)
-        savings100k.finalBalance().shouldBeWithinPercentageOf(
-            savings100k.startBal + currYear.netSpend(), .001)
-    }
-
-    should("Allocate loss across multiple assets of same class portionally to balance") {
-        val savings90k = genAssetRec("Savings-90K", AssetType.CASH, 90000.0)
-        val savings10k = genAssetRec("Savings-10K", AssetType.CASH, 10000.0)
-        val currYear = genCurrYear(income = 50000.0, expenses = 60000.0,
-            assets = listOf(savings90k, savings10k)
-        )
-
-        val result = NetSpendAllocation.allocatedNetSpend(currYear)
-        result.shouldBe(0.0)
-        savings90k.finalBalance().shouldBeWithinPercentageOf(
-            savings90k.startBal + (0.9 * currYear.netSpend()), .001)
-        savings10k.finalBalance().shouldBeWithinPercentageOf(
-            savings10k.startBal + (0.1 * currYear.netSpend()), .001)
-    }
-
-    should("Allocate loss across multiple assets of same class proportionally to balance and rollover to next asset type is not sufficient to cover") {
-        val savings4k = genAssetRec("Savings-4K", AssetType.CASH, 4000.0)
-        val savings1k = genAssetRec("Savings-1K", AssetType.CASH, 1000.0)
-        val invest90k = genAssetRec("Invest-90K", AssetType.INVEST, 90000.0)
-        val invest10k = genAssetRec("Invest-10K", AssetType.INVEST, 10000.0)
-        val currYear = genCurrYear(income = 50000.0, expenses = 60000.0,
-            assets = listOf(savings4k, savings1k, invest90k, invest10k)
-        )
-
-        val result = NetSpendAllocation.allocatedNetSpend(currYear)
-        result.shouldBe(0.0)
-        savings4k.finalBalance().shouldBe(0.0)
-        savings1k.finalBalance().shouldBe(0.0)
-        invest90k.finalBalance().shouldBeWithinPercentageOf(
-            invest90k.startBal + (0.5 * 0.9 * currYear.netSpend()), .001)
-        invest10k.finalBalance().shouldBeWithinPercentageOf(
-            invest10k.startBal + (0.5 * 0.1 * currYear.netSpend()), .001)
-    }
-
-    should("Will return negative amount if not enough assets to cover losses") {
-        val savings5k = genAssetRec("Savings-4K", AssetType.CASH, 5000.0)
-        val invest10k = genAssetRec("Invest-90K", AssetType.INVEST, 10000.0)
-        val currYear = genCurrYear(income = 50000.0, expenses = 70000.0,
-            assets = listOf(savings5k, invest10k)
-        )
-
-        val result = NetSpendAllocation.allocatedNetSpend(currYear)
-        result.shouldBe(currYear.netSpend() + savings5k.startBal + invest10k.startBal)
-        savings5k.finalBalance().shouldBe(0.0)
-        invest10k.finalBalance().shouldBe(0.0)
-    }
-
-    should("Will allocate positive net spend") {
-        val savings90k = genAssetRec("Savings-90K", AssetType.CASH, 90000.0)
-        val savings10k = genAssetRec("Savings-10K", AssetType.CASH, 10000.0)
-        val currYear = genCurrYear(income = 60000.0, expenses = 50000.0,
-            assets = listOf(savings90k, savings10k)
-        )
-
-        val result = NetSpendAllocation.allocatedNetSpend(currYear)
-        result.shouldBe(0.0)
-        savings90k.finalBalance().shouldBeWithinPercentageOf(
-            savings90k.startBal + (0.9 * currYear.netSpend()), .001)
-        savings10k.finalBalance().shouldBeWithinPercentageOf(
-            savings10k.startBal + (0.1 * currYear.netSpend()), .001)
-    }
-})
-*/

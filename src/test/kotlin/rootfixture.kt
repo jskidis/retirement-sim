@@ -2,16 +2,20 @@ import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
+import socsec.SSBenefitRec
 import tax.FilingStatus
 import tax.TaxesRec
+import util.currentDate
 
 fun yearlyDetailFixture(
-    year: Year = 2024,
+    year: Year = currentDate.year + 1,
     inflation: InflationRec = inflationRateFixture(0.0),
     incomes: List<IncomeRec> = ArrayList(),
     expenses: List<ExpenseRec> = ArrayList(),
+    benefits: List<SSBenefitRec> = ArrayList(),
     assets: List<AssetRec> = ArrayList(),
     taxes: TaxesRec = TaxesRec(),
+    secondPassTaxes: TaxesRec = TaxesRec(),
     filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) =
     YearlyDetail(
@@ -19,7 +23,9 @@ fun yearlyDetailFixture(
         inflation = inflation,
         incomes = incomes,
         expenses = expenses,
+        benefits = benefits,
         assets = assets,
         taxes = taxes,
+        secondPassTaxes = secondPassTaxes,
         filingStatus = filingStatus
 )
