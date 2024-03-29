@@ -18,10 +18,12 @@ fun main(args: Array<String>) {
 
     val numSuccessful = runs.filter { it.first }
     val median = ((runs.map { it.second }).sorted())[numSims / 2]
+    val avgRand = runs.sumOf { it.third } / runs.size
 
     println("")
     println("Success:${numSuccessful.count() * 100.0 / numSims}")
     println("Median: ${moneyFormat.format(median)}")
+    println("Avg Rnd: $avgRand")
 
     val elapsed = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start
     println("Elapsed: ${elapsed}")

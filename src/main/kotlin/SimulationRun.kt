@@ -13,7 +13,7 @@ import util.moneyFormat
 import util.yearFromPrevYearDetail
 
 object SimulationRun {
-    fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Pair<Boolean, Amount> {
+    fun runSim(configBuilder: ConfigBuilder, outputYearDetails: Boolean = true): Triple<Boolean, Amount, Double> {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
         config.household.members.parent1
@@ -45,8 +45,13 @@ object SimulationRun {
                 )
             }
         }
+
         val infAdjAssets = currYearDetail.totalAssetValues() / currYearDetail.inflation.std.cmpdEnd
-        return (infAdjAssets > 1000000.0) to infAdjAssets
+        val avgRandom = years.sumOf {
+            (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()]?:0.0) +
+                (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()]?:0.0)
+        } / years.size / 2.0
+        return Triple((infAdjAssets > 1000000.0), infAdjAssets, avgRandom)
     }
 
 
