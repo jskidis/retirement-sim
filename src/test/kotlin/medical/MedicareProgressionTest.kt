@@ -1,11 +1,12 @@
 package medical
 
 import YearMonth
-import config.ConfigConstants
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.MEDICARE_BASE_PREM
 import yearlyDetailFixture
 
 class MedicareProgressionTest : FunSpec({
@@ -24,7 +25,7 @@ class MedicareProgressionTest : FunSpec({
     test("determineNext returns full prem (adjusted for inflation) with 12 months covered if person is 66+ YO") {
         val progression = MedicareProgression(person66YO)
         val results = progression.determineNext(currYear)
-        results.premium.shouldBe(ConfigConstants.baseMedicarePrem * inflation.med.cmpdStart)
+        results.premium.shouldBe(ConstantsProvider.getValue(MEDICARE_BASE_PREM) * inflation.med.cmpdStart)
         results.monthsCovered.shouldBe(12)
         results.fullyDeductAmount.shouldBe(0.0)
         results.name.shouldBe(MedicareProgression.DESCRIPTION)
@@ -41,7 +42,7 @@ class MedicareProgressionTest : FunSpec({
         val progression = MedicareProgression(person65YO)
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(
-            ConfigConstants.baseMedicarePrem *
+            ConstantsProvider.getValue(MEDICARE_BASE_PREM) *
                 inflation.med.cmpdStart *
                 (11 - person65YO.month) / 12.0)
         results.monthsCovered.shouldBe(11 - person65YO.month)

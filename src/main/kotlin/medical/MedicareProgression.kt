@@ -2,7 +2,8 @@ package medical
 
 import YearMonth
 import YearlyDetail
-import config.ConfigConstants
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.MEDICARE_BASE_PREM
 
 class MedicareProgression(val birthYM: YearMonth) : MedInsuranceProgression {
     override fun determineNext(currYear: YearlyDetail): InsurancePrem {
@@ -20,7 +21,7 @@ class MedicareProgression(val birthYM: YearMonth) : MedInsuranceProgression {
     }
 
     fun getBasePremium(currYear: YearlyDetail): Double {
-        return ConfigConstants.baseMedicarePrem * currYear.inflation.med.cmpdStart
+        return ConstantsProvider.getValue(MEDICARE_BASE_PREM) * currYear.inflation.med.cmpdStart
     }
 
     fun determineMonthsCovered(currYear: YearlyDetail): Int = when {

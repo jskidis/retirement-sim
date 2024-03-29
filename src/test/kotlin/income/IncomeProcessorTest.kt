@@ -1,6 +1,9 @@
 package income
 
-import config.*
+import config.configFixture
+import config.householdConfigFixture
+import config.householdMembersFixture
+import config.parentConfigFixture
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -8,14 +11,16 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.SS_INCOME_CAP
 import yearlyDetailFixture
 
 class IncomeProcessorTest : ShouldSpec({
     val parent1Name = "Parent1"
     val parent2Name = "Parent2"
 
-    val parent1Income = ConfigConstants.socSecIncomeCapBase + 1000
-    val parent2Income = ConfigConstants.socSecIncomeCapBase * 2.0
+    val parent1Income = ConstantsProvider.getValue(SS_INCOME_CAP) + 1000
+    val parent2Income = ConstantsProvider.getValue(SS_INCOME_CAP) * 2.0
 
     val parent1Progression = incomeCfgProgessFixture(
         name = "Parent 1 Inc", person = parent1Name, amount = parent1Income)
@@ -56,7 +61,7 @@ class IncomeProcessorTest : ShouldSpec({
         parent1Rec.shouldNotBeNull()
         // salary above cap
         parent1Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
-            ConfigConstants.socSecIncomeCapBase, .001)
+            ConstantsProvider.getValue(SS_INCOME_CAP), .001)
 
         val parent2Rec = result.find {
             it.config.name == "Parent 2 Inc" &&
@@ -65,7 +70,7 @@ class IncomeProcessorTest : ShouldSpec({
         parent2Rec.shouldNotBeNull()
         // salary above cap
         parent2Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
-            ConfigConstants.socSecIncomeCapBase, .001)
+            ConstantsProvider.getValue(SS_INCOME_CAP), .001)
     }
 
     should("cap individual soc security wages, cap is adjust for inflation") {
@@ -92,7 +97,7 @@ class IncomeProcessorTest : ShouldSpec({
         parent2Rec.shouldNotBeNull()
         // salary above inflation adjusted cap
         parent2Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
-            ConfigConstants.socSecIncomeCapBase * cmpWageInflation, .001)
+            ConstantsProvider.getValue(SS_INCOME_CAP) * cmpWageInflation, .001)
 
     }
 })

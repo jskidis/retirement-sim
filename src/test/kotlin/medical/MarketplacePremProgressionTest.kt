@@ -1,12 +1,13 @@
 package medical
 
 import YearMonth
-import config.ConfigConstants
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.MARKETPLACE_BASE_PREM
 import yearlyDetailFixture
 
 class MarketplacePremProgressionTest : FunSpec({
@@ -25,7 +26,7 @@ class MarketplacePremProgressionTest : FunSpec({
         val progression = MarketplacePremProgressionFixture(
             birthYM = person21YO, medalType = MPMedalType.SILVER, planType = MPPlanType.HMO)
 
-        val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation
+        val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(expectedPremium)
         results.monthsCovered.shouldBe(12)
@@ -38,7 +39,7 @@ class MarketplacePremProgressionTest : FunSpec({
             birthYM = person41YO, medalType = MPMedalType.SILVER, planType = MPPlanType.HMO)
 
         // The progression fixture adds 0.01 to factor for year in age over 21, so 41 YO would have a factor increased to 1.2
-        val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.2
+        val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.2
 
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(expectedPremium)
@@ -49,7 +50,7 @@ class MarketplacePremProgressionTest : FunSpec({
             birthYM = person21YO, medalType = MPMedalType.GOLD, planType = MPPlanType.HMO)
 
         // The progression fixture has 10% increase to factor for GOLD compare to silver,
-        val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.1
+        val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.1
 
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(expectedPremium)
@@ -60,7 +61,7 @@ class MarketplacePremProgressionTest : FunSpec({
             birthYM = person21YO, medalType = MPMedalType.SILVER, planType = MPPlanType.PPO)
 
         // The progression fixture has 20% increase to factor for PPO compare to HMO,
-        val expectedPremium = ConfigConstants.marketPlaceBasePrem * cmpdInflation * 1.2
+        val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.2
 
         val results = progression.determineNext(currYear)
         results.premium.shouldBe(expectedPremium)
