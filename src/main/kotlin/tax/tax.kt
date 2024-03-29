@@ -46,6 +46,7 @@ data class TaxesRec(
     val state: Amount = 0.0,
     val socSec: Amount = 0.0,
     val medicare: Amount = 0.0,
+    val agi: Amount = 0.0,
 ) {
     fun total(): Amount = fed + state + socSec + medicare
 
@@ -55,6 +56,7 @@ data class TaxesRec(
             strWhenNotZero(state == 0.0, ", State:${moneyFormat.format(state)}") +
             strWhenNotZero(socSec == 0.0, ", SocSoc:${moneyFormat.format(socSec)}") +
             strWhenNotZero(medicare == 0.0, ", Medi:${moneyFormat.format(medicare)}") +
+            strWhenNotZero(agi == 0.0, ", AGI:${moneyFormat.format(agi)}") +
             ")"
 }
 

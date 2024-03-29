@@ -14,6 +14,8 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.STD_DEDUCT_JOINTLY
 import yearlyDetailFixture
 
 class TaxesProcessorTest : ShouldSpec({
@@ -44,18 +46,21 @@ class TaxesProcessorTest : ShouldSpec({
     val socSecTaxCalc = FixedRateTaxCalc(.06)
     val medicareTaxCalc = FixedRateTaxCalc(.02)
 
+    val filingStatus = FilingStatus.JOINTLY
+    val stdDeduct = ConstantsProvider.getValue(STD_DEDUCT_JOINTLY)
+
     val config = configFixture().copy(
         taxConfig = TaxCalcConfig(
             fedTaxCalc, fedLTGTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc))
 
     should("processTaxes single wage income only no expense") {
         val currYear = yearlyDetailFixture().copy(
-            incomes = listOf(wageInc)
+            incomes = listOf(wageInc), filingStatus = filingStatus
         )
 
         val result = TaxesProcessor.processTaxes(currYear, noCarryOver, config)
-        result.fed.shouldBe(wageInc.amount() * fedTaxCalc.pct)
-        result.state.shouldBe(wageInc.amount() * stateTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
     }
@@ -66,8 +71,8 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, noCarryOver, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount()) * fedTaxCalc.pct)
-        result.state.shouldBe((wageInc.amount()) * stateTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
     }
@@ -79,8 +84,8 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, noCarryOver, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - decductExp.amount()) * fedTaxCalc.pct)
-        result.state.shouldBe((wageInc.amount() - decductExp.amount()) * stateTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - decductExp.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount() - decductExp.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
     }
@@ -93,8 +98,8 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, noCarryOver, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() + assetRec.totalGains() - decductExp.amount()) * fedTaxCalc.pct)
-        result.state.shouldBe((wageInc.amount() + assetRec.totalGains() - decductExp.amount()) * stateTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() + assetRec.totalGains() - decductExp.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount() + assetRec.totalGains() - decductExp.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
     }
@@ -106,9 +111,9 @@ class TaxesProcessorTest : ShouldSpec({
 
         val result = TaxesProcessor.processTaxes(currYear, listOf(carryOver), config)
         result.fed.shouldBe((
-            wageInc.amount() + carryOver.fed) * fedTaxCalc.pct +
+            wageInc.amount() + carryOver.fed - stdDeduct) * fedTaxCalc.pct +
             (carryOver.fedLTG * fedLTGTaxCalc.pct))
-        result.state.shouldBe((wageInc.amount() + carryOver.state) * stateTaxCalc.pct)
+        result.state.shouldBe((wageInc.amount() + carryOver.state - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
 

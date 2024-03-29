@@ -12,13 +12,13 @@ interface BracketBasedTaxCalc : TaxCalculator {
     fun getReader(): CSVReader<TaxBracket> = CSVReader { it: CSVRecord ->
         TaxBracket(
             pct = it[0].toDouble(),
-            jointly = BracketCase(
+            single = BracketCase(
                 it[0].toDouble(), it[1].toDouble(),
                 if (!it[2].isNullOrEmpty()) it[2].toDouble() else Double.MAX_VALUE),
-            household = BracketCase(
+            jointly = BracketCase(
                 it[0].toDouble(), it[3].toDouble(),
                 if (!it[4].isNullOrEmpty()) it[4].toDouble() else Double.MAX_VALUE),
-            single = BracketCase(
+            household = BracketCase(
                 it[0].toDouble(), it[5].toDouble(),
                 if (!it[6].isNullOrEmpty()) it[6].toDouble() else Double.MAX_VALUE),
         )

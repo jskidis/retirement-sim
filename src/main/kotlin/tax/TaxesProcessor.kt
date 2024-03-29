@@ -3,6 +3,8 @@ package tax
 import Amount
 import YearlyDetail
 import config.SimConfig
+import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.*
 
 object TaxesProcessor {
     val nameOfTaxablePerson = "Household"
@@ -13,14 +15,18 @@ object TaxesProcessor {
         config: SimConfig,
     ): TaxesRec {
         val taxable = determineTaxableAmounts(currYear, carryOverTaxable)
+
+        val stdDeduct = determineStdDeduct(currYear)
+
         val ltgTaxes = config.taxConfig.fedLTG.marginalRate(
-            taxable.fed + taxable.fedLTG, currYear) * taxable.fedLTG
+            taxable.fed + taxable.fedLTG - stdDeduct, currYear) * taxable.fedLTG
 
         return TaxesRec(
-            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear) + ltgTaxes,
-            state = config.taxConfig.state.determineTax(taxable.state, currYear),
+            fed = config.taxConfig.fed.determineTax(taxable.fed - stdDeduct, currYear) + ltgTaxes,
+            state = config.taxConfig.state.determineTax(taxable.state - stdDeduct, currYear),
             socSec = config.taxConfig.socSec.determineTax(taxable.socSec, currYear),
             medicare = config.taxConfig.medicare.determineTax(taxable.medicare, currYear),
+            agi = taxable.fed + taxable.fedLTG - stdDeduct
         )
     }
 
@@ -38,6 +44,13 @@ object TaxesProcessor {
                 TaxableAmounts(person = nameOfTaxablePerson),
                 { acc, amounts -> acc.plus(amounts) })
     }
+
+    fun determineStdDeduct(currYear: YearlyDetail): Double =
+        when (currYear.filingStatus) {
+            FilingStatus.JOINTLY -> ConstantsProvider.getValue(STD_DEDUCT_JOINTLY)
+            FilingStatus.SINGLE -> ConstantsProvider.getValue(STD_DEDUCT_SINGLE)
+            FilingStatus.HOUSEHOLD -> ConstantsProvider.getValue(STD_DEDUCT_HOUSEHOLD)
+        } * currYear.inflation.std.cmpdStart
 
     fun carryOverTaxable(currYear: YearlyDetail): List<TaxableAmounts> {
         return currYear.assets.flatMap { asset ->
