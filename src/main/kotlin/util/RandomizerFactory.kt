@@ -6,8 +6,7 @@ import config.SimConfig
 import kotlin.random.Random
 import kotlin.random.asJavaRandom
 
-object RandomizerFactory
-    : RoiRandomProvider, InflRandomProvider, PersonRandomProvider {
+object RandomizerFactory {
 
     enum class GaussKeys { ROI, INFLATION }
 
@@ -29,24 +28,12 @@ object RandomizerFactory
     private fun suppressRandom(): Boolean =
         System.getProperty("suppressRand")?.let{it.toBooleanStrictOrNull() ?: false} ?: false
 
-    override fun getRoiRandom(prevYear: YearlyDetail?): Double =
+    fun getROIRandom(prevYear: YearlyDetail?): Double =
         getRandomValue(GaussKeys.ROI.name, prevYear)
 
-    override fun getInflRandom(prevYear: YearlyDetail?): Double =
+    fun getInflRandom(prevYear: YearlyDetail?): Double =
         getRandomValue(GaussKeys.INFLATION.name, prevYear)
 
-    override fun getPersonRandom(person: Name, prevYear: YearlyDetail?): Double =
+    fun getPersonRandom(person: Name, prevYear: YearlyDetail?): Double =
         getRandomValue(person, prevYear)
-}
-
-interface RoiRandomProvider {
-    fun getRoiRandom(prevYear: YearlyDetail?): Double
-}
-
-interface InflRandomProvider {
-    fun getInflRandom(prevYear: YearlyDetail?): Double
-}
-
-interface PersonRandomProvider {
-    fun getPersonRandom(person: Name, prevYear: YearlyDetail?): Double
 }

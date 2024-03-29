@@ -5,7 +5,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.ints.shouldBeGreaterThan
 
 class PortfolioAttribLoaderTest : ShouldSpec({
-    should("loadPortfolios loads a (String, AssetROR) map from csv") {
+    should("loadPortfolios loads a (String, AssetROI) map from csv") {
         val result = PortfolioAttribLoader.loadPortfolios()
         result.size.shouldBeGreaterThan(10)
         result.values.filter {

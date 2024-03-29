@@ -3,7 +3,6 @@ package inflation
 import Rate
 import YearlyDetail
 import progression.PrevRecProviderProgression
-import util.InflRandomProvider
 import util.RandomizerFactory
 
 open class RandomRateInflationProgression(
@@ -11,8 +10,7 @@ open class RandomRateInflationProgression(
     val medMean: Rate = .0333, val medSD: Rate = .011,
     val chainMean: Rate = .0225, val chainSD: Rate = .016,
     val wageMean: Rate = .036, val wageSD: Rate = .019,
-) : PrevRecProviderProgression<InflationRec>,
-    InflRandomProvider {
+) : PrevRecProviderProgression<InflationRec> {
 
     override fun previousRec(prevYear: YearlyDetail): InflationRec = prevYear.inflation
 
@@ -56,6 +54,6 @@ open class RandomRateInflationProgression(
     private fun gaussianAdjValue(rndValue: Double, mean: Double, stdDev: Double) =
         rndValue * stdDev + mean
 
-    override fun getInflRandom(prevYear: YearlyDetail?): Double =
+    open fun getInflRandom(prevYear: YearlyDetail?): Double =
         RandomizerFactory.getInflRandom(prevYear)
 }
