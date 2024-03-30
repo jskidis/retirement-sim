@@ -43,18 +43,18 @@ class EmployerInsPremProgressionTest : FunSpec({
     test("determineNext returns inflation adjust premium based on relation when employerCoverage exist for all of current year ") {
         val config = empConfig
         val progSelf = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
-        val resultsSelf = progSelf.determineNext(currYear)
+        val resultsSelf = progSelf.determineNext(currYear, previousAGI = 0.0 )
         resultsSelf.premium.shouldBe(empInsurance.selfCost * cmpdInflation)
         resultsSelf.monthsCovered.shouldBe(12)
         resultsSelf.fullyDeductAmount.shouldBe(resultsSelf.premium)
         resultsSelf.name.shouldBe(EmployerInsPremProgression.DESCRIPTION)
 
         val progSpouse = EmployerInsPremProgression(listOf(config), RelationToInsured.SPOUSE)
-        val resultsSpouse = progSpouse.determineNext(currYear)
+        val resultsSpouse = progSpouse.determineNext(currYear, previousAGI = 0.0 )
         resultsSpouse.premium.shouldBe(empInsurance.spouseCost * cmpdInflation)
 
         val progDepend = EmployerInsPremProgression(listOf(config), RelationToInsured.DEPENDANT)
-        val resultsDepend = progDepend.determineNext(currYear)
+        val resultsDepend = progDepend.determineNext(currYear, previousAGI = 0.0 )
         resultsDepend.premium.shouldBe(empInsurance.dependantCost * cmpdInflation)
     }
 
@@ -63,7 +63,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         val config = empConfig.copy(dateRange = partialDateRange)
 
         val prog = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
-        val results = prog.determineNext(currYear)
+        val results = prog.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(empInsurance.selfCost * cmpdInflation * .5)
         results.monthsCovered.shouldBe(6)
     }
@@ -73,7 +73,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         val config = empConfig.copy(dateRange = partialDateRange)
 
         val prog = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
-        val results = prog.determineNext(currYear)
+        val results = prog.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(0.0)
         results.monthsCovered.shouldBe(0)
     }
@@ -82,7 +82,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         val config = empConfig.copy(employerInsurance = null)
 
         val prog = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
-        val results = prog.determineNext(currYear)
+        val results = prog.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(0.0)
         results.monthsCovered.shouldBe(0)
     }
@@ -94,12 +94,12 @@ class EmployerInsPremProgressionTest : FunSpec({
         val prog = EmployerInsPremProgression(
             listOf(configPresent, configFuture), RelationToInsured.SELF)
 
-        val resultsPresent = prog.determineNext(currYear)
+        val resultsPresent = prog.determineNext(currYear, previousAGI = 0.0 )
         resultsPresent.premium.shouldBe(empInsurance.selfCost * cmpdInflation)
         resultsPresent.monthsCovered.shouldBe(12)
 
         val futureYear = currYear.copy(year = configFuture.dateRange.start.year + 1)
-        val resultsFuture = prog.determineNext(futureYear)
+        val resultsFuture = prog.determineNext(futureYear, previousAGI = 0.0 )
         resultsFuture.premium.shouldBe(empInsurance2.selfCost * cmpdInflation)
         resultsFuture.monthsCovered.shouldBe(12)
     }
@@ -113,7 +113,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         val prog = EmployerInsPremProgression(
             listOf(configFirst, configSecond), RelationToInsured.SELF)
 
-        val results = prog.determineNext(currYear)
+        val results = prog.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(
             empInsurance.selfCost * cmpdInflation * 0.25 +
                 empInsurance2.selfCost * cmpdInflation * 0.5

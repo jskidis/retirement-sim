@@ -1,5 +1,6 @@
 package medical
 
+import Amount
 import YearMonth
 import YearlyDetail
 import org.apache.commons.csv.CSVRecord
@@ -16,7 +17,7 @@ open class MarketplacePremProgression(
 ) : MedInsuranceProgression,
     MPAgeFactorRetrieval, MPMealPlanFactorRetrieval
 {
-    override fun determineNext(currYear: YearlyDetail): InsurancePrem {
+    override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
         val premium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) *
             currYear.inflation.med.cmpdStart *
             getAgeFactor(currYear.year - birthYM.year) *

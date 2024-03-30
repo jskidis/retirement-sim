@@ -1,7 +1,7 @@
 package medical
 
 import Amount
-import progression.CYProgression
+import YearlyDetail
 
 data class InsurancePrem(
     val name: String,
@@ -18,7 +18,9 @@ data class InsurancePrem(
         )
 }
 
-interface MedInsuranceProgression : CYProgression<InsurancePrem>
+interface MedInsuranceProgression {
+    fun determineNext(currYear: YearlyDetail, previousAGI: Double): InsurancePrem
+}
 
 enum class RelationToInsured {
     SELF, SPOUSE, DEPENDANT

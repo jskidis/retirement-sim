@@ -68,7 +68,8 @@ object SimulationRun {
             inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses,
             assets = assets, benefits = benefits, randomValues = randomValues)
 
-        val medInsurance = MedInsuranceProcessor.process(config, currYear)
+        val previousAGI = prevYear?.secondPassTaxes?.agi ?: config.household.initialAGI
+        val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance)
 
         val taxesRec = TaxesProcessor.processTaxes(currYear, config)

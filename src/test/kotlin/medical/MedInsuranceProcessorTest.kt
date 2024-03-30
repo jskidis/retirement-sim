@@ -1,5 +1,6 @@
 package medical
 
+import Amount
 import YearlyDetail
 import config.*
 import io.kotest.core.spec.style.FunSpec
@@ -49,7 +50,7 @@ class MedInsuranceProcessorTest : FunSpec({
         val progression = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression))
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(1)
         result[0].year.shouldBe(year)
         result[0].config.name.shouldBe(fullYearCoverage.name)
@@ -65,7 +66,7 @@ class MedInsuranceProcessorTest : FunSpec({
         val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(1)
         result[0].year.shouldBe(year)
         result[0].config.name.shouldBe(fullYearCoverage.name)
@@ -80,7 +81,7 @@ class MedInsuranceProcessorTest : FunSpec({
         val progression1 = MedInsuranceProgressionFixture(noCoverage)
         val config = buildConfig(listOf(progression1))
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(0)
     }
 
@@ -89,7 +90,7 @@ class MedInsuranceProcessorTest : FunSpec({
         val progression2 = MedInsuranceProgressionFixture(quarterYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(1)
         result[0].year.shouldBe(year)
         result[0].config.name.shouldBe(fullYearCoverage.name)
@@ -105,7 +106,7 @@ class MedInsuranceProcessorTest : FunSpec({
         val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(2)
 
         result[0].year.shouldBe(year)
@@ -134,7 +135,7 @@ class MedInsuranceProcessorTest : FunSpec({
             listOf(progression3)
         )
 
-        val result = MedInsuranceProcessor.process(config, currentYear)
+        val result = MedInsuranceProcessor.process(config, currentYear, previousAGI = 0.0)
         result.shouldHaveSize(3)
 
         result[0].year.shouldBe(year)
@@ -164,5 +165,5 @@ class MedInsuranceProcessorTest : FunSpec({
 })
 
 class MedInsuranceProgressionFixture(val insurancePrem: InsurancePrem) : MedInsuranceProgression {
-    override fun determineNext(currYear: YearlyDetail): InsurancePrem = insurancePrem
+    override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem = insurancePrem
 }

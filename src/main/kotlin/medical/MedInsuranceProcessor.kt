@@ -10,10 +10,10 @@ import expense.ExpenseRec
 import tax.TaxableAmounts
 
 object MedInsuranceProcessor {
-    fun process(config: SimConfig, currYear: YearlyDetail): List<ExpenseRec> {
+    fun process(config: SimConfig, currYear: YearlyDetail, previousAGI: Amount): List<ExpenseRec> {
         return config.household.members.people().flatMap { person ->
             val prems = person.medInsurance().map { medIns ->
-                medIns.determineNext(currYear)
+                medIns.determineNext(currYear, previousAGI)
             }.filter { it.hasCoverage() }
 
 

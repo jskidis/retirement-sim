@@ -27,7 +27,7 @@ class MarketplacePremProgressionTest : FunSpec({
             birthYM = person21YO, medalType = MPMedalType.SILVER, planType = MPPlanType.HMO)
 
         val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation
-        val results = progression.determineNext(currYear)
+        val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(expectedPremium)
         results.monthsCovered.shouldBe(12)
         results.fullyDeductAmount.shouldBe(0.0)
@@ -41,7 +41,7 @@ class MarketplacePremProgressionTest : FunSpec({
         // The progression fixture adds 0.01 to factor for year in age over 21, so 41 YO would have a factor increased to 1.2
         val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.2
 
-        val results = progression.determineNext(currYear)
+        val results = progression.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(expectedPremium)
     }
 
@@ -52,7 +52,7 @@ class MarketplacePremProgressionTest : FunSpec({
         // The progression fixture has 10% increase to factor for GOLD compare to silver,
         val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.1
 
-        val results = progression.determineNext(currYear)
+        val results = progression.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(expectedPremium)
     }
 
@@ -63,7 +63,7 @@ class MarketplacePremProgressionTest : FunSpec({
         // The progression fixture has 20% increase to factor for PPO compare to HMO,
         val expectedPremium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) * cmpdInflation * 1.2
 
-        val results = progression.determineNext(currYear)
+        val results = progression.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(expectedPremium)
     }
 })

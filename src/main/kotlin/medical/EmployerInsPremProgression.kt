@@ -1,5 +1,6 @@
 package medical
 
+import Amount
 import YearlyDetail
 import config.EmployerInsurance
 import config.EmploymentConfig
@@ -10,7 +11,7 @@ class EmployerInsPremProgression(
     val fullyDeduct: Boolean = true
 ) : MedInsuranceProgression {
 
-    override fun determineNext(currYear: YearlyDetail): InsurancePrem {
+    override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
         val currEmployers = employments.filter {
             it.employerInsurance != null &&
                 it.dateRange.pctInYear(currYear.year).value > 0.0
