@@ -6,6 +6,7 @@ import YearlyDetail
 import org.apache.commons.csv.CSVRecord
 import util.CSVReader
 import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.DENTAL_BASE_PREM
 import util.ConstantsProvider.KEYS.MARKETPLACE_BASE_PREM
 import util.YearBasedConfig
 import util.YearConfigPair
@@ -14,11 +15,13 @@ open class MarketplacePremProgression(
     val birthYM: YearMonth,
     val medalType: MPMedalType,
     val planType: MPPlanType,
+    val includeDental: Boolean = false,
 ) : MedInsuranceProgression,
     MPAgeFactorRetrieval, MPMealPlanFactorRetrieval
 {
     override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
-        val premium = ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) *
+        val premium = (ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) +
+            if(includeDental) ConstantsProvider.getValue(DENTAL_BASE_PREM) else 0.0) *
             currYear.inflation.med.cmpdStart *
             getAgeFactor(currYear.year - birthYM.year) *
             getMedalPlanFactor(medalType, planType)

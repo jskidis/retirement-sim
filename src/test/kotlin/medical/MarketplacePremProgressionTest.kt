@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import util.ConstantsProvider
+import util.ConstantsProvider.KEYS.DENTAL_BASE_PREM
 import util.ConstantsProvider.KEYS.MARKETPLACE_BASE_PREM
 import yearlyDetailFixture
 
@@ -66,11 +67,27 @@ class MarketplacePremProgressionTest : FunSpec({
         val results = progression.determineNext(currYear, previousAGI = 0.0 )
         results.premium.shouldBe(expectedPremium)
     }
+
+    test("determineNext should factor in dental if requested ") {
+        val progression = MarketplacePremProgressionFixture(
+            birthYM = person21YO, medalType = MPMedalType.SILVER,
+            planType = MPPlanType.HMO, includeDental = true)
+
+        val expectedPremium = cmpdInflation *
+            (ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) +
+            ConstantsProvider.getValue(DENTAL_BASE_PREM))
+        val results = progression.determineNext(currYear, previousAGI = 0.0)
+        results.premium.shouldBe(expectedPremium)
+        results.monthsCovered.shouldBe(12)
+        results.fullyDeductAmount.shouldBe(0.0)
+        results.name.shouldBe(MarketplacePremProgression.DESCRIPTION)
+    }
+
 })
 
 class MarketplacePremProgressionFixture(
-    birthYM: YearMonth, medalType: MPMedalType, planType: MPPlanType,
-) : MarketplacePremProgression(birthYM, medalType, planType) {
+    birthYM: YearMonth, medalType: MPMedalType, planType: MPPlanType, includeDental: Boolean = false
+) : MarketplacePremProgression(birthYM, medalType, planType, includeDental ) {
 
     override fun getAgeFactor(age: Int): Double = 1.0 + ((age - 21) * .01)
 

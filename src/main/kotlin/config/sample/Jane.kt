@@ -3,10 +3,7 @@ package config.sample
 import Amount
 import YearMonth
 import asset.*
-import config.AssetAttributeMap
-import config.EmploymentConfig
-import config.ParentConfigBuilder
-import config.Person
+import config.*
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
 import expense.ExpenseConfig
@@ -14,6 +11,7 @@ import expense.ExpenseConfigProgression
 import income.EmploymentIncomeProgression
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
+import medical.*
 import socsec.FixedDateAmountSSBenefitProgression
 import socsec.SSBenefitConfig
 import socsec.SSBenefitConfigProgression
@@ -38,6 +36,11 @@ object Jane : ParentConfigBuilder {
             name = "Accenture", person = person.name,
             startSalary = incomeStart,
             dateRange = employmentDates,
+            employerInsurance = EmployerInsurance(
+                selfCost = 2500.0,
+                spouseCost = 3000.0,
+                dependantCost = 1000.0
+            )
         )
     )
 
@@ -116,6 +119,27 @@ object Jane : ParentConfigBuilder {
                     targetYM = targetSSDate,
                     baseAmount = baseSSBenefit,
                 )
+            )
+        )
+    }
+
+    override fun medInsurance(person: Person): List<MedInsuranceProgression> {
+        return listOf(
+            EmployerInsPremProgression(
+                employments = employmentConfigs(person),
+                relation = RelationToInsured.SELF
+            ),
+            MedicareProgression(birthYM = person.birthYM,
+                parts = listOf(
+                    MedicarePartType.PARTB,
+                    MedicarePartType.PARTD,
+                    MedicarePartType.DENTAL,
+                )),
+            MarketplacePremProgression(
+                birthYM = person.birthYM,
+                medalType = MPMedalType.SILVER,
+                planType = MPPlanType.HMO,
+                includeDental = true
             )
         )
     }

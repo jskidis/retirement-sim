@@ -7,6 +7,7 @@ import expense.ExpenseConfig
 import expense.ExpenseConfigProgression
 import expense.SCurveDecreasingExpense
 import inflation.StdInflationAmountAdjuster
+import medical.*
 import tax.NonTaxableProfile
 
 object Suzy: DependentConfigBuilder {
@@ -27,6 +28,22 @@ object Suzy: DependentConfigBuilder {
                     config = config,
                     adjusters = listOf(StdInflationAmountAdjuster())
                 )
+            )
+        )
+    }
+
+    override fun medInsurance(person: Person): List<MedInsuranceProgression> {
+        return listOf(
+            DependantInsFixedYearProgression(2030),
+            EmployerInsPremProgression(
+                employments = Jane.employmentConfigs(Smiths.jane),
+                relation = RelationToInsured.DEPENDANT
+            ),
+            MarketplacePremProgression(
+                birthYM = person.birthYM,
+                medalType = MPMedalType.SILVER,
+                planType = MPPlanType.HMO,
+                includeDental = true
             )
         )
     }

@@ -14,6 +14,7 @@ import expense.ExpenseConfigProgression
 import income.EmploymentIncomeProgression
 import income.IncomeConfigProgression
 import inflation.StdInflationAmountAdjuster
+import medical.*
 import socsec.FixedDateAmountSSBenefitProgression
 import socsec.SSBenefitConfig
 import socsec.SSBenefitConfigProgression
@@ -117,6 +118,27 @@ object Richard : ParentConfigBuilder {
                     targetYM = targetSSDate,
                     baseAmount = baseSSBenefit,
                 )
+            )
+        )
+    }
+
+    override fun medInsurance(person: Person): List<MedInsuranceProgression> {
+        return listOf(
+            MedicareProgression(birthYM = person.birthYM,
+                parts = listOf(
+                    MedicarePartType.PARTB,
+                    MedicarePartType.PARTD,
+                    MedicarePartType.DENTAL,
+                )),
+            EmployerInsPremProgression(
+                employments = Jane.employmentConfigs(Smiths.jane),
+                relation = RelationToInsured.SPOUSE
+            ),
+            MarketplacePremProgression(
+                birthYM = person.birthYM,
+                medalType = MPMedalType.SILVER,
+                planType = MPPlanType.HMO,
+                includeDental = true
             )
         )
     }
