@@ -17,19 +17,20 @@ data class SSBenefitRec(
     val config: SSBenefitConfig,
     val amount: Amount,
     val taxableAmount: TaxableAmounts,
-): AmountRec {
+) : AmountRec {
 
-    override fun year(): Year  = year
+    override fun year(): Year = year
     override fun config(): AmountConfig = config
     override fun amount(): Amount = amount
 
     override fun taxable(): TaxableAmounts = taxableAmount
     override fun retainRec(): Boolean = amount != 0.0
 
-    override fun toString(): String =
-        "($config=${moneyFormat.format(amount)}" +
-            strWhenNotZero(taxableAmount.total() == 0.0, ", taxable=${taxableAmount}") +
-            ")"
+    override fun toString(): String = "{" +
+        "\"config\":$config, " +
+        "\"amount\":\"${moneyFormat.format(amount)}\"" +
+        strWhenNotZero(taxableAmount.total() == 0.0, ", \"taxable\":${taxableAmount}") +
+        "}"
 }
 
 data class SSBenefitConfig(
@@ -37,7 +38,7 @@ data class SSBenefitConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
-    override fun toString(): String = "$person-$name"
+    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 }
 
 data class SSBenefitConfigProgression(

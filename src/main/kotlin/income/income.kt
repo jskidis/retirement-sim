@@ -19,20 +19,21 @@ data class IncomeRec(
     val baseAmount: Amount,
     val bonus: Amount = 0.0,
     val taxableIncome: TaxableAmounts,
-): AmountRec {
+) : AmountRec {
 
-    override fun year(): Year  = year
+    override fun year(): Year = year
     override fun config(): AmountConfig = config
     override fun amount(): Amount = baseAmount + bonus
 
     override fun taxable(): TaxableAmounts = taxableIncome
     override fun retainRec(): Boolean = baseAmount != 0.0
 
-    override fun toString(): String =
-        "($config=${moneyFormat.format(baseAmount)}" +
-            strWhenNotZero(bonus == 0.0, ", bonus=${moneyFormat.format(bonus)}") +
-            strWhenNotZero(taxableIncome.total() == 0.0, ", taxable=${taxableIncome}") +
-            ")"
+    override fun toString(): String = "{" +
+        "\"config\":$config, " +
+        "\"amount\":\"${moneyFormat.format(baseAmount)}\"" +
+        strWhenNotZero(bonus == 0.0, ", \"bonus\":\"${moneyFormat.format(bonus)}\"") +
+        strWhenNotZero(taxableIncome.total() == 0.0, ", \"taxable\":${taxableIncome}") +
+        "}"
 }
 
 data class IncomeConfig(
@@ -40,7 +41,7 @@ data class IncomeConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
-    override fun toString(): String = "$person-$name"
+    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 }
 
 data class IncomeConfigProgression(

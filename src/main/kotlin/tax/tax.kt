@@ -31,14 +31,14 @@ data class TaxableAmounts(
     fun total(): Amount = fed + fedLTG + state + socSec + medicare
     fun hasAmounts(): Boolean = total() != 0.0
 
-    override fun toString(): String =
-        ("(Person:$person") +
-            strWhenNotZero(fed == 0.0, ", Fed=${moneyFormat.format(fed)}") +
-            strWhenNotZero(fedLTG == 0.0, ", FedLTG=${moneyFormat.format(fedLTG)}") +
-            strWhenNotZero(state == 0.0, ", State=${moneyFormat.format(state)}") +
-            strWhenNotZero(socSec == 0.0, ", SocSec=${moneyFormat.format(socSec)}") +
-            strWhenNotZero(medicare == 0.0, ", Medi=${moneyFormat.format(medicare)}") +
-            ")"
+    override fun toString(): String = "{" +
+        strWhenNotZero(total() == 0.0, "\"person\":\"$person\"") +
+        strWhenNotZero(fed == 0.0, ", \"fed\":\"${moneyFormat.format(fed)}\"") +
+        strWhenNotZero(fedLTG == 0.0, ", \"fedLTG\":\"${moneyFormat.format(fedLTG)}\"") +
+        strWhenNotZero(state == 0.0, ", \"state\":\"${moneyFormat.format(state)}\"") +
+        strWhenNotZero(socSec == 0.0, ", \"socSec\":\"${moneyFormat.format(socSec)}\"") +
+        strWhenNotZero(medicare == 0.0, ", \"medicare\":\"${moneyFormat.format(medicare)}\"") +
+        "}"
 }
 
 data class TaxesRec(
@@ -50,14 +50,14 @@ data class TaxesRec(
 ) {
     fun total(): Amount = fed + state + socSec + medicare
 
-    override fun toString(): String =
-        "(Total: ${moneyFormat.format(total())}" +
-            strWhenNotZero(fed == 0.0, ", Fed:${moneyFormat.format(fed)}") +
-            strWhenNotZero(state == 0.0, ", State:${moneyFormat.format(state)}") +
-            strWhenNotZero(socSec == 0.0, ", SocSoc:${moneyFormat.format(socSec)}") +
-            strWhenNotZero(medicare == 0.0, ", Medi:${moneyFormat.format(medicare)}") +
-            strWhenNotZero(agi == 0.0, ", AGI:${moneyFormat.format(agi)}") +
-            ")"
+    override fun toString(): String = "{" +
+        "\"total\":\"${moneyFormat.format(total())}\"" +
+        strWhenNotZero(fed == 0.0, ", \"fed\":\"${moneyFormat.format(fed)}\"") +
+        strWhenNotZero(state == 0.0, ", \"state\":\"${moneyFormat.format(state)}\"") +
+        strWhenNotZero(socSec == 0.0, ", \"socSoc\":\"${moneyFormat.format(socSec)}\"") +
+        strWhenNotZero(medicare == 0.0, ", \"medicare\":\"${moneyFormat.format(medicare)}\"") +
+        strWhenNotZero(agi == 0.0, ", \"AGI\":\"${moneyFormat.format(agi)}\"") +
+        "}"
 }
 
 interface TaxCalculator {

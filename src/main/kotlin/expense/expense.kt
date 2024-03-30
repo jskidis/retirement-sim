@@ -26,10 +26,11 @@ data class ExpenseRec(
     override fun taxable(): TaxableAmounts = taxDeductions
     override fun retainRec(): Boolean = amount != 0.0
 
-    override fun toString(): String =
-        "($config=${moneyFormat.format(amount)}" +
-        strWhenNotZero(taxDeductions.total() == 0.0, ", deductions=$taxDeductions") +
-        ")"
+    override fun toString(): String = "{" +
+        "\"config\":$config, " +
+        "\"amount\":\"${moneyFormat.format(amount)}\"" +
+        strWhenNotZero(taxDeductions.total() == 0.0, ", \"deductions\":$taxDeductions") +
+        "}"
 }
 
 data class ExpenseConfig(
@@ -37,7 +38,7 @@ data class ExpenseConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ): AmountConfig {
-    override fun toString(): String = "$person-$name"
+    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 }
 
 data class ExpenseConfigProgression(

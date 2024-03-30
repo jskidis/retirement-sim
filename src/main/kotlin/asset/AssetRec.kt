@@ -59,28 +59,30 @@ data class AssetRec(
             )
         }
 
-    override fun toString(): String =
-        "($config:(StartBal=${moneyFormat.format(startBal)}, " +
-            strWhenNotZero(
-                startUnrealized == 0.0,
-                "StartUnrealized=${moneyFormat.format(startUnrealized)}, "
-            ) +
-            strWhenNotZero(
-                totalGains() == 0.0,
-                "Gains=$gains, TotalGains=${moneyFormat.format(totalGains())}, " +
-                    strWhenNotZero(
-                        capturedGains() == 0.0,
-                        "CapturedGains=${moneyFormat.format(capturedGains())}, ")
-            ) +
-            strWhenNotZero(
-                tributions.isEmpty(),
-            "Tributions=$tributions, NetTributions=${moneyFormat.format(totalTributions())}, "
-            ) +
-            strWhenNotZero(
-                totalUnrealized() == 0.0,
-                "FinalUnrealized=${moneyFormat.format(totalUnrealized())}, "
-            ) +
-            "FinalBal=${moneyFormat.format(finalBalance())})"
+    override fun toString(): String = "{" +
+        "\"config\":$config" +
+        ", \"startBal\":\"${moneyFormat.format(startBal)}\"" +
+        strWhenNotZero(
+            startUnrealized == 0.0,
+            ", \"startUnrealized\":\"${moneyFormat.format(startUnrealized)}\""
+        ) +
+        strWhenNotZero(
+            totalGains() == 0.0,
+            ", \"gains\":$gains, \"totalGains\":\"${moneyFormat.format(totalGains())}\"" +
+                strWhenNotZero(
+                    capturedGains() == 0.0,
+                    ", \"capturedGains\":\"${moneyFormat.format(capturedGains())}\"")
+        ) +
+        strWhenNotZero(
+            tributions.isEmpty(),
+            ", \"tributions\":$tributions, \"netTributions\":\"${moneyFormat.format(totalTributions())}\""
+        ) +
+        strWhenNotZero(
+            totalUnrealized() == 0.0,
+            ", \"finalUnrealized\":\"${moneyFormat.format(totalUnrealized())}\""
+        ) +
+        ", \"finalBal\":\"${moneyFormat.format(finalBalance())}\"" +
+        "}"
 
     /*
         override fun toString(): String =

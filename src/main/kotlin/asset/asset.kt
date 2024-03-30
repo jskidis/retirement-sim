@@ -12,8 +12,7 @@ data class AssetConfig(
     // Taxability of gains
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
-
-    override fun toString(): String = "$person-$name"
+    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 }
 
 data class AssetConfigProgression(
