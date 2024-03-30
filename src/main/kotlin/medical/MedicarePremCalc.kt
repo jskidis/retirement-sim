@@ -5,10 +5,14 @@ import YearlyDetail
 import tax.FilingStatus
 
 open class MedicarePremCalc : MedicarePremProvider {
-    override fun getMedicarePremium(currYear: YearlyDetail, previousAGI: Amount): Double {
+    override fun getMedicarePremium(
+        currYear: YearlyDetail,
+        previousAGI: Amount,
+        parts: List<MedicarePartType>,
+    ): Double {
         val adjustedAgi = previousAGI / currYear.inflation.std.cmpdStart
         val brackets = getBrackets()
-        val unadjustedPrems =
+        val bracket =
             if (FilingStatus.JOINTLY == currYear.filingStatus) brackets.find {
                 it.jointBracket.start <= adjustedAgi &&
                     it.jointBracket.end >= adjustedAgi
@@ -18,19 +22,22 @@ open class MedicarePremCalc : MedicarePremProvider {
                     it.singleBracket.end >= adjustedAgi
 
             }
-        val prems = unadjustedPrems?.let {
-            MedicarePartPrems(
-                partBPrem = it.partPrems.partBPrem * currYear.inflation.med.cmpdStart,
-                partDPrem = it.partPrems.partDPrem * currYear.inflation.med.cmpdStart,
-            )
-        } ?: throw RuntimeException("Unable to find medicare premium for given AGI")
-        return prems.partBPrem + prems.partDPrem
+        val prems = bracket?.partPrems
+            ?: throw RuntimeException("Unable to find medicare premium for given AGI")
+
+        return parts.fold(0.0) { acc, it ->
+            acc + it.getPartPrem(prems)
+        } * currYear.inflation.med.cmpdStart
     }
 
     open fun getBrackets(): List<MedicarePremBracketRec> = MedicarePremiumBrackets.brackets
 }
 
 interface MedicarePremProvider {
-    fun getMedicarePremium(currYear: YearlyDetail, previousAGI: Amount): Double
+    fun getMedicarePremium(
+        currYear: YearlyDetail,
+        previousAGI: Amount,
+        parts: List<MedicarePartType>,
+    ): Double
 }
 

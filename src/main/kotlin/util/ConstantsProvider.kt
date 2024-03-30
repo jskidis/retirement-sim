@@ -9,7 +9,6 @@ object ConstantsProvider {
         STD_DEDUCT_HOUSEHOLD { override fun toString() = "stdDeductHousehold" },
         SS_INCOME_CAP { override fun toString() = "ssIncomeCap" },
         MARKETPLACE_BASE_PREM { override fun toString() = "marketplaceBasePrem" },
-        MEDICARE_BASE_PREM { override fun toString() = "medicareBasePrem" },
     }
 
     fun getValue(key: KEYS): Double =

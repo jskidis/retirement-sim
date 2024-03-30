@@ -21,11 +21,12 @@ class MedicareProgressionTest : FunSpec({
     val person65YO = YearMonth(year = year - 65, month = 5)
 
     val premium = 2500.0
+    val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
 
     val currYear = yearlyDetailFixture(year = year, inflation = inflation)
 
     test("determineNext returns full prem (adjusted for inflation) with 12 months covered if person is 66+ YO") {
-        val progression = MedicareProgressionFixture(person66YO, premium)
+        val progression = MedicareProgressionFixture(person66YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(premium)
         results.monthsCovered.shouldBe(12)
@@ -34,14 +35,14 @@ class MedicareProgressionTest : FunSpec({
     }
 
     test("determineNext return 'empty' premium object is person is less an 65") {
-        val progression = MedicareProgressionFixture(person64YO, premium)
+        val progression = MedicareProgressionFixture(person64YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(0.0)
         results.monthsCovered.shouldBe(0)
     }
 
     test("determineNext returns partial prem (adjusted for inflation) with partial months covered if person turns 65 in current year") {
-        val progression = MedicareProgressionFixture(person65YO, premium)
+        val progression = MedicareProgressionFixture(person65YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(
             premium * (11 - person65YO.month) / 12.0)
@@ -50,8 +51,13 @@ class MedicareProgressionTest : FunSpec({
     }
 })
 
-class MedicareProgressionFixture(birthYM: YearMonth, val premium: Double)
-    : MedicareProgression(birthYM) {
+class MedicareProgressionFixture(
+    birthYM: YearMonth,
+    parts: List<MedicarePartType>,
+    val premium: Double,
+) : MedicareProgression(birthYM, parts) {
 
-    override fun getMedicarePremium(currYear: YearlyDetail, previousAGI: Amount): Double = premium
+    override fun getMedicarePremium(
+        currYear: YearlyDetail, previousAGI: Amount, parts: List<MedicarePartType>,
+    ): Double = premium
 }
