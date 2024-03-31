@@ -42,6 +42,9 @@ data class YearlyDetail(
             ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
             ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
             ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
+            ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
+            ", \"carryOver\":\"${moneyFormat.format((secondPassTaxes.total() - taxes.total()))}\"" +
+            ", \"secondPass\":${secondPassTaxes}" +
             ", \"taxes\":${taxes}" +
             ", \"secondPass\":${secondPassTaxes}" +
             ", \"incomes\":${incomes}" +

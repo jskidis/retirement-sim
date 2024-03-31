@@ -25,7 +25,7 @@ object RandomizerFactory {
         if(suppressRandom()) 0.0
         else Random.nextDouble()
 
-    private fun suppressRandom(): Boolean =
+    fun suppressRandom(): Boolean =
         System.getProperty("suppressRand")?.let{it.toBooleanStrictOrNull() ?: false} ?: false
 
     fun getROIRandom(prevYear: YearlyDetail?): Double =
