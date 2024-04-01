@@ -12,7 +12,4 @@ class ContractorMedicareTaxCalc : FixedRateTaxCalc(0.0290)
 open class FixedRateTaxCalc(val pct: Rate) : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail)
         : Amount = Math.max(taxableAmount, 0.0) * pct
-
-    override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail)
-        : Rate = pct
 }

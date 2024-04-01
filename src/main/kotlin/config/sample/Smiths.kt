@@ -49,7 +49,7 @@ class Smiths : ConfigBuilder {
 
         val taxCalcConfig = TaxCalcConfig(
             fed = CurrentFedTaxBrackets,
-            fedLTG = CurrentFedLTGCalc,
+            fedLTG = CurrentFedLTGBrackets,
             state = CurrentStateTaxBrackets,
             socSec = EmployeeSocSecTaxCalc(),
             medicare = EmployeeMedicareTaxCalc(),

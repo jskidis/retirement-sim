@@ -29,8 +29,11 @@ class TaxesProcessorTest : ShouldSpec({
         gains = 500.0, taxProfile = NonWageTaxableProfile()
     )
 
-    val fedTaxCalc = FixedRateTaxCalc(.10)
-    val fedLTGTaxCalc = FixedRateTaxCalc(.05)
+    val fedTaxRate = .10
+    val fedTaxCalc = BracketTaxCalcFixture(fedTaxRate)
+    val fedLTGTaxRate = .05
+    val fedLTGTaxCalc = BracketTaxCalcFixture(fedLTGTaxRate)
+
     val stateTaxCalc = FixedRateTaxCalc(.04)
     val socSecTaxCalc = FixedRateTaxCalc(.06)
     val medicareTaxCalc = FixedRateTaxCalc(.02)
@@ -48,7 +51,7 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
-        result.fed.shouldBe((wageInc.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() - stdDeduct) * fedTaxRate)
         result.state.shouldBe((wageInc.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
@@ -60,7 +63,7 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - stdDeduct) * fedTaxRate)
         result.state.shouldBe((wageInc.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
@@ -73,7 +76,7 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - decductExp.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() - decductExp.amount() - stdDeduct) * fedTaxRate)
         result.state.shouldBe((wageInc.amount() - decductExp.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)
@@ -87,7 +90,7 @@ class TaxesProcessorTest : ShouldSpec({
         )
 
         val result = TaxesProcessor.processTaxes(currYear, config)
-        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() + assetRec.totalGains() - decductExp.amount() - stdDeduct) * fedTaxCalc.pct)
+        result.fed.shouldBe((wageInc.amount() + fedOnlyInc.amount() + assetRec.totalGains() - decductExp.amount() - stdDeduct) * fedTaxRate)
         result.state.shouldBe((wageInc.amount() + assetRec.totalGains() - decductExp.amount() - stdDeduct) * stateTaxCalc.pct)
         result.socSec.shouldBe(wageInc.amount() * socSecTaxCalc.pct)
         result.medicare.shouldBe(wageInc.amount() * medicareTaxCalc.pct)

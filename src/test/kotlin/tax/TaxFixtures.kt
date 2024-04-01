@@ -1,19 +1,28 @@
 package tax
 
 import Amount
-import Rate
 import YearlyDetail
 
-class taxCalculatorFixture : TaxCalculator {
-    override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = 0.0
-    override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate = 0.0
+class TaxCalcFixture(val fixedPct: Double = 0.0) : TaxCalculator {
+    override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = fixedPct
+}
+
+class BracketTaxCalcFixture(fixedPct: Double = 0.0) : BracketBasedTaxCalc {
+    override val brackets: List<TaxBracket> = listOf(
+        TaxBracket(
+            pct = fixedPct,
+            single = BracketCase(fixedPct),
+            jointly = BracketCase(fixedPct),
+            household = BracketCase(fixedPct)
+        )
+    )
 }
 
 fun taxConfigFixture() = TaxCalcConfig(
-    fed = taxCalculatorFixture(),
-    fedLTG = taxCalculatorFixture(),
-    state = taxCalculatorFixture(),
-    socSec = taxCalculatorFixture(),
-    medicare = taxCalculatorFixture(),
+    fed = BracketTaxCalcFixture(),
+    fedLTG = BracketTaxCalcFixture(),
+    state = TaxCalcFixture(),
+    socSec = TaxCalcFixture(),
+    medicare = TaxCalcFixture(),
 )
 

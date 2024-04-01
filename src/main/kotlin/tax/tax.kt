@@ -62,12 +62,11 @@ data class TaxesRec(
 
 interface TaxCalculator {
     fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
-    fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate
 }
 
 data class TaxCalcConfig(
-    val fed: TaxCalculator,
-    val fedLTG: TaxCalculator,
+    val fed: BracketBasedTaxCalc,
+    val fedLTG: BracketBasedTaxCalc,
     val state: TaxCalculator,
     val socSec: TaxCalculator,
     val medicare: TaxCalculator,

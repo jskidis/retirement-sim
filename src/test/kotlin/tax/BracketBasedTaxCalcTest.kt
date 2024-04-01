@@ -108,7 +108,37 @@ class BracketBasedTaxCalcTest : ShouldSpec({
             .shouldBe(0.0)
     }
 
-    should("Successfully load brackets from files") {
+    should("determine top of current bracket") {
+        val currYear = yearlyDetail.copy(
+            inflation = doubledInflation,
+            filingStatus = FilingStatus.JOINTLY
+        )
+
+        // Inflation adjusted top of first bracket
+        taxCalc.topOfCurrBracket(brackets[0].jointly.start * 2.0 + 1.0, currYear)
+            .shouldBe(brackets[0].jointly.end * 2.0)
+
+        // Inflation adjusted top of second bracket
+        taxCalc.topOfCurrBracket(brackets[1].jointly.start * 2.0 + 1.0, currYear)
+            .shouldBe(brackets[1].jointly.end * 2.0)
+    }
+
+    should("determine greatest amount below given pct") {
+        val currYear = yearlyDetail.copy(
+            inflation = doubledInflation,
+            filingStatus = FilingStatus.JOINTLY
+        )
+
+        // Inflation adjusted top of first bracket
+        taxCalc.topAmountBelowPct(brackets[0].pct + .01, currYear)
+            .shouldBe(brackets[0].jointly.end * 2.0)
+
+        // Inflation adjusted top of second bracket
+        taxCalc.topAmountBelowPct(brackets[1].pct + .01, currYear)
+            .shouldBe(brackets[1].jointly.end * 2.0)
+    }
+
+    should("successfully load brackets from files") {
         fun validateBracketCases(cases: List<BracketCase>) {
             cases.fold(0.0) { acc, case ->
                 case.start.shouldBeGreaterThanOrEqual(acc)
@@ -133,6 +163,8 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         validateBrackets(RollbackFedTaxBrackets.brackets)
         validateBrackets(CurrentStateTaxBrackets.brackets)
         validateBrackets(FutureStateTaxBrackets.brackets)
+        validateBrackets(CurrentFedLTGBrackets.brackets)
+        validateBrackets(RollbackFedLTGBrackets.brackets)
     }
 })
 
