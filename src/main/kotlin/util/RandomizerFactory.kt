@@ -26,7 +26,11 @@ object RandomizerFactory {
         else Random.nextDouble()
 
     fun suppressRandom(): Boolean =
-        System.getProperty("suppressRand")?.let{it.toBooleanStrictOrNull() ?: false} ?: false
+        System.getProperty("suppressRand")?.let{it.toBooleanStrictOrNull() ?: true} ?: true
+
+    fun setSuppressRandom(suppress: Boolean) {
+        System.setProperty("suppressRand", suppress.toString())
+    }
 
     fun getROIRandom(prevYear: YearlyDetail?): Double =
         getRandomValue(GaussKeys.ROI.name, prevYear)

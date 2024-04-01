@@ -15,7 +15,7 @@ object SimulationRun {
     fun runSim(
         configBuilder: ConfigBuilder,
         outputYearDetails: Boolean = true,
-    ): Triple<Boolean, Amount, Double> {
+    ): Pair<Amount, Double> {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
         config.household.members.parent1
@@ -37,7 +37,7 @@ object SimulationRun {
             (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()] ?: 0.0) +
                 (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()] ?: 0.0)
         } / years.size / 2.0
-        return Triple((infAdjAssets > 1000000.0), infAdjAssets, avgRandom)
+        return Pair(infAdjAssets, avgRandom)
     }
 
 

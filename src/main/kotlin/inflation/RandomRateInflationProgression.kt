@@ -6,9 +6,9 @@ import progression.PrevRecProviderProgression
 import util.RandomizerFactory
 
 open class RandomRateInflationProgression(
-    val stdMean: Rate = .0253, val stdSD: Rate = .015,
-    val medMean: Rate = .0333, val medSD: Rate = .011,
-    val chainMean: Rate = .0225, val chainSD: Rate = .016,
+    val stdMean: Rate = .0303, val stdSD: Rate = .015,
+    val medMean: Rate = .0383, val medSD: Rate = .011,
+    val chainMean: Rate = .0275, val chainSD: Rate = .016,
     val wageMean: Rate = .036, val wageSD: Rate = .019,
 ) : PrevRecProviderProgression<InflationRec> {
 
