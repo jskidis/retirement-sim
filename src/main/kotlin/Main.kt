@@ -35,13 +35,15 @@ private fun runMultiple(numSims: Int, legacy: Double, configBuilder: ConfigBuild
 
     val sorted = ((runs.map { it.first }).sorted())
     val median = sorted[runs.size/2]
-    val adjustment = Math.floor(baselineResult / median * 100.0) / 100.0
+    val average = runs.sumOf { it.first } / numSims
+    val adjustment = Math.floor(baselineResult / average * 100.0) / 100.0
     val adjusted = sorted.map { it * adjustment }
     val successPct = 100.0 * adjusted.filter{ it >= legacy }.size / numSims
 
     println("")
     println("Success Pct: $successPct")
     println("Median: ${moneyFormat.format(median * adjustment)}")
+    println("Average: ${moneyFormat.format(average)}")
     println("Baseline: ${moneyFormat.format(baselineResult)}")
 
 //    val avgRand = runs.sumOf { it.second } / runs.size
