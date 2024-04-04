@@ -1,7 +1,6 @@
 package inflation
 
 import Amount
-import YearlyDetail
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import yearlyDetailFixture
@@ -25,6 +24,9 @@ class InflationAmountAdjusterTest : ShouldSpec({
 })
 
 class InflationAmountAdjusterFixture(val inflationRAC: InflationRAC)
-    : InflationAmountAdjuster() {
-    override fun getPrevInflationRAC(prevYear: YearlyDetail): InflationRAC = inflationRAC
+    : InflationAmountAdjuster,
+    CmpdInflationProvider by CmpdInflationProviderFixture(inflationRAC)
+
+class CmpdInflationProviderFixture(val inflationRAC: InflationRAC): BaseCmpdInflationProvider() {
+    override fun getRAC(inflationRec: InflationRec) = inflationRAC
 }

@@ -4,12 +4,15 @@ import Amount
 import YearlyDetail
 import config.EmployerInsurance
 import config.EmploymentConfig
+import inflation.CmpdInflationProvider
+import inflation.MedCmpdInflationProvider
 
 class EmployerInsPremProgression(
     val employments: List<EmploymentConfig>,
     val relation: RelationToInsured,
     val fullyDeduct: Boolean = true
-) : MedInsuranceProgression {
+) : MedInsuranceProgression,
+    CmpdInflationProvider by MedCmpdInflationProvider() {
 
     override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
         val currEmployers = employments.filter {
@@ -26,8 +29,7 @@ class EmployerInsPremProgression(
                 val monthsNeedingCover = Math.min(12 - acc.monthsCovered, monthsCovered)
 
                 val prem = premBasedOnRelation(it.employerInsurance, relation) *
-                    (monthsNeedingCover / 12.0) *
-                    currYear.inflation.med.cmpdStart
+                    (monthsNeedingCover / 12.0) * getCmpdInflationStart(currYear)
 
                 InsurancePrem(
                     name = acc.name,

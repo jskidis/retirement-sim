@@ -3,6 +3,8 @@ package socsec
 import Amount
 import YearMonth
 import YearlyDetail
+import inflation.CmpdInflationProvider
+import inflation.StdCmpdInflationProvider
 import util.currentDate
 
 open class FixedDateAmountSSBenefitProgression(
@@ -11,13 +13,14 @@ open class FixedDateAmountSSBenefitProgression(
     val targetYM: YearMonth,
     val baseAmount: Amount,
     val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
-) : SSBenefitProgression {
+) : SSBenefitProgression,
+    CmpdInflationProvider by StdCmpdInflationProvider() {
 
     var benefitAdjustment: Double = 0.0
 
     override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
         val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
-        val cmpInflation = (prevYear?.inflation?.std?.cmpdEnd) ?: 1.0
+        val cmpInflation = getCmpdInflationEnd(prevYear)
 
         if (benefitAdjustment == 0.0 && targetYM.year <= year)
             benefitAdjustment = benefitAdjustmentF(birthYM, targetYM)

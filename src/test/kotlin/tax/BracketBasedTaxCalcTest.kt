@@ -1,7 +1,9 @@
 package tax
 
+import inflation.CmpdInflationProvider
 import inflation.InflationRAC
 import inflation.InflationRec
+import inflation.StdCmpdInflationProvider
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
@@ -151,7 +153,7 @@ class BracketBasedTaxCalcTest : ShouldSpec({
             validateBracketCases(brackets.map { it.household })
             validateBracketCases(brackets.map { it.single })
 
-            brackets.forEach{
+            brackets.forEach {
                 it.jointly.start.shouldBeGreaterThanOrEqual(it.household.start)
                 it.household.start.shouldBeGreaterThanOrEqual(it.single.start)
                 it.jointly.end.shouldBeGreaterThanOrEqual(it.household.end)
@@ -168,4 +170,5 @@ class BracketBasedTaxCalcTest : ShouldSpec({
     }
 })
 
-class BracketBasedTaxCalcFixture(override val brackets: List<TaxBracket>) : BracketBasedTaxCalc
+class BracketBasedTaxCalcFixture(override val brackets: List<TaxBracket>)
+    : BracketBasedTaxCalc, CmpdInflationProvider by StdCmpdInflationProvider()

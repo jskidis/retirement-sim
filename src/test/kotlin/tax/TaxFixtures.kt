@@ -2,12 +2,15 @@ package tax
 
 import Amount
 import YearlyDetail
+import inflation.CmpdInflationProvider
+import inflation.StdCmpdInflationProvider
 
 class TaxCalcFixture(val fixedPct: Double = 0.0) : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = fixedPct
 }
 
-class BracketTaxCalcFixture(fixedPct: Double = 0.0) : BracketBasedTaxCalc {
+class BracketTaxCalcFixture(fixedPct: Double = 0.0) : BracketBasedTaxCalc,
+    CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> = listOf(
         TaxBracket(
             pct = fixedPct,

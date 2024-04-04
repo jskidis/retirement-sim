@@ -2,9 +2,12 @@ package medical
 
 import Amount
 import YearlyDetail
+import inflation.CmpdInflationProvider
+import inflation.MedCmpdInflationProvider
 import tax.FilingStatus
 
-open class MedicarePremCalc : MedicarePremProvider {
+open class MedicarePremCalc : MedicarePremProvider,
+    CmpdInflationProvider by MedCmpdInflationProvider() {
     override fun getMedicarePremium(
         currYear: YearlyDetail,
         previousAGI: Amount,
@@ -27,7 +30,7 @@ open class MedicarePremCalc : MedicarePremProvider {
 
         return parts.fold(0.0) { acc, it ->
             acc + it.getPartPrem(prems)
-        } * currYear.inflation.med.cmpdStart
+        } * getCmpdInflationStart(currYear)
     }
 
     open fun getBrackets(): List<MedicarePremBracketRec> = MedicarePremiumBrackets.brackets

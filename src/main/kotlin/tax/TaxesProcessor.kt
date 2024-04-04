@@ -2,10 +2,12 @@ package tax
 
 import YearlyDetail
 import config.SimConfig
+import inflation.CmpdInflationProvider
+import inflation.StdCmpdInflationProvider
 import util.ConstantsProvider
 import util.ConstantsProvider.KEYS.*
 
-object TaxesProcessor {
+object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
     val nameOfTaxablePerson = "Household"
 
     fun processTaxes(
