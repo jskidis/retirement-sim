@@ -10,8 +10,7 @@ import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import tax.UnusedProfile
-import util.moneyFormat
-import util.strWhenNotZero
+import toJsonStr
 
 data class ExpenseRec(
     val year: Year,
@@ -26,11 +25,7 @@ data class ExpenseRec(
     override fun taxable(): TaxableAmounts = taxDeductions
     override fun retainRec(): Boolean = amount != 0.0
 
-    override fun toString(): String = "{" +
-        "\"config\":$config, " +
-        "\"amount\":\"${moneyFormat.format(amount)}\"" +
-        strWhenNotZero(taxDeductions.total() == 0.0, ", \"deductions\":$taxDeductions") +
-        "}"
+    override fun toString(): String = toJsonStr()
 }
 
 data class ExpenseConfig(
@@ -38,7 +33,7 @@ data class ExpenseConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ): AmountConfig {
-    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+    override fun toString(): String = toJsonStr()
 }
 
 data class ExpenseConfigProgression(

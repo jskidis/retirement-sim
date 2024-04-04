@@ -5,6 +5,7 @@ import config.AmountConfig
 import progression.Progression
 import tax.TaxabilityProfile
 import tax.UnusedProfile
+import toJsonStr
 
 data class AssetConfig(
     override val name: Name,
@@ -12,7 +13,7 @@ data class AssetConfig(
     // Taxability of gains
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
-    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+    override fun toString(): String = toJsonStr()
 }
 
 data class AssetConfigProgression(

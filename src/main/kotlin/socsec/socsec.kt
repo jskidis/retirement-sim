@@ -9,8 +9,7 @@ import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import tax.UnusedProfile
-import util.moneyFormat
-import util.strWhenNotZero
+import toJsonStr
 
 data class SSBenefitRec(
     val year: Year,
@@ -26,11 +25,7 @@ data class SSBenefitRec(
     override fun taxable(): TaxableAmounts = taxableAmount
     override fun retainRec(): Boolean = amount != 0.0
 
-    override fun toString(): String = "{" +
-        "\"config\":$config, " +
-        "\"amount\":\"${moneyFormat.format(amount)}\"" +
-        strWhenNotZero(taxableAmount.total() == 0.0, ", \"taxable\":${taxableAmount}") +
-        "}"
+    override fun toString(): String = toJsonStr()
 }
 
 data class SSBenefitConfig(
@@ -38,7 +33,7 @@ data class SSBenefitConfig(
     override val person: Name,
     override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
 ) : AmountConfig {
-    override fun toString(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+    override fun toString(): String = toJsonStr()
 }
 
 data class SSBenefitConfigProgression(

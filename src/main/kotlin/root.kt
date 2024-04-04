@@ -7,7 +7,6 @@ import socsec.SSBenefitRec
 import tax.FilingStatus
 import tax.TaxableAmounts
 import tax.TaxesRec
-import util.moneyFormat
 
 typealias Year = Int
 typealias Amount = Double
@@ -33,25 +32,7 @@ data class YearlyDetail(
     fun totalBenefits() = benefits.sumOf { it.amount() }
     fun netSpend() = netSpend
 
-    override fun toString(): String =
-        "{" +
-            "\"year\": ${year}" +
-            ", \"income\":\"${moneyFormat.format(totalIncome())}\"" +
-            ", \"benefit\":\"${moneyFormat.format(totalBenefits())}\"" +
-            ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
-            ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
-            ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
-            ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
-            ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
-            ", \"carryOver\":\"${moneyFormat.format((secondPassTaxes.total() - taxes.total()))}\"" +
-            ", \"secondPass\":${secondPassTaxes}" +
-            ", \"taxes\":${taxes}" +
-            ", \"secondPass\":${secondPassTaxes}" +
-            ", \"incomes\":${incomes}" +
-            ", \"benefits\":${benefits}" +
-            ", \"expenses\":${expenses}" +
-            ", \"assets\":${assets}" +
-            "}"
+    override fun toString(): String = toJsonStr()
 }
 
 interface AmountRec {

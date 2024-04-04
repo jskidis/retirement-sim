@@ -7,9 +7,8 @@ import config.AmountConfig
 import income.IncomeConfig
 import income.IncomeRec
 import tax.TaxableAmounts
+import toJsonStr
 import util.PortionOfYearPast
-import util.moneyFormat
-import util.strWhenNotZero
 
 data class AssetRec(
     val year: Year,
@@ -19,6 +18,8 @@ data class AssetRec(
     val gains: AssetChange,
 ) : AmountRec {
     val tributions: MutableList<AssetChange> = ArrayList()
+
+    override fun toString(): String = toJsonStr()
 
     override fun year(): Year = year
     override fun config(): AmountConfig = config
@@ -58,36 +59,4 @@ data class AssetRec(
                 taxableIncome = it.taxable ?: TaxableAmounts(config.person)
             )
         }
-
-    override fun toString(): String = "{" +
-        "\"config\":$config" +
-        ", \"startBal\":\"${moneyFormat.format(startBal)}\"" +
-        strWhenNotZero(
-            startUnrealized == 0.0,
-            ", \"startUnrealized\":\"${moneyFormat.format(startUnrealized)}\""
-        ) +
-        strWhenNotZero(
-            totalGains() == 0.0,
-            ", \"gains\":$gains, \"totalGains\":\"${moneyFormat.format(totalGains())}\"" +
-                strWhenNotZero(
-                    capturedGains() == 0.0,
-                    ", \"capturedGains\":\"${moneyFormat.format(capturedGains())}\"")
-        ) +
-        strWhenNotZero(
-            tributions.isEmpty(),
-            ", \"tributions\":$tributions, \"netTributions\":\"${moneyFormat.format(totalTributions())}\""
-        ) +
-        strWhenNotZero(
-            totalUnrealized() == 0.0,
-            ", \"finalUnrealized\":\"${moneyFormat.format(totalUnrealized())}\""
-        ) +
-        ", \"finalBal\":\"${moneyFormat.format(finalBalance())}\"" +
-        "}"
-
-    /*
-        override fun toString(): String =
-            "($config:(StartBal=${moneyFormat.format(startBal)})" +
-    //            "FinalBal=${moneyFormat.format(finalBalance())})" +
-        ""
-    */
 }

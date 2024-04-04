@@ -3,8 +3,7 @@ package asset
 import Amount
 import Name
 import tax.TaxableAmounts
-import util.moneyFormat
-import util.strWhenNotZero
+import toJsonStr
 
 data class AssetChange(
     val name: Name,
@@ -14,10 +13,5 @@ data class AssetChange(
     val isCarryOver: Boolean = false,
     val isReqDist: Boolean = false,
 ) {
-    override fun toString(): String = "{" +
-        "\"name\":\"$name\"" +
-        ", \"amount\":\"${moneyFormat.format(amount)}\"" +
-        strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
-        strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
-        "}"
+    override fun toString(): String = toJsonStr()
 }
