@@ -38,19 +38,19 @@ open class PersonConfig(
 
 open class ParentConfig(
     person: Person,
-    incomes: List<IncomeProgression> = ArrayList(),
-    expenses: List<ExpenseProgression> = ArrayList(),
-    assets: List<AssetProgression> = ArrayList(),
-    benefits: List<SSBenefitProgression> = ArrayList(),
-    medInsurance: List<MedInsuranceProgression>
+    incomes: List<IncomeProgression>,
+    expenses: List<ExpenseProgression>,
+    assets: List<AssetProgression>,
+    benefits: List<SSBenefitProgression>,
+    medInsurance: List<MedInsuranceProgression>,
 ) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)
 
 open class DependantConfig(
     person: Person,
-    incomes: List<IncomeProgression> = ArrayList(),
-    expenses: List<ExpenseProgression> = ArrayList(),
-    assets: List<AssetProgression> = ArrayList(),
-    benefits: List<SSBenefitProgression> = ArrayList(),
+    incomes: List<IncomeProgression>,
+    expenses: List<ExpenseProgression>,
+    assets: List<AssetProgression>,
+    benefits: List<SSBenefitProgression>,
     medInsurance: List<MedInsuranceProgression>,
 ) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)
 

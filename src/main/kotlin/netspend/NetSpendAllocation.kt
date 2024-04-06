@@ -19,7 +19,7 @@ object NetSpendAllocation {
 
     fun determineNetSpend(currYear: YearlyDetail, prevYear: YearlyDetail?): Amount {
         val carryOverTaxes = prevYear?.let {
-            (it.secondPassTaxes.total() - it.taxes.total()) * (1 + currYear.inflation.std.rate)
+            (it.finalPassTaxes.total() - it.taxes.total()) * (1 + currYear.inflation.std.rate)
         } ?: 0.0
         val netSpend = (currYear.totalIncome() + currYear.totalBenefits() -
             currYear.totalExpense() - currYear.taxes.total() - carryOverTaxes)

@@ -95,9 +95,9 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
     ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
-    ", \"carryOver\":\"${moneyFormat.format((secondPassTaxes.total() - taxes.total()))}\"" +
+    ", \"carryOver\":\"${moneyFormat.format((finalPassTaxes.total() - taxes.total()))}\"" +
     ", \"taxes\":${taxes}" +
-    ", \"secondPass\":${secondPassTaxes}" +
+    ", \"finalPass\":${finalPassTaxes}" +
     ", \"incomes\":${incomes}" +
     ", \"benefits\":${benefits}" +
     ", \"expenses\":${expenses}" +

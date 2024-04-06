@@ -21,7 +21,7 @@ data class YearlyDetail(
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
     val taxes: TaxesRec = TaxesRec(),
-    val secondPassTaxes: TaxesRec = TaxesRec(),
+    val finalPassTaxes: TaxesRec = TaxesRec(),
     val netSpend: Amount = 0.0,
     val randomValues: Map<String, Double> = mapOf(),
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,

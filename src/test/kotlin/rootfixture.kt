@@ -26,6 +26,6 @@ fun yearlyDetailFixture(
         benefits = benefits,
         assets = assets,
         taxes = taxes,
-        secondPassTaxes = secondPassTaxes,
+        finalPassTaxes = secondPassTaxes,
         filingStatus = filingStatus
 )
