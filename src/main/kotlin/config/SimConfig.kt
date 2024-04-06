@@ -11,5 +11,6 @@ data class SimConfig(
     val household: HouseholdConfig,
     val inflationConfig: Progression<InflationRec>,
     val taxConfig: TaxCalcConfig,
-    val assetOrdering: NetSpendAllocationConfig
+    val assetOrdering: NetSpendAllocationConfig,
+    val rothConversion: RothConversionConfig? = null
 )

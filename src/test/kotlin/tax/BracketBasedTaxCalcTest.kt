@@ -15,7 +15,7 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         TaxBracket(.2, BracketCase(.2, 2000.0, 4000.0), BracketCase(), BracketCase()),
         TaxBracket(.4, BracketCase(.4, 4000.0), BracketCase(), BracketCase())
     )
-    val taxCalc = BracketBasedTaxCalcFixture(brackets)
+    val taxCalc = StdBracketBasedTaxCalcFixture(brackets)
 
     val yearlyDetail = yearlyDetailFixture(2020)
 
@@ -170,5 +170,5 @@ class BracketBasedTaxCalcTest : ShouldSpec({
     }
 })
 
-class BracketBasedTaxCalcFixture(override val brackets: List<TaxBracket>)
-    : BracketBasedTaxCalc, CmpdInflationProvider by StdCmpdInflationProvider()
+class StdBracketBasedTaxCalcFixture(override val brackets: List<TaxBracket>)
+    : StdBracketBasedTaxCalc, CmpdInflationProvider by StdCmpdInflationProvider()

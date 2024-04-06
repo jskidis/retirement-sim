@@ -8,7 +8,15 @@ import inflation.StdCmpdInflationProvider
 import org.apache.commons.csv.CSVRecord
 import util.CSVReader
 
-interface BracketBasedTaxCalc : TaxCalculator, TaxBracketProvider, CmpdInflationProvider {
+interface BracketBasedTaxCalc : TaxCalculator {
+    override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
+
+    fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate
+    fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount
+    fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount
+}
+
+interface StdBracketBasedTaxCalc : BracketBasedTaxCalc, TaxBracketProvider, CmpdInflationProvider {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail)
         : Amount {
 
@@ -22,16 +30,16 @@ interface BracketBasedTaxCalc : TaxCalculator, TaxBracketProvider, CmpdInflation
         } * cmpdInflation
     }
 
-    fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate =
+    override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate =
         findCurrentBracket(taxableAmount, currYear)?.pct ?: 0.0
 
-    fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount {
+    override fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount {
         val currBracket = findCurrentBracket(taxableAmount, currYear)
         return if (currBracket == null) 0.0
         else currBracket.end * getCmpdInflationStart(currYear)
     }
 
-    fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount {
+    override fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount {
         val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
         return bracketsBFS.findLast { it.pct <= pct }
             ?.let { it.end * getCmpdInflationStart(currYear) } ?: 0.0
@@ -78,42 +86,42 @@ interface TaxBracketProvider {
     }
 }
 
-object CurrentFedTaxBrackets : BracketBasedTaxCalc,
+object CurrentFedTaxBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/current-fed-tax.csv")
     }
 }
 
-object RollbackFedTaxBrackets : BracketBasedTaxCalc,
+object RollbackFedTaxBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/rollback-fed-tax.csv")
     }
 }
 
-object CurrentStateTaxBrackets : BracketBasedTaxCalc,
+object CurrentStateTaxBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/current-state-tax.csv")
     }
 }
 
-object FutureStateTaxBrackets : BracketBasedTaxCalc,
+object FutureStateTaxBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/future-state-tax.csv")
     }
 }
 
-object CurrentFedLTGBrackets : BracketBasedTaxCalc,
+object CurrentFedLTGBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/current-capgains-tax.csv")
     }
 }
 
-object RollbackFedLTGBrackets : BracketBasedTaxCalc,
+object RollbackFedLTGBrackets : StdBracketBasedTaxCalc,
     CmpdInflationProvider by StdCmpdInflationProvider() {
     override val brackets: List<TaxBracket> by lazy {
         loadBrackets("tables/rollback-capgains-tax.csv")

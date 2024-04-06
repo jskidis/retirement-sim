@@ -1,4 +1,5 @@
 import asset.AssetProcessor
+import asset.RothConversionProcessor
 import config.ConfigBuilder
 import config.SimConfig
 import expense.ExpenseProcessor
@@ -56,7 +57,7 @@ object SimulationRun {
             inflation = inflation, incomes = incomes + assetIncomes, expenses = expenses,
             assets = assets, benefits = benefits, randomValues = randomValues)
 
-        val previousAGI = prevYear?.secondPassTaxes?.agi ?: config.household.initialAGI
+        val previousAGI = prevYear?.finalPassTaxes?.agi ?: config.household.initialAGI
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance.filter{it.retainRec()})
 
@@ -67,8 +68,9 @@ object SimulationRun {
         NetSpendAllocation.allocateNetSpend(netSpend, currYear, config.assetOrdering)
         currYear = currYear.copy(netSpend = netSpend)
 
-        val secondPassTaxes = TaxesProcessor.processTaxes(currYear, config)
-        currYear = currYear.copy(secondPassTaxes = secondPassTaxes)
+        currYear = currYear.copy(finalPassTaxes = TaxesProcessor.processTaxes(currYear, config))
+        RothConversionProcessor.process(config, currYear)
+        currYear = currYear.copy(finalPassTaxes = TaxesProcessor.processTaxes(currYear, config))
 
         return currYear
     }
