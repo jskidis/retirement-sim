@@ -6,9 +6,10 @@ import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
 import util.moneyFormat
-import util.strWhenNotZero
 
 fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+
+fun strWhenNotZero(isZero: Boolean, str: String): String = if (isZero) "" else str
 
 fun AssetRec.toJsonStr(): String = "{" +
     "\"ident\":$ident" +
@@ -82,14 +83,19 @@ fun TaxableAmounts.toJsonStr() = "{" +
 fun YearlyDetail.toJsonStr() = "{" +
     "\"year\": ${year}" +
     ", \"income\":\"${moneyFormat.format(totalIncome())}\"" +
-    ", \"benefit\":\"${moneyFormat.format(totalBenefits())}\"" +
+    strWhenNotZero(
+        totalBenefits() == 0.0,
+        ", \"benefit\":\"${moneyFormat.format(totalBenefits())}\"") +
+    strWhenNotZero(
+        reqDistributions() == 0.0,
+        ", \"reqDist\":\"${moneyFormat.format((reqDistributions()))}\"") +
     ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
     ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
+    ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
     ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
     ", \"carryOver\":\"${moneyFormat.format((secondPassTaxes.total() - taxes.total()))}\"" +
-    ", \"secondPass\":${secondPassTaxes}" +
     ", \"taxes\":${taxes}" +
     ", \"secondPass\":${secondPassTaxes}" +
     ", \"incomes\":${incomes}" +

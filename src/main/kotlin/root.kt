@@ -1,4 +1,5 @@
 import asset.AssetRec
+import asset.RequiredDistHandler
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -31,6 +32,13 @@ data class YearlyDetail(
     fun totalBenefits() = benefits.sumOf { it.amount() }
     fun netSpend() = netSpend
 
+    fun reqDistributions() = incomes.filter {
+        RequiredDistHandler.CHANGE_NAME.equals(it.ident.name)
+    }.sumOf { it.amount() }
+
+    fun netDistributions() = assets.sumOf { asset->
+        asset.tributions.sumOf { it.amount }
+    }
     override fun toString(): String = toJsonStr()
 }
 

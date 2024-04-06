@@ -15,5 +15,4 @@ fun yearFromPrevYearDetail(prevYear: YearlyDetail?) : Year =
     else prevYear.year +1
 
 
-fun strWhenNotZero(isZero: Boolean, str: String): String = if (isZero) "" else str
 
