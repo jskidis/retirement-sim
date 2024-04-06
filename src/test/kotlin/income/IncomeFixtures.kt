@@ -2,17 +2,12 @@ package income
 
 import Amount
 import Name
+import RecIdentifier
 import Year
-import YearlyDetail
-import progression.AmountProviderProgression
+import tax.NonTaxableProfile
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import util.currentDate
-
-fun incomeConfigFixture(
-    name: Name = "Income",
-    person: Name = "Person",
-) = IncomeConfig(name, person)
 
 fun incomeRecFixture(
     year: Year = currentDate.year + 1,
@@ -21,7 +16,7 @@ fun incomeRecFixture(
     amount: Amount = 0.0,
 ) = IncomeRec(
     year = year,
-    config = incomeConfigFixture(name = name, person = person),
+    ident = RecIdentifier(name = name, person = person),
     baseAmount = amount,
     taxableIncome = TaxableAmounts(person))
 
@@ -33,31 +28,19 @@ fun incomeRecFixture(
     taxProfile: TaxabilityProfile
 ) = IncomeRec(
     year = year,
-    config = IncomeConfig(name = name, person = person, taxabilityProfile = taxProfile),
+    ident = RecIdentifier(name = name, person = person),
     baseAmount = amount,
     taxableIncome = taxProfile.calcTaxable(name, amount))
 
-fun incomeCfgProgessFixture(
+fun incomeProgressionFixture(
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0
-): IncomeConfigProgression {
-    val config = IncomeConfig(name, person)
-
-    return IncomeConfigProgression(
-        config, IncomeProgressionFixture(amount, config)
-    )
-}
-
-class IncomeProgressionFixture(val amount: Double, val incomeConfig: IncomeConfig)
-    : AmountProviderProgression<IncomeRec> {
-
-    override fun determineAmount(prevYear: YearlyDetail?): Amount = amount
-    override fun createRecord(value: Amount, year: Year) = IncomeRec(
-        year = year,
-        config = incomeConfig,
-        baseAmount = amount,
-        taxableIncome = TaxableAmounts(person = incomeConfig.name,
-            fed = amount, fedLTG = 0.0, state = amount, socSec = amount, medicare = amount)
+): IncomeProgression {
+    return IncomeProgression(
+        ident = RecIdentifier(name, person),
+        startAmount = amount,
+        taxabilityProfile = NonTaxableProfile(),
+        adjusters = listOf()
     )
 }

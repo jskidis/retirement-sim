@@ -2,6 +2,7 @@ package config
 
 import Amount
 import Name
+import RecIdentifier
 import Year
 import YearMonth
 import asset.AssetProgression
@@ -10,8 +11,8 @@ import asset.assetProgressionFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
 import income.BonusCalculator
-import income.IncomeConfigProgression
-import income.incomeCfgProgessFixture
+import income.IncomeProgression
+import income.incomeProgressionFixture
 import inflation.InflationRec
 import inflationConfigFixture
 import medical.MedInsuranceProgression
@@ -68,8 +69,8 @@ fun householdMembersFixture(
 
 fun parentConfigFixture(
     name: Name,
-    incomeConfigs: List<IncomeConfigProgression> = listOf(
-        incomeCfgProgessFixture("Income", name)),
+    incomeConfigs: List<IncomeProgression> = listOf(
+        incomeProgressionFixture("Income", name)),
     expenseConfigs: List<ExpenseConfigProgression> = listOf(
         expenseCfgProgessFixture("Expense", name)),
     assetConfigs: List<AssetProgression> = listOf(
@@ -95,8 +96,7 @@ fun employmentConfigFixture(
     employerInsurance: EmployerInsurance? = EmployerInsurance(0.0, 0.0, 0.0),
 ): EmploymentConfig =
     EmploymentConfig(
-        name = name,
-        person = person,
+        ident = RecIdentifier(name = name, person = person),
         dateRange = dateRange,
         startSalary = startSalary,
         bonusCalc = bonusCalc,

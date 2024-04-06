@@ -22,9 +22,9 @@ class IncomeProcessorTest : ShouldSpec({
     val parent1Income = ConstantsProvider.getValue(SS_INCOME_CAP) + 1000
     val parent2Income = ConstantsProvider.getValue(SS_INCOME_CAP) * 2.0
 
-    val parent1Progression = incomeCfgProgessFixture(
+    val parent1Progression = incomeProgressionFixture(
         name = "Parent 1 Inc", person = parent1Name, amount = parent1Income)
-    val parent2Progression = incomeCfgProgessFixture(
+    val parent2Progression = incomeProgressionFixture(
         name = "Parent 2 Inc", person = parent2Name, amount = parent2Income)
 
     val parent1 = parentConfigFixture(

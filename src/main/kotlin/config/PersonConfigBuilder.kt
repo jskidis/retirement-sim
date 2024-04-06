@@ -2,7 +2,7 @@ package config
 
 import asset.AssetProgression
 import expense.ExpenseConfigProgression
-import income.IncomeConfigProgression
+import income.IncomeProgression
 import medical.MedInsuranceProgression
 import socsec.SSBenefitConfigProgression
 
@@ -11,7 +11,7 @@ interface ConfigBuilder {
 }
 
 interface PersonConfigBuilder {
-    fun incomes(person: Person): List<IncomeConfigProgression> = ArrayList()
+    fun incomes(person: Person): List<IncomeProgression> = ArrayList()
     fun expenses(person: Person): List<ExpenseConfigProgression> = ArrayList()
     fun assets(person: Person): List<AssetProgression> = ArrayList()
     fun benefits(person: Person): List<SSBenefitConfigProgression> = ArrayList()

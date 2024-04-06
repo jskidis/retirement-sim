@@ -1,28 +1,20 @@
 package config
 
 import Amount
-import Name
+import RecIdentifier
 import income.BonusCalculator
-import income.IncomeConfig
+import tax.TaxabilityProfile
 import tax.WageTaxableProfile
 import util.DateRange
 
 data class EmploymentConfig(
-    val name: Name,
-    val person: Name,
+    val ident: RecIdentifier,
     val dateRange: DateRange,
     val startSalary: Amount,
     val bonusCalc: BonusCalculator? = null,
+    val taxabilityProfile: TaxabilityProfile = WageTaxableProfile(),
     val employerInsurance: EmployerInsurance? = null,
-) {
-    companion object {
-        fun incomeConfig(config: EmploymentConfig): IncomeConfig =
-            IncomeConfig(
-                name = config.name, person = config.person,
-                taxabilityProfile = WageTaxableProfile()
-            )
-    }
-}
+)
 
 data class EmployerInsurance(
     val selfCost: Amount,

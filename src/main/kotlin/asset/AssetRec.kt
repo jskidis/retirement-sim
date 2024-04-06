@@ -5,7 +5,7 @@ import AmountRec
 import RecIdentifier
 import Year
 import config.AmountConfig
-import income.IncomeConfig
+import config.SimpleAmountConfig
 import income.IncomeRec
 import tax.TaxableAmounts
 import toJsonStr
@@ -20,7 +20,7 @@ data class AssetRec(
 ) : AmountRec {
     val tributions: MutableList<AssetChange> = ArrayList()
     // TODO: Remove me
-    val config: AmountConfig = IncomeConfig(ident.name, ident.person)
+    val config: AmountConfig = SimpleAmountConfig(ident.name, ident.person)
 
     override fun toString(): String = toJsonStr()
 
@@ -53,7 +53,7 @@ data class AssetRec(
         tributions.filter { it.isReqDist }.map {
             IncomeRec(
                 year = year,
-                config = IncomeConfig(
+                ident = RecIdentifier(
                     name = it.name,
                     person = ident.person
                 ),

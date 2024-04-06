@@ -4,7 +4,7 @@ import Name
 import YearMonth
 import asset.AssetProgression
 import expense.ExpenseConfigProgression
-import income.IncomeConfigProgression
+import income.IncomeProgression
 import medical.MedInsuranceProgression
 import socsec.SSBenefitConfigProgression
 
@@ -18,7 +18,7 @@ enum class ActuarialGender { MALE, FEMALE }
 
 open class PersonConfig(
     val person: Person,
-    val incomes: List<IncomeConfigProgression>,
+    val incomes: List<IncomeProgression>,
     val expenses: List<ExpenseConfigProgression>,
     val assets: List<AssetProgression>,
     val benefits: List<SSBenefitConfigProgression>,
@@ -27,7 +27,7 @@ open class PersonConfig(
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
     fun actuarialGender(): ActuarialGender = person.actuarialGender
-    fun incomes(): List<IncomeConfigProgression> = incomes
+    fun incomes(): List<IncomeProgression> = incomes
     fun expenses(): List<ExpenseConfigProgression> = expenses
     fun assets(): List<AssetProgression> = assets
     fun benefits(): List<SSBenefitConfigProgression> = benefits
@@ -36,7 +36,7 @@ open class PersonConfig(
 
 open class ParentConfig(
     person: Person,
-    incomes: List<IncomeConfigProgression> = ArrayList(),
+    incomes: List<IncomeProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
     assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),
@@ -45,7 +45,7 @@ open class ParentConfig(
 
 open class DependantConfig(
     person: Person,
-    incomes: List<IncomeConfigProgression> = ArrayList(),
+    incomes: List<IncomeProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
     assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),

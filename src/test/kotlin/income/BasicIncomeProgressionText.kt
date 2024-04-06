@@ -2,11 +2,13 @@ package income
 
 import Amount
 import Name
+import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import progression.AmountAdjusterWithGapFiller
 import progression.GapAmountAdjusterFixture
 import tax.TaxableAmounts
+import tax.WageTaxableProfile
 import yearlyDetailFixture
 
 class BasicIncomeProgressionTest : ShouldSpec({
@@ -16,9 +18,11 @@ class BasicIncomeProgressionTest : ShouldSpec({
     val prevYearMultiplier = 1.1
     val gapFillerMultipler = 2.0
 
-    val incomeConfig = incomeConfigFixture(incomeName, person)
-    val progression = BasicIncomeProgressionFixture(startAmount, incomeConfig,
-        GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
+    val ident = RecIdentifier(incomeName, person)
+    val progression = BasicIncomeProgressionFixture(
+        ident = ident,
+        startAmount = startAmount,
+        adjuster = GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)
@@ -29,7 +33,7 @@ class BasicIncomeProgressionTest : ShouldSpec({
 
     should("determineNext applies amount adjuster to previous years amount") {
         val prevYear = yearlyDetailFixture().copy(incomes = listOf(
-            IncomeRec(2024, incomeConfig, 2000.0,
+            IncomeRec(year = 2024, ident = ident, baseAmount = 2000.0,
                 taxableIncome = TaxableAmounts(person)
             )
         ))
@@ -54,9 +58,10 @@ class BasicIncomeProgressionTest : ShouldSpec({
     }
 })
 
-class BasicIncomeProgressionFixture(startAmount: Amount,
-    incomeConfig: IncomeConfig,
+class BasicIncomeProgressionFixture(
+    startAmount: Amount,
+    ident: RecIdentifier,
     adjuster: AmountAdjusterWithGapFiller
 )
-    : BasicIncomeProgression(startAmount, incomeConfig, listOf(adjuster)
+    : IncomeProgression(ident, startAmount, WageTaxableProfile(), listOf(adjuster)
 )

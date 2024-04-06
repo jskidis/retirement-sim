@@ -8,9 +8,10 @@ import progression.DateRangeAmountAdjuster
 open class EmploymentIncomeProgression(
     val employmentConfig: EmploymentConfig,
     adjusters: List<AmountAdjusterWithGapFiller>,
-) : BasicIncomeProgression(
+) : IncomeProgression(
+    ident = employmentConfig.ident,
     startAmount = employmentConfig.startSalary,
-    config = EmploymentConfig.incomeConfig(employmentConfig),
+    taxabilityProfile = employmentConfig.taxabilityProfile,
     adjusters = listOf(DateRangeAmountAdjuster(employmentConfig.dateRange)) + adjusters
 ) {
     override fun determineNext(prevYear: YearlyDetail?): IncomeRec {

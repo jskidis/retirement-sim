@@ -12,7 +12,7 @@ import expense.BasicExpenseProgression
 import expense.ExpenseConfig
 import expense.ExpenseConfigProgression
 import income.EmploymentIncomeProgression
-import income.IncomeConfigProgression
+import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
 import socsec.FixedDateAmountSSBenefitProgression
@@ -36,7 +36,7 @@ object Jane : ParentConfigBuilder {
 
     override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
         EmploymentConfig(
-            name = "Accenture", person = person.name,
+            ident = RecIdentifier(name = "Accenture", person = person.name),
             startSalary = incomeStart,
             dateRange = employmentDates,
             employerInsurance = EmployerInsurance(
@@ -48,12 +48,10 @@ object Jane : ParentConfigBuilder {
     )
 
     override fun incomes(person: Person)
-        : List<IncomeConfigProgression> {
+        : List<IncomeProgression> {
         val employmentConfigs = employmentConfigs(person)
         return employmentConfigs.map {
-            val incomeConfig = EmploymentConfig.incomeConfig(it)
-            val progression = EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
-            IncomeConfigProgression(incomeConfig, progression)
+            EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
     }
 

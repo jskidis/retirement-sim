@@ -13,7 +13,7 @@ object IncomeProcessor: CmpdInflationProvider by WageCmpdInflationProvider() {
         config.household.members.people().flatMap { person: PersonConfig ->
             person.incomes().map { income ->
                 capSocSecTaxableIncome(
-                    income.progression.determineNext(prevYear), prevYear)
+                    income.determineNext(prevYear), prevYear)
             }.filter { it.retainRec() }
         }
 
