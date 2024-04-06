@@ -16,17 +16,15 @@ object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
     ): TaxesRec {
         val taxable = determineTaxableAmounts(currYear)
 
-        val stdDeduct = determineStdDeduct(currYear)
-
         val ltgTaxes = config.taxConfig.fedLTG.marginalRate(
-            taxable.fed + taxable.fedLTG - stdDeduct, currYear) * taxable.fedLTG
+            taxable.fed + taxable.fedLTG, currYear) * taxable.fedLTG
 
         return TaxesRec(
-            fed = config.taxConfig.fed.determineTax(taxable.fed - stdDeduct, currYear) + ltgTaxes,
-            state = config.taxConfig.state.determineTax(taxable.state - stdDeduct, currYear),
+            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear) + ltgTaxes,
+            state = config.taxConfig.state.determineTax(taxable.state, currYear),
             socSec = config.taxConfig.socSec.determineTax(taxable.socSec, currYear),
             medicare = config.taxConfig.medicare.determineTax(taxable.medicare, currYear),
-            agi = taxable.fed + taxable.fedLTG - stdDeduct
+            agi = taxable.fed + taxable.fedLTG
         )
     }
 
@@ -38,10 +36,17 @@ object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
                 currYear.assets.map { it.taxable() } +
                 currYear.benefits.map { it.taxableAmount }
 
+        val stdDeduct = determineStdDeduct(currYear)
+
         return taxableAmounts.filter { it.hasAmounts() }
             .fold(
                 TaxableAmounts(person = nameOfTaxablePerson),
-                { acc, amounts -> acc.plus(amounts) })
+                { acc, amounts -> acc.plus(amounts) }
+            ).plus(TaxableAmounts(
+                person = nameOfTaxablePerson,
+                fed = -stdDeduct,
+                state = -stdDeduct
+            ))
     }
 
     fun determineStdDeduct(currYear: YearlyDetail): Double =
