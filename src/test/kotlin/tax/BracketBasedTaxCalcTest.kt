@@ -159,6 +159,9 @@ class BracketBasedTaxCalcTest : ShouldSpec({
                 it.jointly.end.shouldBeGreaterThanOrEqual(it.household.end)
                 it.household.end.shouldBeGreaterThanOrEqual(it.single.end)
             }
+            brackets[brackets.size -1].single.end.shouldBe(Double.MAX_VALUE)
+            brackets[brackets.size -1].jointly.end.shouldBe(Double.MAX_VALUE)
+            brackets[brackets.size -1].household.end.shouldBe(Double.MAX_VALUE)
         }
 
         validateBrackets(CurrentFedTaxBrackets.brackets)
