@@ -4,6 +4,9 @@ import Amount
 import Name
 import RecIdentifier
 import Year
+import YearlyDetail
+import tax.TaxCalcConfig
+import tax.TaxableAmounts
 import util.currentDate
 
 fun assetRecFixture(
@@ -39,4 +42,12 @@ class GainCreatorFixture(val name: Name, val gains: Amount): AssetGainCreator {
         balance: Amount,
         gaussianRnd: Double,
     ): AssetChange = AssetChange(name, gains)
+}
+
+class RothConversionAmountCalcFixture(val amountToConvert: Amount): RothConversionAmountCalc {
+    override fun amountToConvert(
+        currYear: YearlyDetail,
+        taxableAmounts: TaxableAmounts,
+        taxCalcConfig: TaxCalcConfig,
+    ): Amount = amountToConvert
 }

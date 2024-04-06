@@ -36,6 +36,7 @@ class MaxTaxRateRothConv(val maxPct: Rate) : RothConversionAmountCalc {
     ): Amount {
         val taxable = taxableAmounts.fed
         val topAmount = taxCalcConfig.fed.topAmountBelowPct(maxPct, currYear)
-        return topAmount - taxable
+        return if (topAmount == Amount.MAX_VALUE) 0.0
+        else topAmount - taxable
     }
 }

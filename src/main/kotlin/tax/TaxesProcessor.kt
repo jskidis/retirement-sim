@@ -7,10 +7,16 @@ import inflation.StdCmpdInflationProvider
 import util.ConstantsProvider
 import util.ConstantsProvider.KEYS.*
 
-object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
+interface ITaxesProcessor {
+    fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec
+    fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts
+    fun determineStdDeduct(currYear: YearlyDetail): Double
+}
+
+object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflationProvider()  {
     val nameOfTaxablePerson = "Household"
 
-    fun processTaxes(
+    override fun processTaxes(
         currYear: YearlyDetail,
         config: SimConfig,
     ): TaxesRec {
@@ -28,7 +34,7 @@ object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
         )
     }
 
-    fun determineTaxableAmounts(currYear: YearlyDetail)
+    override fun determineTaxableAmounts(currYear: YearlyDetail)
         : TaxableAmounts {
         val taxableAmounts =
             currYear.incomes.map { it.taxableIncome } +
@@ -49,7 +55,7 @@ object TaxesProcessor : CmpdInflationProvider by StdCmpdInflationProvider() {
             ))
     }
 
-    fun determineStdDeduct(currYear: YearlyDetail): Double =
+    override fun determineStdDeduct(currYear: YearlyDetail): Double =
         when (currYear.filingStatus) {
             FilingStatus.JOINTLY -> ConstantsProvider.getValue(STD_DEDUCT_JOINTLY)
             FilingStatus.SINGLE -> ConstantsProvider.getValue(STD_DEDUCT_SINGLE)

@@ -3,6 +3,7 @@ package tax
 import Amount
 import Rate
 import YearlyDetail
+import config.SimConfig
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
 
@@ -34,7 +35,6 @@ class BracketBasedTaxCalcFixture(
     override fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount = topAmountBelowPct
 }
 
-
 fun taxConfigFixture() = TaxCalcConfig(
     fed = BracketTaxCalcFixture(),
     fedLTG = BracketTaxCalcFixture(),
@@ -42,4 +42,14 @@ fun taxConfigFixture() = TaxCalcConfig(
     socSec = TaxCalcFixture(),
     medicare = TaxCalcFixture(),
 )
+
+class TaxesProcessorFixture(
+    val taxesRec: TaxesRec = TaxesRec(),
+    val taxableAmounts: TaxableAmounts = TaxableAmounts("Person"),
+    val stdDeduction: Amount = 0.0
+) : ITaxesProcessor {
+    override fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec = taxesRec
+    override fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts = taxableAmounts
+    override fun determineStdDeduct(currYear: YearlyDetail): Double  = stdDeduction
+}
 

@@ -4,7 +4,6 @@ import Amount
 import RecIdentifier
 import YearlyDetail
 import config.SimConfig
-import tax.TaxesProcessor
 
 object RothConversionProcessor {
     const val ROTH_CONV_STR = "RothConv"
@@ -13,9 +12,10 @@ object RothConversionProcessor {
         val rothConfig = config.rothConversion
         return if (rothConfig == null) 0.0
         else {
+            val taxableAmounts = config.taxesProcessor.determineTaxableAmounts(currYear)
             val amountCalc = rothConfig.amountCalc.getConfigForYear(currYear.year)
             val amount = amountCalc.amountToConvert(
-                currYear, TaxesProcessor.determineTaxableAmounts(currYear), config.taxConfig)
+                currYear, taxableAmounts, config.taxConfig)
 
             val remaining = rothConfig.sourceDestPairs.fold(amount) { acc, it ->
                 if (acc < 1.0) 0.0

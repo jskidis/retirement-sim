@@ -8,7 +8,6 @@ import inflation.InflationProcessor
 import medical.MedInsuranceProcessor
 import netspend.NetSpendAllocation
 import socsec.SSBenefitsProcessor
-import tax.TaxesProcessor
 import util.RandomizerFactory
 import util.yearFromPrevYearDetail
 
@@ -61,16 +60,17 @@ object SimulationRun {
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance.filter{it.retainRec()})
 
-        val taxesRec = TaxesProcessor.processTaxes(currYear, config)
+        val taxesProcessor = config.taxesProcessor
+        val taxesRec = taxesProcessor.processTaxes(currYear, config)
         currYear = currYear.copy(taxes = taxesRec)
 
         val netSpend = NetSpendAllocation.determineNetSpend(currYear, prevYear)
         NetSpendAllocation.allocateNetSpend(netSpend, currYear, config.assetOrdering)
         currYear = currYear.copy(netSpend = netSpend)
 
-        currYear = currYear.copy(finalPassTaxes = TaxesProcessor.processTaxes(currYear, config))
+        currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
         RothConversionProcessor.process(config, currYear)
-        currYear = currYear.copy(finalPassTaxes = TaxesProcessor.processTaxes(currYear, config))
+        currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
 
         return currYear
     }

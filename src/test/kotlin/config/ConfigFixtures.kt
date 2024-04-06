@@ -20,7 +20,9 @@ import netspend.NetSpendAllocationConfig
 import progression.Progression
 import socsec.SSBenefitProgression
 import socsec.benefitsProgressionFixture
+import tax.ITaxesProcessor
 import tax.TaxCalcConfig
+import tax.TaxesProcessorFixture
 import tax.taxConfigFixture
 import util.DateRange
 import util.currentDate
@@ -31,13 +33,18 @@ fun configFixture(
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: TaxCalcConfig = taxConfigFixture(),
     assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
+    rothConversion: RothConversionConfig? = null,
+    taxesProcessor: ITaxesProcessor = TaxesProcessorFixture()
+
 ) =
     SimConfig(
         startYear = startYear,
         household = householdConfig,
         inflationConfig = inflationConfig,
         taxConfig = taxConfig,
-        assetOrdering = assetOrdering
+        assetOrdering = assetOrdering,
+        rothConversion = rothConversion,
+        taxesProcessor = taxesProcessor
     )
 
 fun personFixture(
