@@ -1,8 +1,9 @@
-package asset
+package netspend
 
 import Amount
 import RecIdentifier
 import YearlyDetail
+import asset.AssetRec
 import util.PortionOfYearPast
 
 object NetSpendAllocation {

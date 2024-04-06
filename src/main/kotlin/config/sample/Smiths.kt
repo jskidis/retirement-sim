@@ -2,9 +2,9 @@ package config.sample
 
 import Year
 import YearMonth
-import asset.*
 import config.*
 import inflation.FixedRateInflationProgression
+import netspend.*
 import tax.*
 import util.YearBasedConfig
 import util.YearConfigPair

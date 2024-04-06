@@ -1,11 +1,11 @@
 import asset.AssetProcessor
-import asset.NetSpendAllocation
 import config.ConfigBuilder
 import config.SimConfig
 import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
 import medical.MedInsuranceProcessor
+import netspend.NetSpendAllocation
 import socsec.SSBenefitsProcessor
 import tax.TaxesProcessor
 import util.RandomizerFactory

@@ -6,7 +6,6 @@ import RecIdentifier
 import Year
 import YearMonth
 import asset.AssetProgression
-import asset.NetSpendAllocationConfig
 import asset.assetProgressionFixture
 import expense.ExpenseRec
 import expense.expenseProgressionFixture
@@ -16,6 +15,7 @@ import income.incomeProgressionFixture
 import inflation.InflationRec
 import inflationConfigFixture
 import medical.MedInsuranceProgression
+import netspend.NetSpendAllocationConfig
 import progression.Progression
 import socsec.SSBenefitConfigProgression
 import socsec.benefitsConfigProgressFixture

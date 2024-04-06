@@ -1,7 +1,8 @@
-package asset
+package netspend
 
 import Amount
 import YearlyDetail
+import asset.assetRecFixture
 import expense.expenseRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize

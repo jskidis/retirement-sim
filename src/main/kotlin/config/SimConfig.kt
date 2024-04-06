@@ -1,8 +1,8 @@
 package config
 
 import Year
-import asset.NetSpendAllocationConfig
 import inflation.InflationRec
+import netspend.NetSpendAllocationConfig
 import progression.Progression
 import tax.TaxCalcConfig
 

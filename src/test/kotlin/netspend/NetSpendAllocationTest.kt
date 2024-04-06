@@ -1,9 +1,11 @@
-package asset
+package netspend
 
 import Amount
 import RecIdentifier
 import Year
 import YearlyDetail
+import asset.AssetRec
+import asset.assetRecFixture
 import expense.expenseRecFixture
 import income.incomeRecFixture
 import inflationRecFixture

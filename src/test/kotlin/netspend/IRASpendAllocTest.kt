@@ -1,6 +1,7 @@
-package asset
+package netspend
 
 import YearMonth
+import asset.assetRecFixture
 import config.ActuarialGender
 import config.Person
 import io.kotest.core.spec.style.FunSpec

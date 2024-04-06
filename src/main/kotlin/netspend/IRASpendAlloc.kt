@@ -1,7 +1,8 @@
-package asset
+package netspend
 
 import Amount
 import YearlyDetail
+import asset.AssetRec
 import config.Person
 import tax.TaxableAmounts
 

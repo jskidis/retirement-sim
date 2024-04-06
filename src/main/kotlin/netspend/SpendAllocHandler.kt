@@ -1,7 +1,9 @@
-package asset
+package netspend
 
 import Amount
 import YearlyDetail
+import asset.AssetChange
+import asset.AssetRec
 import tax.TaxableAmounts
 
 interface SpendAllocHandler {
@@ -18,7 +20,8 @@ interface SpendAllocHandler {
         taxable: TaxableAmounts? = null,
         isCarryOver: Boolean = false
     ): Amount {
-        assetRec.tributions.add(AssetChange(name= TributionNames.WITHDRAW,
+        assetRec.tributions.add(
+            AssetChange(name= TributionNames.WITHDRAW,
             amount = -amount, taxable = taxable, isCarryOver = isCarryOver))
         return amount
     }
@@ -28,7 +31,8 @@ interface SpendAllocHandler {
         taxable: TaxableAmounts? = null,
         isCarryOver: Boolean = false
     ): Amount {
-        assetRec.tributions.add(AssetChange(name = TributionNames.DEPOSIT,
+        assetRec.tributions.add(
+            AssetChange(name = TributionNames.DEPOSIT,
             amount = amount, taxable = taxable, isCarryOver = isCarryOver))
         return amount
     }

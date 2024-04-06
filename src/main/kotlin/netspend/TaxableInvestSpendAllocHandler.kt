@@ -1,7 +1,9 @@
-package asset
+package netspend
 
 import Amount
 import YearlyDetail
+import asset.AssetChange
+import asset.AssetRec
 import tax.TaxableAmounts
 
 class TaxableInvestSpendAllocHandler : BasicSpendAlloc() {
@@ -20,7 +22,8 @@ class TaxableInvestSpendAllocHandler : BasicSpendAlloc() {
             fedLTG = ltUnrealized,
             state = stUnrealized + ltUnrealized
         )
-        assetRec.tributions.add(AssetChange(
+        assetRec.tributions.add(
+            AssetChange(
             name = "Withdraw",
             amount = -drawAmount,
             unrealized = -stUnrealized -ltUnrealized,

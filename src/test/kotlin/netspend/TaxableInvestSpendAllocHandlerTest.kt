@@ -1,5 +1,7 @@
-package asset
+package netspend
 
+import asset.AssetChange
+import asset.assetRecFixture
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
