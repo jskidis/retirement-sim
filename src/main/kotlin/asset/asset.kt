@@ -1,36 +1,22 @@
 package asset
 import Amount
 import Name
-import config.AmountConfig
-import progression.Progression
-import tax.TaxabilityProfile
-import tax.UnusedProfile
-import toJsonStr
-
-data class AssetConfig(
-    override val name: Name,
-    override val person: Name,
-    // Taxability of gains
-    override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
-) : AmountConfig {
-    override fun toString(): String = toJsonStr()
-}
-
-data class AssetConfigProgression(
-    val config: AssetConfig,
-    val progression: Progression<AssetRec>,
-    val spendAllocHandler: SpendAllocHandler,
-)
+import Year
 
 interface AssetGainCreator {
     fun createGain(
-        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, gaussianRnd: Double,
+        year: Year,
+        person: Name,
+        balance: Amount,
+        gaussianRnd: Double,
     ): AssetChange
 }
 
 interface GrossGainsCalc {
     fun calcGrossGains(
-        balance: Amount, attribs: PortfolAttribs, gaussianRnd: Double,
+        balance: Amount,
+        attribs: PortfolioAttribs,
+        gaussianRnd: Double,
     ): Amount = balance * (attribs.mean + (attribs.stdDev * gaussianRnd))
 }
 

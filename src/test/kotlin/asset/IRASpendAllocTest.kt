@@ -13,7 +13,6 @@ class IRASpendAllocTest : FunSpec({
 
     val year = currentDate.year + 1
     val currYear = yearlyDetailFixture(year)
-    val assetConfig = assetConfigFixture()
 
     val person60 = Person(
         name = "60 YO",
@@ -31,7 +30,7 @@ class IRASpendAllocTest : FunSpec({
     test("withdraw will withdraw full amount if balance is greater withdraw amount") {
         val withdrawAmount = 1000.0
         val startBal = 2000.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val handler = IRASpendAlloc(person60)
 
@@ -49,7 +48,7 @@ class IRASpendAllocTest : FunSpec({
     test("withdraw will withdraw full balance if balance is then withdraw amount") {
         val withdrawAmount = 4000.0
         val startBal = 2000.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val handler = IRASpendAlloc(person60)
 
@@ -67,7 +66,7 @@ class IRASpendAllocTest : FunSpec({
     test("withdraw will at 10% fed penalty if person under 60") {
         val withdrawAmount = 1000.0
         val startBal = 2000.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val handler = IRASpendAlloc(person55)
 
@@ -84,7 +83,7 @@ class IRASpendAllocTest : FunSpec({
 
     test("deposit will never deposit (must be done through contributions") {
         val startBal = 2000.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val handler = IRASpendAlloc(person60)
         val result = handler.deposit(100.0, assetRec, currYear)

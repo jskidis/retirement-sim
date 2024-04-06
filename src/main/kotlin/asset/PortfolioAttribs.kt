@@ -5,7 +5,7 @@ import Rate
 import util.fourDecimalFormat
 import util.twoDecimalFormat
 
-data class PortfolAttribs(
+data class PortfolioAttribs(
     val name: Name, val mean: Rate, val stdDev: Rate,
     val divid: Rate = .0000, val expRatio: Rate = .0000,
     val stockPct: Rate = 0.00, val bondPct: Rate = 0.00, val ulcerIndex: Rate = .0000

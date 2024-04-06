@@ -1,5 +1,4 @@
 import asset.AssetChange
-import asset.AssetConfig
 import asset.AssetRec
 import expense.ExpenseConfig
 import expense.ExpenseRec
@@ -12,13 +11,14 @@ import tax.TaxesRec
 import util.moneyFormat
 import util.strWhenNotZero
 
-fun AssetConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
+
 fun ExpenseConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 fun IncomeConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 fun SSBenefitConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 
 fun AssetRec.toJsonStr(): String = "{" +
-    "\"config\":$config" +
+    "\"config\":$ident" +
     ", \"startBal\":\"${moneyFormat.format(startBal)}\"" +
     strWhenNotZero(
         startUnrealized == 0.0,

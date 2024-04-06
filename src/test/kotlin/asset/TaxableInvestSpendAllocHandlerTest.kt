@@ -13,7 +13,6 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
     val stUnrealized = 2000.0
     val ltUnrealized = 10000.0
 
-    val assetConfig = assetConfigFixture()
     val gain = AssetChange(name = "Gain", amount = 5000.0, unrealized = stUnrealized)
     val currYear = yearlyDetailFixture(year = year)
 
@@ -21,7 +20,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
     test("withdraw will use any unrealized gains from current year first") {
         val withdrawAmount = stUnrealized / 2
-        val assetRec = AssetRec(year, assetConfig, startBal = 20000.0,
+        val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain
         )
 
@@ -40,7 +39,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
     test("withdraw will use all unrealized gains from current year then use up starting (lt) gains if withdraw amount is more than current year unrealized") {
         val withdrawAmount = stUnrealized + ltUnrealized / 2
-        val assetRec = AssetRec(year, assetConfig, startBal = 20000.0,
+        val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain
         )
 
@@ -59,7 +58,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
     test("withdraw will use all unrealized gains (current year + previous if withdraw amount is more than total unrealized") {
         val withdrawAmount = stUnrealized + ltUnrealized + 100.0
-        val assetRec = AssetRec(year, assetConfig, startBal = 20000.0,
+        val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain
         )
 

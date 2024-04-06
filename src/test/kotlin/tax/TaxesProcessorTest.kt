@@ -25,9 +25,6 @@ class TaxesProcessorTest : ShouldSpec({
     val decductExp = expenseRecFixture(
         2024, "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
     )
-    val assetRec = assetRecFixture(
-        gains = 500.0, taxProfile = NonWageTaxableProfile()
-    )
 
     val fedTaxRate = .10
     val fedTaxCalc = BracketTaxCalcFixture(fedTaxRate)
@@ -83,6 +80,8 @@ class TaxesProcessorTest : ShouldSpec({
     }
 
     should("processTaxes wage and other (no payroll tax) income one deductible expense and one non-deductible and asset gains") {
+        val assetRec = assetRecFixture(startBal = 5000.0)
+
         val currYear = yearlyDetailFixture().copy(
             incomes = listOf(wageInc, fedOnlyInc),
             expenses = listOf(nonDeductExp, decductExp),

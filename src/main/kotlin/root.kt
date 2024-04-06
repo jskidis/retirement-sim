@@ -35,6 +35,13 @@ data class YearlyDetail(
     override fun toString(): String = toJsonStr()
 }
 
+data class RecIdentifier(
+    val name: Name,
+    val person: Name
+) {
+    override fun toString(): String = toJsonStr()
+}
+
 interface AmountRec {
     fun year(): Year
     fun config(): AmountConfig

@@ -1,19 +1,28 @@
 package asset
 
 import Amount
+import Name
+import Year
 import tax.TaxableAmounts
+import util.YearBasedConfig
 
 open class TaxableInvestGainCreator(
+    val attributesSet: YearBasedConfig<PortfolioAttribs>,
     val qualDivRatio: Double = 0.8,
     val regTaxOnGainsPct: Double = 0.1,
     val ltTaxOnGainsPct: Double = 0.1,
 ) : AssetGainCreator, GrossGainsCalc {
 
     override fun createGain(
-        balance: Amount, attribs: PortfolAttribs, config: AssetConfig, gaussianRnd: Double,
+        year: Year,
+        person: Name,
+        balance: Amount,
+        gaussianRnd: Double,
     ): AssetChange {
-        val gainAmount = calcGrossGains(balance, attribs, gaussianRnd)
-        val dividends = attribs.divid * balance
+
+        val attributes = attributesSet.getConfigForYear(year)
+        val gainAmount = calcGrossGains(balance, attributes, gaussianRnd)
+        val dividends = attributes.divid * balance
         val netNonDivGains = gainAmount - dividends
 
         val taxableNonDivGains =
@@ -31,11 +40,11 @@ open class TaxableInvestGainCreator(
         val unrealized = gainAmount - regTaxable - ltTaxable
 
         return AssetChange(
-            name = attribs.name,
+            name = attributes.name,
             amount = gainAmount,
             unrealized = unrealized,
             taxable = TaxableAmounts(
-                person = config.person,
+                person = person,
                 fed = regTaxable,
                 fedLTG = ltTaxable,
                 state = regTaxable + ltTaxable)

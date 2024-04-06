@@ -1,13 +1,13 @@
 package config
 
 import Amount
-import asset.AssetConfigProgression
+import asset.AssetProgression
 import expense.ExpenseConfigProgression
 
 data class HouseholdConfig(
     val members: HouseholdMembers,
     val expenses: List<ExpenseConfigProgression> = ArrayList(),
-    val jointAssets: List<AssetConfigProgression> = ArrayList(),
+    val jointAssets: List<AssetProgression> = ArrayList(),
     val initialAGI: Amount = 0.0
 )
 

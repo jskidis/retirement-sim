@@ -14,13 +14,14 @@ class BasicSpendAllocTest : FunSpec({
     val balBeforeWD: Amount = startBalance + gainAmount
 
     val currYear = yearlyDetailFixture(year = currentDate.year + 1)
-    val assetConfig: AssetConfig = assetConfigFixture()
-    val gain = AssetChange("Gain", gainAmount)
 
     val handler = BasicSpendAlloc()
 
     test("will withdraw full amount requested if amount request is less than asset balance") {
-        val assetRec = AssetRec(currYear.year, assetConfig, startBalance, 0.0, gain)
+        val assetRec = assetRecFixture(
+            startBal = startBalance,
+            gains = AssetChange("Asset", gainAmount)
+        )
         val withdrawAmount = balBeforeWD / 2
 
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
@@ -32,7 +33,9 @@ class BasicSpendAllocTest : FunSpec({
     }
 
     test("will withdraw year end (full) balance if amount request is greater than asset balance") {
-        val assetRec = AssetRec(currYear.year, assetConfig, startBalance, 0.0, gain)
+        val assetRec = assetRecFixture(
+            startBal = startBalance,
+            gains = AssetChange("Asset", gainAmount))
         val withdrawAmount = balBeforeWD * 2
 
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
@@ -44,7 +47,10 @@ class BasicSpendAllocTest : FunSpec({
     }
 
     test("will deposit full amount requested") {
-        val assetRec = AssetRec(currYear.year, assetConfig, startBalance, 0.0, gain)
+        val assetRec = assetRecFixture(
+            startBal = startBalance,
+            gains = AssetChange("Asset", gainAmount)
+        )
         val depositAmount = balBeforeWD / 2
 
         val result = handler.deposit(depositAmount, assetRec, currYear)

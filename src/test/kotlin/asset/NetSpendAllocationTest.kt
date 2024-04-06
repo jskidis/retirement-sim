@@ -1,6 +1,7 @@
 package asset
 
 import Amount
+import RecIdentifier
 import Year
 import YearlyDetail
 import expense.expenseRecFixture
@@ -20,19 +21,18 @@ class NetSpendAllocationTest : ShouldSpec({
     val year: Year = currentDate.year + 1
 
     val wdHandler1 = SpendAllocHandlerFixture(maxWithdraw = 1000.0)
-    val assetConfig1 = assetConfigProgressFixture(
-        name = "Asset 1", spendAllocHandler = wdHandler1
+    val assetConfig1 = NetSpendAssetConfig(
+        ident = RecIdentifier("Asset 1", "person"),
+        spendAllocHandler = wdHandler1
     )
-    val assetRec1 = assetRecFixture(
-        year = year, assetConfig = assetConfig1.config
-    )
+    val assetRec1 = assetRecFixture(year = year, ident = assetConfig1.ident)
 
     val wdHandler2 = SpendAllocHandlerFixture(maxWithdraw = 2000.0, maxDeposit = 3000.0)
-    val assetConfig2 = assetConfigProgressFixture(
-        name = "Asset 2", spendAllocHandler = wdHandler2)
-    val assetRec2 = assetRecFixture(
-        year = year, assetConfig = assetConfig2.config
+    val assetConfig2 = NetSpendAssetConfig(
+        ident = RecIdentifier("Asset 2", "person"),
+        spendAllocHandler = wdHandler2
     )
+    val assetRec2 = assetRecFixture(year = year, ident = assetConfig2.ident)
 
     val spendAllocationConfig = NetSpendAllocationConfig(
         withdrawOrder = listOf(assetConfig1, assetConfig2),
@@ -157,7 +157,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("determine net spend") {
-        val currYear = yearlyDetailFixture(year = year,
+        val currYear = yearlyDetailFixture(
+            year = year,
             inflation = inflation,
             incomes = listOf(income),
             expenses = listOf(expense),
@@ -165,7 +166,8 @@ class NetSpendAllocationTest : ShouldSpec({
             taxes = thisYearTaxes
         )
 
-        val prevYear = yearlyDetailFixture(year = year -1,
+        val prevYear = yearlyDetailFixture(
+            year = year - 1,
             taxes = lastYearTaxes,
             secondPassTaxes = lastYearCarryOverTaxes
         )
@@ -178,7 +180,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("determine net spend when prev year is null") {
-        val currYear = yearlyDetailFixture(year = year,
+        val currYear = yearlyDetailFixture(
+            year = year,
             inflation = inflation,
             incomes = listOf(income),
             expenses = listOf(expense),
@@ -193,7 +196,8 @@ class NetSpendAllocationTest : ShouldSpec({
     }
 
     should("determine net spend when curr year is actually the current year") {
-        val currYear = yearlyDetailFixture(year = currentDate.year,
+        val currYear = yearlyDetailFixture(
+            year = currentDate.year,
             inflation = inflation,
             incomes = listOf(income),
             expenses = listOf(expense),

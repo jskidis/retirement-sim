@@ -1,5 +1,6 @@
 package asset
 
+import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeGreaterThan
@@ -13,18 +14,18 @@ class AssetRecTest : ShouldSpec({
     val person = "Person"
     val startBal = 10000.0
 
-    val config = assetConfigFixture(assetName, person)
+    val ident = RecIdentifier(assetName, person)
     val currentYear = currentDate.year
     val futureYear = currentYear + 10
     val pastYear = currentYear - 10
 
-    val gains = 1000.0
+    val gainAmont = 1000.0
     val startUnrealized = 5000.0
     val rec = assetRecFixture(
         year = futureYear,
-        assetConfig = config,
+        ident = ident,
         startBal = startBal,
-        gains = gains,
+        gains = AssetChange("Asset", gainAmont),
         startUnrealized = startUnrealized,
     )
 
@@ -45,7 +46,7 @@ class AssetRecTest : ShouldSpec({
     val totalUnrealized = 3000.0
 
     should("calculates total gains") {
-        rec.totalGains().shouldBe(gains)
+        rec.totalGains().shouldBe(gainAmont)
     }
 
     should("calculates total contributions") {
@@ -61,26 +62,26 @@ class AssetRecTest : ShouldSpec({
         futureRec.capturedGains().shouldBe(0)
 
         val pastRec = rec.copy(year = pastYear)
-        pastRec.capturedGains().shouldBe(gains)
+        pastRec.capturedGains().shouldBe(gainAmont)
 
         val presentRec = rec.copy(year = currentYear)
         presentRec.capturedGains().shouldBeGreaterThan(0.0)
-        presentRec.capturedGains().shouldBeLessThan(gains)
+        presentRec.capturedGains().shouldBeLessThan(gainAmont)
     }
 
     should("calculates the final balance") {
         val futureRec = addTributions(rec.copy(year = futureYear))
-        futureRec.finalBalance().shouldBe(startBal + gains + totalContrib)
+        futureRec.finalBalance().shouldBe(startBal + gainAmont + totalContrib)
 
         val presentRec = addTributions(rec.copy(year = futureYear))
-        presentRec.finalBalance().shouldBe(startBal + gains + totalContrib)
+        presentRec.finalBalance().shouldBe(startBal + gainAmont + totalContrib)
     }
 
     should("generate income recs from req dist asset changes") {
         val amount = 3000.0
         val currRec = rec.copy()
 
-        val taxable = TaxableAmounts(person = config.person, fed = amount, state = amount)
+        val taxable = TaxableAmounts(person = ident.person, fed = amount, state = amount)
         val reqDistChange = AssetChange(
             name = "ReqDist", amount = -amount,
             taxable = taxable, isReqDist = true)

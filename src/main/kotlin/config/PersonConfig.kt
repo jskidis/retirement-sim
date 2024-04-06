@@ -2,7 +2,7 @@ package config
 
 import Name
 import YearMonth
-import asset.AssetConfigProgression
+import asset.AssetProgression
 import expense.ExpenseConfigProgression
 import income.IncomeConfigProgression
 import medical.MedInsuranceProgression
@@ -20,7 +20,7 @@ open class PersonConfig(
     val person: Person,
     val incomes: List<IncomeConfigProgression>,
     val expenses: List<ExpenseConfigProgression>,
-    val assets: List<AssetConfigProgression>,
+    val assets: List<AssetProgression>,
     val benefits: List<SSBenefitConfigProgression>,
     val medInsurance: List<MedInsuranceProgression>
 ) {
@@ -29,7 +29,7 @@ open class PersonConfig(
     fun actuarialGender(): ActuarialGender = person.actuarialGender
     fun incomes(): List<IncomeConfigProgression> = incomes
     fun expenses(): List<ExpenseConfigProgression> = expenses
-    fun assets(): List<AssetConfigProgression> = assets
+    fun assets(): List<AssetProgression> = assets
     fun benefits(): List<SSBenefitConfigProgression> = benefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
 }
@@ -38,7 +38,7 @@ open class ParentConfig(
     person: Person,
     incomes: List<IncomeConfigProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
-    assets: List<AssetConfigProgression> = ArrayList(),
+    assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),
     medInsurance: List<MedInsuranceProgression>
 ) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)
@@ -47,7 +47,7 @@ open class DependantConfig(
     person: Person,
     incomes: List<IncomeConfigProgression> = ArrayList(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
-    assets: List<AssetConfigProgression> = ArrayList(),
+    assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),
     medInsurance: List<MedInsuranceProgression>,
 ) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)

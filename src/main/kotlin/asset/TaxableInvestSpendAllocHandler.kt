@@ -15,7 +15,7 @@ class TaxableInvestSpendAllocHandler : BasicSpendAlloc() {
             drawAmount - stUnrealized, assetRec.startUnrealized
         )
         val taxableAmounts = TaxableAmounts(
-            person = assetRec.config.person,
+            person = assetRec.ident.person,
             fed = stUnrealized,
             fedLTG = ltUnrealized,
             state = stUnrealized + ltUnrealized

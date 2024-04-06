@@ -17,13 +17,13 @@ class AssetProcessorTest : ShouldSpec({
     val parent1Name = "Parent 1"
     val parent2Name = "Parent 2"
 
-    val householdProgression1 = assetConfigProgressFixture(
+    val householdProgression1 = assetProgressionFixture(
         name = "Joint Asset 1", person = householdName,
         startBal = 10000.0, gains = 1000.0)
-    val parent1Progression = assetConfigProgressFixture(
+    val parent1Progression = assetProgressionFixture(
         name = "Parent 1 Asset", person = parent1Name,
         startBal = 30000.0, gains = 3000.0)
-    val parent2Progression = assetConfigProgressFixture(
+    val parent2Progression = assetProgressionFixture(
         name = "Parent 2 Asset", person = parent2Name,
         startBal = 40000.0, gains = 4000.0)
 
@@ -43,22 +43,22 @@ class AssetProcessorTest : ShouldSpec({
         result.shouldHaveSize(3)
 
         val jointAsset = result.find {
-            it.config.person == householdName &&
-                it.config.name == householdProgression1.config.name
+            it.ident.person == householdName &&
+                it.ident.name == householdProgression1.ident.name
         }
         jointAsset.shouldNotBeNull()
         jointAsset.gains.amount.shouldBe(1000.0)
 
         val parent1Asset = result.find {
-            it.config.person == parent1Name &&
-                it.config.name == parent1Progression.config.name
+            it.ident.person == parent1Name &&
+                it.ident.name == parent1Progression.ident.name
         }
         parent1Asset.shouldNotBeNull()
         parent1Asset.gains.amount.shouldBe(3000.0)
 
         val parent2Asset = result.find {
-            it.config.person == parent2Name &&
-                it.config.name == parent2Progression.config.name
+            it.ident.person == parent2Name &&
+                it.ident.name == parent2Progression.ident.name
         }
         parent2Asset.shouldNotBeNull()
         parent2Asset.gains.amount.shouldBe(4000.0)

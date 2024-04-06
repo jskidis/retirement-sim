@@ -16,7 +16,6 @@ class CapReserveSpendAllocTest : FunSpec({
 
     val year = currentDate.year + 1
     val currYear = yearlyDetailFixture(year)
-    val assetConfig = assetConfigFixture()
 
     val target = 100000.0
     val margin = .05
@@ -26,7 +25,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val withdrawAmount = 1000.0
         val amountOverTarget = 5000.0
         val startBal = target + amountOverTarget
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(withdrawAmount)
@@ -41,7 +40,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val withdrawAmount = 10000.0
         val amountOverTarget = 5000.0
         val startBal = target + amountOverTarget
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(amountOverTarget)
@@ -55,7 +54,7 @@ class CapReserveSpendAllocTest : FunSpec({
     test("withdraw will not withdraw anything if balance is below target but above floor [target * (1-margin)]") {
         val withdrawAmount = 10000.0
         val startBal = target - 10.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(0.0)
@@ -69,7 +68,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val amountBelowFloor = 100.0
         val startBal = target * (1 - margin) - amountBelowFloor
         val distanceToTarget = target - startBal
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.withdraw(withdrawAmount, assetRec, currYear)
         result.shouldBe(-distanceToTarget)
@@ -84,7 +83,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val depositAmount = 1000.0
         val amountUnderTarget = 5000.0
         val startBal = target - amountUnderTarget
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(depositAmount)
@@ -99,7 +98,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val depositAmount = 10000.0
         val amountUnderTarget = 5000.0
         val startBal = target - amountUnderTarget
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(amountUnderTarget)
@@ -113,7 +112,7 @@ class CapReserveSpendAllocTest : FunSpec({
     test("deposit will not deposit anything if balance is above target but below ceiling [target * (1+margin)]") {
         val depositAmount = 10000.0
         val startBal = target + 10.0
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(0.0)
@@ -127,7 +126,7 @@ class CapReserveSpendAllocTest : FunSpec({
         val amountAboveCeiling = 100.0
         val startBal = target * (1 + margin) + amountAboveCeiling
         val distanceToTarget = startBal - target
-        val assetRec = assetRecFixture(year, assetConfig, startBal)
+        val assetRec = assetRecFixture(year, startBal = startBal)
 
         val result = handlerFixture.deposit(depositAmount, assetRec, currYear)
         result.shouldBe(-distanceToTarget)

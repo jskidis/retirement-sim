@@ -1,6 +1,7 @@
 package asset
 
 import Amount
+import RecIdentifier
 import YearlyDetail
 import util.PortionOfYearPast
 
@@ -27,7 +28,7 @@ object NetSpendAllocation {
     private fun processesWithdraws(
         netSpend: Amount,
         currYear: YearlyDetail,
-        withdrawOrder: List<AssetConfigProgression>,
+        withdrawOrder: List<NetSpendAssetConfig>,
     ): Amount =
         withdrawOrder.fold(netSpend) { acc, it ->
             if (acc > -1.0) 0.0
@@ -41,7 +42,7 @@ object NetSpendAllocation {
     private fun processesDeposits(
         netSpend: Amount,
         currYear: YearlyDetail,
-        depositOrder: List<AssetConfigProgression>,
+        depositOrder: List<NetSpendAssetConfig>,
     ): Amount =
         depositOrder.fold(netSpend) { acc, it ->
             if (acc < 1.0) 0.0
@@ -54,12 +55,17 @@ object NetSpendAllocation {
 
     private fun findAssetRec(
         currYear: YearlyDetail,
-        configProgression: AssetConfigProgression,
-    ): AssetRec? = currYear.assets.find { it.config == configProgression.config }
+        progression: NetSpendAssetConfig,
+    ): AssetRec? = currYear.assets.find { it.ident == progression.ident }
 }
 
 data class NetSpendAllocationConfig(
-    val withdrawOrder: List<AssetConfigProgression>,
-    val depositOrder: List<AssetConfigProgression>
+    val withdrawOrder: List<NetSpendAssetConfig>,
+    val depositOrder: List<NetSpendAssetConfig>
+)
+
+data class NetSpendAssetConfig(
+    val ident: RecIdentifier,
+    val spendAllocHandler: SpendAllocHandler
 )
 

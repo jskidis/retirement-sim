@@ -2,63 +2,41 @@ package asset
 
 import Amount
 import Name
+import RecIdentifier
 import Year
-import YearlyDetail
-import progression.Progression
-import tax.NonTaxableProfile
-import tax.TaxabilityProfile
 import util.currentDate
-
-fun assetConfigFixture(
-    assetName: Name = "Asset",
-    person: Name = "Person",
-    taxProfile: TaxabilityProfile = NonTaxableProfile(),
-) = AssetConfig(
-    assetName, person, taxProfile
-)
 
 fun assetRecFixture(
     year: Year =  currentDate.year + 1,
-    assetConfig: AssetConfig = assetConfigFixture(assetName = "Asset Name", person = "Person"),
+    ident: RecIdentifier = RecIdentifier(name = "Asset Name", person = "Person"),
     startBal: Amount = 0.0,
-    gains: Amount = 0.0,
+    gains: AssetChange = AssetChange("Gain", amount = 0.0),
     startUnrealized: Amount = 0.0,
-    taxProfile: TaxabilityProfile = NonTaxableProfile(),
 ) = AssetRec(
         year = year,
-        config = assetConfig,
+        ident = ident,
         startBal = startBal,
         startUnrealized = startUnrealized,
-        gains = AssetChange("Gain", gains,
-            taxProfile.calcTaxable(assetConfig.person, gains))
+        gains = gains
     )
 
-fun assetConfigProgressFixture(
-    name: Name = "Asset",
-    person: Name = "Person",
+fun assetProgressionFixture(
+    name: String = "Asset Name",
+    person: String = "Person",
     startBal: Amount = 0.0,
-    gains: Amount = 0.0,
-    spendAllocHandler: SpendAllocHandler = BasicSpendAlloc()
-) : AssetConfigProgression {
-
-    val config = AssetConfig(name, person)
-
-    return AssetConfigProgression(
-        config = config,
-        progression = AssetProgressionFixture(startBal, gains, config),
-        spendAllocHandler = spendAllocHandler
+    gains: Amount = 0.0
+) : AssetProgression =
+    AssetProgression(
+        ident = RecIdentifier(name, person),
+        startBalance = startBal,
+        gainCreator = GainCreatorFixture(name, gains),
     )
-}
 
-class AssetProgressionFixture(
-    val startBal: Amount,
-    val gains: Amount,
-    val assetConfig: AssetConfig,
-) : Progression<AssetRec> {
-
-    override fun determineNext(prevYear: YearlyDetail?) = assetRecFixture(
-        startBal = startBal,
-        gains = gains,
-        assetConfig = assetConfig,
-    )
+class GainCreatorFixture(val name: Name, val gains: Amount): AssetGainCreator {
+    override fun createGain(
+        year: Year,
+        person: Name,
+        balance: Amount,
+        gaussianRnd: Double,
+    ): AssetChange = AssetChange(name, gains)
 }

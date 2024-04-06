@@ -1,24 +1,23 @@
 package asset
 
 import Amount
+import RecIdentifier
 import Year
 import YearlyDetail
 import progression.PrevRecProviderProgression
 import util.RandomizerFactory
-import util.YearBasedConfig
 import util.currentDate
 
 open class AssetProgression(
+    val ident: RecIdentifier,
     val startBalance: Amount,
-    val config: AssetConfig,
     val gainCreator: AssetGainCreator,
     val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
-    val attributesSet: YearBasedConfig<PortfolAttribs> = YearBasedConfig(listOf()),
 ) : PrevRecProviderProgression<AssetRec> {
 
     override fun previousRec(prevYear: YearlyDetail): AssetRec? =
         prevYear.assets.find {
-            it.config.person == config.person && it.config.name == config.name
+            it.ident.person == ident.person && it.ident.name == ident.name
         }
 
     override fun initialRec(): AssetRec =
@@ -46,14 +45,18 @@ open class AssetProgression(
         )
 
     fun buildRec(year: Year, balance: Amount, unrealized: Amount, roiGaussRnd: Double): AssetRec {
-        val attributes = attributesSet.getConfigForYear(year)
-
         val assetRec = AssetRec(
             year = year,
-            config = config,
+            ident = ident,
             startBal = balance,
             startUnrealized = unrealized,
-            gains = gainCreator.createGain(balance, attributes, config, roiGaussRnd))
+            gains = gainCreator.createGain(
+                year = year,
+                person = ident.person,
+                balance = balance,
+                gaussianRnd = roiGaussRnd
+            )
+        )
 
         val reqDistribution = requiredDistHandler.generateDistribution(balance, year)
         if (reqDistribution != null) assetRec.tributions.add(reqDistribution)

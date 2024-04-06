@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import AmountRec
+import RecIdentifier
 import Year
 import config.AmountConfig
 import income.IncomeConfig
@@ -12,12 +13,14 @@ import util.PortionOfYearPast
 
 data class AssetRec(
     val year: Year,
-    val config: AssetConfig,
+    val ident: RecIdentifier,
     val startBal: Amount,
     val startUnrealized: Amount,
     val gains: AssetChange,
 ) : AmountRec {
     val tributions: MutableList<AssetChange> = ArrayList()
+    // TODO: Remove me
+    val config: AmountConfig = IncomeConfig(ident.name, ident.person)
 
     override fun toString(): String = toJsonStr()
 
@@ -33,7 +36,7 @@ data class AssetRec(
     override fun taxable(): TaxableAmounts {
         return (tributions.filter { !it.isReqDist }.map { it.taxable } + gains.taxable)
             .mapNotNull { it }
-            .fold(TaxableAmounts(config.person)) { acc, it ->
+            .fold(TaxableAmounts(ident.person)) { acc, it ->
                 acc.plus(it)
             }
     }
@@ -52,11 +55,10 @@ data class AssetRec(
                 year = year,
                 config = IncomeConfig(
                     name = it.name,
-                    person = config.person,
-                    config.taxabilityProfile
+                    person = ident.person
                 ),
                 baseAmount = -it.amount,
-                taxableIncome = it.taxable ?: TaxableAmounts(config.person)
+                taxableIncome = it.taxable ?: TaxableAmounts(ident.person)
             )
         }
 }

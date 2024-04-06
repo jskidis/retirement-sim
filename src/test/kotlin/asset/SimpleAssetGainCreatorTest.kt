@@ -5,21 +5,27 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import tax.NonWageTaxableProfile
+import tax.TaxabilityProfile
+import util.YearBasedConfig
+import util.YearConfigPair
+import util.currentDate
 
 class SimpleAssetGainCreatorTest : FunSpec({
 
     test("createGain applies gain and taxable amounts to Change") {
+        val year = currentDate.year + 1
         val taxableProfile = NonWageTaxableProfile()
-        val assetConfig = assetConfigFixture(taxProfile = taxableProfile)
-        val portfolioAttribs = PortfolAttribs("PortfolioName", 0.1, 0.0)
+        val portfolioAttribs = PortfolioAttribs("PortfolioName", 0.1, 0.0)
 
         val balance = 1000.0
         val gainAmount = 100.0
-        val gainCreator = SimpleAssetGainCreatorFixture(gainAmount)
+        val gainCreator =
+            SimpleAssetGainCreatorFixture(gainAmount, taxableProfile, portfolioAttribs)
 
-        val expectedTaxable = taxableProfile.calcTaxable(assetConfig.person, gainAmount)
+        val expectedTaxable = taxableProfile.calcTaxable("Person", gainAmount)
 
-        val results = gainCreator.createGain(balance, portfolioAttribs, assetConfig, 0.0 )
+        val results = gainCreator.createGain(year, "Person", balance, 0.0)
+
         results.name.shouldBe(portfolioAttribs.name)
         results.amount.shouldBe(gainAmount)
         results.taxable.shouldBe(expectedTaxable)
@@ -28,8 +34,17 @@ class SimpleAssetGainCreatorTest : FunSpec({
     }
 })
 
-class SimpleAssetGainCreatorFixture(val gainAmount: Amount) : SimpleAssetGainCreator() {
+class SimpleAssetGainCreatorFixture(
+    val gainAmount: Amount,
+    taxability: TaxabilityProfile,
+    attributes: PortfolioAttribs,
+) : SimpleAssetGainCreator(
+    taxability,
+    YearBasedConfig(
+        listOf(YearConfigPair(currentDate.year + 1, attributes))
+    )
+) {
     override fun calcGrossGains(
-        balance: Amount, attribs: PortfolAttribs, gaussianRnd: Double,
+        balance: Amount, attribs: PortfolioAttribs, gaussianRnd: Double,
     ): Amount = gainAmount
 }

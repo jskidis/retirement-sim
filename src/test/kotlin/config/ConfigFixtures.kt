@@ -4,9 +4,9 @@ import Amount
 import Name
 import Year
 import YearMonth
-import asset.AssetConfigProgression
+import asset.AssetProgression
 import asset.NetSpendAllocationConfig
-import asset.assetConfigProgressFixture
+import asset.assetProgressionFixture
 import expense.ExpenseConfigProgression
 import expense.expenseCfgProgessFixture
 import income.BonusCalculator
@@ -28,7 +28,7 @@ fun configFixture(
     householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: TaxCalcConfig = taxConfigFixture(),
-    assetOrdering: NetSpendAllocationConfig = assetOrderingFixture(householdConfig),
+    assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
 ) =
     SimConfig(
         startYear = startYear,
@@ -47,13 +47,15 @@ fun personFixture(
 fun householdConfigFixture(
     householdMembers: HouseholdMembers = householdMembersFixture(),
     expenses: List<ExpenseConfigProgression> = ArrayList(),
-    jointAssets: List<AssetConfigProgression> = ArrayList(),
+    jointAssets: List<AssetProgression> = ArrayList(),
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
 
+/*
 fun assetOrderingFixture(
     householdConfig: HouseholdConfig,
 ) = NetSpendAllocationConfig(householdConfig.jointAssets, householdConfig.jointAssets)
 
+*/
 fun householdMembersFixture(
     parent1Config: ParentConfig = parentConfigFixture("Parent1"),
     parent2Config: ParentConfig = parentConfigFixture("Parent2"),
@@ -70,8 +72,8 @@ fun parentConfigFixture(
         incomeCfgProgessFixture("Income", name)),
     expenseConfigs: List<ExpenseConfigProgression> = listOf(
         expenseCfgProgessFixture("Expense", name)),
-    assetConfigs: List<AssetConfigProgression> = listOf(
-        assetConfigProgressFixture("Asset", name)),
+    assetConfigs: List<AssetProgression> = listOf(
+        assetProgressionFixture("Asset", name)),
     benefitConfigs: List<SSBenefitConfigProgression> = listOf(
         benefitsConfigProgressFixture("SSBenefits")),
     medInsuranceConfigs: List<MedInsuranceProgression> = listOf()

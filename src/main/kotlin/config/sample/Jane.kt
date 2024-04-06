@@ -1,8 +1,11 @@
 package config.sample
 
 import Amount
+import RecIdentifier
 import YearMonth
-import asset.*
+import asset.AssetProgression
+import asset.RmdRequiredDistHandler
+import asset.SimpleAssetGainCreator
 import config.*
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
@@ -28,7 +31,7 @@ object Jane : ParentConfigBuilder {
     val targetSSDate: YearMonth = YearMonth(year = 2042, 6)
     val baseSSBenefit: Amount = 40500.0
 
-    val iraAcctName: String = "Jane-IRA"
+    val iraAcct = RecIdentifier(name = "Jane-IRA", person = Smiths.jane.name)
     val iraAcctBal: Amount = 1000000.0
 
     override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
@@ -74,20 +77,13 @@ object Jane : ParentConfigBuilder {
         )
     }
 
-    override fun assets(person: Person): List<AssetConfigProgression> {
-        val janeIRAConfig = AssetConfig(
-            name = iraAcctName,
-            person = person.name,
-            taxabilityProfile = NonTaxableProfile(),
-        )
-        val janeIRAAsset = AssetConfigProgression(
-            config = janeIRAConfig,
-            spendAllocHandler = IRASpendAlloc(person),
-            progression = AssetProgression(
-                startBalance = iraAcctBal,
-                config = janeIRAConfig,
-                gainCreator = SimpleAssetGainCreator(),
-                requiredDistHandler = RmdRequiredDistHandler(person),
+    override fun assets(person: Person): List<AssetProgression> {
+        val janeIRA = AssetProgression(
+            ident = iraAcct,
+            startBalance = iraAcctBal,
+            requiredDistHandler = RmdRequiredDistHandler(person),
+            gainCreator = SimpleAssetGainCreator(
+                taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(
                     listOf(
                         YearConfigPair(
@@ -101,8 +97,7 @@ object Jane : ParentConfigBuilder {
                     ))
             )
         )
-
-        return listOf(janeIRAAsset)
+        return listOf(janeIRA)
     }
 
     override fun benefits(person: Person): List<SSBenefitConfigProgression> {
@@ -129,7 +124,8 @@ object Jane : ParentConfigBuilder {
                 employments = employmentConfigs(person),
                 relation = RelationToInsured.SELF
             ),
-            MedicareProgression(birthYM = person.birthYM,
+            MedicareProgression(
+                birthYM = person.birthYM,
                 parts = listOf(
                     MedicarePartType.PARTB,
                     MedicarePartType.PARTD,

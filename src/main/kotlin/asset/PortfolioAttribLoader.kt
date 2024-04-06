@@ -4,9 +4,9 @@ import org.apache.commons.csv.CSVRecord
 import util.CSVReader
 
 object PortfolioAttribLoader {
-    fun getReader(): CSVReader<Pair<String, PortfolAttribs>> =
+    fun getReader(): CSVReader<Pair<String, PortfolioAttribs>> =
         CSVReader { it: CSVRecord ->
-            it[0].trim() to PortfolAttribs(
+            it[0].trim() to PortfolioAttribs(
                 name = it[0],
                 mean = it[1].toDouble(),
                 stdDev = it[2].toDouble(),
@@ -18,7 +18,7 @@ object PortfolioAttribLoader {
         }
 
     fun loadPortfolios(resourcePath: String = "tables/lazy-portfolios.csv")
-        : Map<String, PortfolAttribs> {
+        : Map<String, PortfolioAttribs> {
         return getReader().readCsvFromResource(resourcePath).toMap()
     }
 }

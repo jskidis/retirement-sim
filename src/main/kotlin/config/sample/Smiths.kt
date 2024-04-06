@@ -2,10 +2,12 @@ package config.sample
 
 import Year
 import YearMonth
-import asset.NetSpendAllocationConfig
+import asset.*
 import config.*
 import inflation.FixedRateInflationProgression
 import tax.*
+import util.YearBasedConfig
+import util.YearConfigPair
 import util.currentDate
 
 
@@ -55,17 +57,37 @@ class Smiths : ConfigBuilder {
             medicare = EmployeeMedicareTaxCalc(),
         )
 
-        val withdrawOrdering = listOf(
-            householdConfig.jointAssets.find { it.config.name == Household.savingsAcctName },
-            householdConfig.jointAssets.find { it.config.name == Household.investAcctName }
-        ).mapNotNull { it }
+        val savingsAllocConfig = NetSpendAssetConfig(
+            ident = Household.savingsAcct,
+            spendAllocHandler = CapReserveSpendAlloc(
+                margin = .05,
+                yearlyTargetMult = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(2024, 2.0),
+                        YearConfigPair(Jane.employmentDates.end.year, 3.0),
+                        YearConfigPair(Jane.targetSSDate.year, 4.0)
+                    )
+                )),
+        )
+        val investAllocConfig = NetSpendAssetConfig(
+            ident = Household.investAcct,
+            spendAllocHandler = TaxableInvestSpendAllocHandler(),
+        )
+        val janeIraAllocConfig = NetSpendAssetConfig(
+            ident = Jane.iraAcct,
+            spendAllocHandler = IRASpendAlloc(jane)
+        )
+        val richardIraAllocConfig = NetSpendAssetConfig(
+            ident = Richard.iraAcct,
+            spendAllocHandler = IRASpendAlloc(jane)
+        )
 
-        val depositOrdering = listOf(
-            householdConfig.jointAssets.find { it.config.name == Household.savingsAcctName },
-            householdConfig.jointAssets.find { it.config.name == Household.investAcctName }
-        ).mapNotNull { it }
-
-        val assetOrdering = NetSpendAllocationConfig(withdrawOrdering, depositOrdering)
+        val withdrawOrder = listOf(
+            savingsAllocConfig, investAllocConfig,
+            richardIraAllocConfig, janeIraAllocConfig
+        )
+        val depositOrder = listOf(savingsAllocConfig, investAllocConfig)
+        val assetOrdering = NetSpendAllocationConfig(withdrawOrder, depositOrder)
 
         return SimConfig(
             startYear = startYear,
