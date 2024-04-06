@@ -1,12 +1,12 @@
 package progression
 
 import YearMonth
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import util.DateRange
 import yearlyDetailFixture
 
-class DateRangeAmountAdjusterTest : FunSpec({
+class DateRangeAmountAdjusterTest : ShouldSpec({
 
     val dateRange = DateRange(YearMonth(2020, 0), YearMonth(2025, 6))
 
@@ -19,12 +19,12 @@ class DateRangeAmountAdjusterTest : FunSpec({
 
     val adjuster = DateRangeAmountAdjuster(dateRange)
 
-    test("adjustAmount") {
+    should("adjustAmount") {
         adjuster.adjustAmount(unadjustedValue, fullyInRange).shouldBe(unadjustedValue)
         adjuster.adjustAmount(unadjustedValue, partialInRange).shouldBe(unadjustedValue * 0.5)
         adjuster.adjustAmount(unadjustedValue, outOfRange).shouldBe(0)
     }
-    test("adjustGapFillValue") {
+    should("adjustGapFillValue") {
         adjuster.adjustGapFillValue(unadjustedValue, fullyInRange).shouldBe(unadjustedValue)
         adjuster.adjustGapFillValue(unadjustedValue, partialInRange).shouldBe(unadjustedValue * 0.5)
         adjuster.adjustGapFillValue(unadjustedValue, outOfRange).shouldBe(0)

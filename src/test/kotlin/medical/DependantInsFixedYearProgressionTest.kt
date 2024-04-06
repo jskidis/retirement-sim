@@ -1,15 +1,15 @@
 package medical
 
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class DependantInsFixedYearProgressionTest : FunSpec({
+class DependantInsFixedYearProgressionTest : ShouldSpec({
     val startYear = currentDate.year + 1
     val progression = DependantInsFixedYearProgression(startYear = startYear)
 
-    test("determineNext returns months coverage based on whether start year of dependant of having own insurance") {
+    should("determineNext returns months coverage based on whether start year of dependant of having own insurance") {
         val yearBeforeStart = yearlyDetailFixture(year = startYear -1)
         val beforeYearResult = progression.determineNext(yearBeforeStart, previousAGI = 0.0)
         beforeYearResult.monthsCovered.shouldBe(0)

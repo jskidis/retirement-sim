@@ -1,26 +1,26 @@
 package income
 
 import YearlyDetail
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
-class BonusPctByMarketROITest : FunSpec({
+class BonusPctByMarketROITest : ShouldSpec({
 
     val stdPct = .1
     val stdDev = .05
     val salary = 10000.0
 
-    test("calcBonus is fixed at avg pct when gaussianRnd is 0.0") {
+    should("calcBonus is fixed at avg pct when gaussianRnd is 0.0") {
         val bonusCalc = BonusPctByMarketROIFixture(stdPct, stdDev, 0.0)
         bonusCalc.calcBonus(salary, null).shouldBe(salary * stdPct)
     }
 
-    test("calcBonus is impacted by market (gaussian rnd") {
+    should("calcBonus is impacted by market (gaussian rnd") {
         val bonusCalc = BonusPctByMarketROIFixture(stdPct, stdDev, 2.0)
         bonusCalc.calcBonus(salary, null).shouldBe(salary * (stdPct + stdDev * 2.0))
     }
 
-    test("calcBonus is never below zero") {
+    should("calcBonus is never below zero") {
         val bonusCalc = BonusPctByMarketROIFixture(stdPct, stdDev, -100.0)
         bonusCalc.calcBonus(salary, null).shouldBe(0.0)
     }

@@ -5,11 +5,11 @@ import YearMonth
 import YearlyDetail
 import inflation.InflationRAC
 import inflationRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
-class MedicareProgressionTest : FunSpec({
+class MedicareProgressionTest : ShouldSpec({
 
     val year = 2020
     val cmpdInflation = 1.2
@@ -25,7 +25,7 @@ class MedicareProgressionTest : FunSpec({
 
     val currYear = yearlyDetailFixture(year = year, inflation = inflation)
 
-    test("determineNext returns full prem (adjusted for inflation) with 12 months covered if person is 66+ YO") {
+    should("determineNext returns full prem (adjusted for inflation) with 12 months covered if person is 66+ YO") {
         val progression = MedicareProgressionFixture(person66YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(premium)
@@ -34,14 +34,14 @@ class MedicareProgressionTest : FunSpec({
         results.name.shouldBe(MedicareProgression.DESCRIPTION)
     }
 
-    test("determineNext return 'empty' premium object is person is less an 65") {
+    should("determineNext return 'empty' premium object is person is less an 65") {
         val progression = MedicareProgressionFixture(person64YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(0.0)
         results.monthsCovered.shouldBe(0)
     }
 
-    test("determineNext returns partial prem (adjusted for inflation) with partial months covered if person turns 65 in current year") {
+    should("determineNext returns partial prem (adjusted for inflation) with partial months covered if person turns 65 in current year") {
         val progression = MedicareProgressionFixture(person65YO, parts, premium)
         val results = progression.determineNext(currYear, previousAGI = 0.0)
         results.premium.shouldBe(

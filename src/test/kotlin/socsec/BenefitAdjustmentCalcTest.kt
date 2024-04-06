@@ -1,13 +1,13 @@
 package socsec
 
 import YearMonth
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import socsec.BenefitAdjustmentCalc.calcBenefitAdjustment
 
-class BenefitAdjustmentCalcTest : FunSpec({
+class BenefitAdjustmentCalcTest : ShouldSpec({
 
-    test("calcBenefitAdjustment Post 1954") {
+    should("calcBenefitAdjustment Post 1954") {
         val birthYM = YearMonth(year = 1960, month = 0)
 
         val expectedResults: List<Pair<YearMonth, Double>> = listOf(
@@ -38,7 +38,7 @@ class BenefitAdjustmentCalcTest : FunSpec({
         }
     }
 
-    test("calcBenefitAdjustment Pre 1954") {
+    should("calcBenefitAdjustment Pre 1954") {
         val birthYM = YearMonth(year = 1950, month = 0)
 
         val expectedResults: List<Pair<YearMonth, Double>> = listOf(

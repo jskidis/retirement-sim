@@ -1,7 +1,7 @@
 package asset
 
 import Amount
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.shouldBe
 import tax.NonWageTaxableProfile
@@ -10,9 +10,9 @@ import util.YearBasedConfig
 import util.YearConfigPair
 import util.currentDate
 
-class SimpleAssetGainCreatorTest : FunSpec({
+class SimpleAssetGainCreatorTest : ShouldSpec({
 
-    test("createGain applies gain and taxable amounts to Change") {
+    should("createGain applies gain and taxable amounts to Change") {
         val year = currentDate.year + 1
         val taxableProfile = NonWageTaxableProfile()
         val portfolioAttribs = PortfolioAttribs("PortfolioName", 0.1, 0.0)

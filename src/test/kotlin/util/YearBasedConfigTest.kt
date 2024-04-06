@@ -1,12 +1,12 @@
 package util
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 
-class YearBasedConfigTest : FunSpec({
+class YearBasedConfigTest : ShouldSpec({
 
-    test("getConfigForYear") {
+    should("getConfigForYear") {
         val config = YearBasedConfig(listOf(
             YearConfigPair(2024, 1),
             YearConfigPair(2026, 2),

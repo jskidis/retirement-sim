@@ -3,13 +3,13 @@ package netspend
 import Amount
 import asset.AssetChange
 import asset.assetRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class BasicSpendAllocTest : FunSpec({
+class BasicSpendAllocTest : ShouldSpec({
 
     val startBalance: Amount = 10000.0
     val gainAmount: Amount = 1000.0
@@ -19,7 +19,7 @@ class BasicSpendAllocTest : FunSpec({
 
     val handler = BasicSpendAlloc()
 
-    test("will withdraw full amount requested if amount request is less than asset balance") {
+    should("will withdraw full amount requested if amount request is less than asset balance") {
         val assetRec = assetRecFixture(
             startBal = startBalance,
             gains = AssetChange("Asset", gainAmount)
@@ -34,7 +34,7 @@ class BasicSpendAllocTest : FunSpec({
         assetRec.tributions[0].amount.shouldBe(-withdrawAmount)
     }
 
-    test("will withdraw year end (full) balance if amount request is greater than asset balance") {
+    should("will withdraw year end (full) balance if amount request is greater than asset balance") {
         val assetRec = assetRecFixture(
             startBal = startBalance,
             gains = AssetChange("Asset", gainAmount))
@@ -48,7 +48,7 @@ class BasicSpendAllocTest : FunSpec({
         assetRec.tributions[0].amount.shouldBe(-balBeforeWD)
     }
 
-    test("will deposit full amount requested") {
+    should("will deposit full amount requested") {
         val assetRec = assetRecFixture(
             startBal = startBalance,
             gains = AssetChange("Asset", gainAmount)

@@ -5,13 +5,13 @@ import RecIdentifier
 import YearMonth
 import inflation.InflationRAC
 import inflationRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import tax.NonTaxableProfile
 import util.currentDate
 import yearlyDetailFixture
 
-class FixedDateAmountSSBenefitProgressionTest : FunSpec({
+class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
 
     val ident = RecIdentifier("Primary", "Person")
     val taxabilityProfile = BenefitTaxableProfileFixture()
@@ -28,7 +28,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     val pastYearTarget = YearMonth(2020, 0)
     val currentYearTarget = YearMonth(currentDate.year, 6)
 
-    test("determineNext when prevYear is null, target is future") {
+    should("determineNext when prevYear is null, target is future") {
         val adjustment = 1.0
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
@@ -44,7 +44,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext when prevYear is null, target is past year") {
+    should("determineNext when prevYear is null, target is past year") {
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
@@ -59,7 +59,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext when prevYear is null, target is current year") {
+    should("determineNext when prevYear is null, target is current year") {
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, currentYearTarget, baseAmount, taxabilityProfile,
@@ -75,7 +75,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext when prevYear not null, target is future year") {
+    should("determineNext when prevYear not null, target is future year") {
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(0.0)::calcBenefitAdjustment
@@ -91,7 +91,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext when prevYear not null, target is past year") {
+    should("determineNext when prevYear not null, target is past year") {
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
@@ -108,7 +108,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext when prevYear not null, target is current year") {
+    should("determineNext when prevYear not null, target is current year") {
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, currentYearTarget.copy(year = currentYear + 1), baseAmount, taxabilityProfile,
@@ -126,7 +126,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
     }
 
-    test("determineNext doesn't recalc benefit adjustment after initial calc") {
+    should("determineNext doesn't recalc benefit adjustment after initial calc") {
         val adjustment1 = 1.0
         val adjustment2 = 1.1
         val progression = FixedDateAmountSSBenefitProgression(

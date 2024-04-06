@@ -5,13 +5,13 @@ import config.EmployerInsurance
 import config.employmentConfigFixture
 import inflation.InflationRAC
 import inflationRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import util.DateRange
 import util.currentDate
 import yearlyDetailFixture
 
-class EmployerInsPremProgressionTest : FunSpec({
+class EmployerInsPremProgressionTest : ShouldSpec({
 
     val year = currentDate.year + 1
     val empInsurance = EmployerInsurance(
@@ -40,7 +40,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         medRAC = InflationRAC(0.05, cmpdInflation, cmpdInflation + 0.05))
     val currYear = yearlyDetailFixture(year = year, inflation = inflation)
 
-    test("determineNext returns inflation adjust premium based on relation when employerCoverage exist for all of current year ") {
+    should("determineNext returns inflation adjust premium based on relation when employerCoverage exist for all of current year ") {
         val config = empConfig
         val progSelf = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
         val resultsSelf = progSelf.determineNext(currYear, previousAGI = 0.0 )
@@ -58,7 +58,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         resultsDepend.premium.shouldBe(empInsurance.dependantCost * cmpdInflation)
     }
 
-    test("determineNext returns prorated premium based when coverage exist for part of current year ") {
+    should("determineNext returns prorated premium based when coverage exist for part of current year ") {
         val partialDateRange = empConfig.dateRange.copy(end = YearMonth(year, 6))
         val config = empConfig.copy(dateRange = partialDateRange)
 
@@ -68,7 +68,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         results.monthsCovered.shouldBe(6)
     }
 
-    test("determineNext returns empty premium if coverage doesnt exist for year") {
+    should("determineNext returns empty premium if coverage doesnt exist for year") {
         val partialDateRange = empConfig.dateRange.copy(end = YearMonth(year - 1))
         val config = empConfig.copy(dateRange = partialDateRange)
 
@@ -78,7 +78,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         results.monthsCovered.shouldBe(0)
     }
 
-    test("determineNext returns empty premium if there is no employee insurance coverage") {
+    should("determineNext returns empty premium if there is no employee insurance coverage") {
         val config = empConfig.copy(employerInsurance = null)
 
         val prog = EmployerInsPremProgression(listOf(config), RelationToInsured.SELF)
@@ -87,7 +87,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         results.monthsCovered.shouldBe(0)
     }
 
-    test("determineNext returns premiums based employment on current year employment") {
+    should("determineNext returns premiums based employment on current year employment") {
         val configPresent = empConfig
         val configFuture = empConfig2
 
@@ -104,7 +104,7 @@ class EmployerInsPremProgressionTest : FunSpec({
         resultsFuture.monthsCovered.shouldBe(12)
     }
 
-    test("determineNext returns prorated premiums for each covereage when multiple employments in same year") {
+    should("determineNext returns prorated premiums for each covereage when multiple employments in same year") {
         val firstEmpDateRange = empConfig.dateRange.copy(end = YearMonth(year, 3))
         val secondEmpDateRange = empConfig.dateRange.copy(start = YearMonth(year, 6))
         val configFirst = empConfig.copy(dateRange = firstEmpDateRange)

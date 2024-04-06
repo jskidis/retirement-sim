@@ -4,13 +4,13 @@ import YearMonth
 import asset.assetRecFixture
 import config.ActuarialGender
 import config.Person
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class IRASpendAllocTest : FunSpec({
+class IRASpendAllocTest : ShouldSpec({
 
     val year = currentDate.year + 1
     val currYear = yearlyDetailFixture(year)
@@ -28,7 +28,7 @@ class IRASpendAllocTest : FunSpec({
     )
 
 
-    test("withdraw will withdraw full amount if balance is greater withdraw amount") {
+    should("withdraw will withdraw full amount if balance is greater withdraw amount") {
         val withdrawAmount = 1000.0
         val startBal = 2000.0
         val assetRec = assetRecFixture(year, startBal = startBal)
@@ -46,7 +46,7 @@ class IRASpendAllocTest : FunSpec({
         assetRec.finalBalance().shouldBe(startBal - withdrawAmount)
     }
 
-    test("withdraw will withdraw full balance if balance is then withdraw amount") {
+    should("withdraw will withdraw full balance if balance is then withdraw amount") {
         val withdrawAmount = 4000.0
         val startBal = 2000.0
         val assetRec = assetRecFixture(year, startBal = startBal)
@@ -64,7 +64,7 @@ class IRASpendAllocTest : FunSpec({
         assetRec.finalBalance().shouldBe(0.0)
     }
 
-    test("withdraw will at 10% fed penalty if person under 60") {
+    should("withdraw will at 10% fed penalty if person under 60") {
         val withdrawAmount = 1000.0
         val startBal = 2000.0
         val assetRec = assetRecFixture(year, startBal = startBal)
@@ -82,7 +82,7 @@ class IRASpendAllocTest : FunSpec({
         assetRec.finalBalance().shouldBe(startBal - withdrawAmount)
     }
 
-    test("deposit will never deposit (must be done through contributions") {
+    should("deposit will never deposit (must be done through contributions") {
         val startBal = 2000.0
         val assetRec = assetRecFixture(year, startBal = startBal)
 

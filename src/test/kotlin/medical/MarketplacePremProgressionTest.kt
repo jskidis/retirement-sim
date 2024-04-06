@@ -3,7 +3,7 @@ package medical
 import YearMonth
 import inflation.InflationRAC
 import inflationRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import util.ConstantsProvider
@@ -11,7 +11,7 @@ import util.ConstantsProvider.KEYS.DENTAL_BASE_PREM
 import util.ConstantsProvider.KEYS.MARKETPLACE_BASE_PREM
 import yearlyDetailFixture
 
-class MarketplacePremProgressionTest : FunSpec({
+class MarketplacePremProgressionTest : ShouldSpec({
 
     val year = 2021
     val cmpdInflation = 1.2
@@ -23,7 +23,7 @@ class MarketplacePremProgressionTest : FunSpec({
 
     val currYear = yearlyDetailFixture(year = year, inflation = inflation)
 
-    test("determineNext should return base premium amount (base plus medical inflation) for Silver HMO at age 21 ") {
+    should("determineNext should return base premium amount (base plus medical inflation) for Silver HMO at age 21 ") {
         val progression = MarketplacePremProgressionFixture(
             birthYM = person21YO, medalType = MPMedalType.SILVER, planType = MPPlanType.HMO)
 
@@ -35,7 +35,7 @@ class MarketplacePremProgressionTest : FunSpec({
         results.name.shouldBe(MarketplacePremProgression.DESCRIPTION)
     }
 
-    test("determineNext should factor in age into premium") {
+    should("determineNext should factor in age into premium") {
         val progression = MarketplacePremProgressionFixture(
             birthYM = person41YO, medalType = MPMedalType.SILVER, planType = MPPlanType.HMO)
 
@@ -46,7 +46,7 @@ class MarketplacePremProgressionTest : FunSpec({
         results.premium.shouldBe(expectedPremium)
     }
 
-    test("determineNext should factor in medal type into premium") {
+    should("determineNext should factor in medal type into premium") {
         val progression = MarketplacePremProgressionFixture(
             birthYM = person21YO, medalType = MPMedalType.GOLD, planType = MPPlanType.HMO)
 
@@ -57,7 +57,7 @@ class MarketplacePremProgressionTest : FunSpec({
         results.premium.shouldBe(expectedPremium)
     }
 
-    test("determineNext should factor plan type into premium") {
+    should("determineNext should factor plan type into premium") {
         val progression = MarketplacePremProgressionFixture(
             birthYM = person21YO, medalType = MPMedalType.SILVER, planType = MPPlanType.PPO)
 
@@ -68,7 +68,7 @@ class MarketplacePremProgressionTest : FunSpec({
         results.premium.shouldBe(expectedPremium)
     }
 
-    test("determineNext should factor in dental if requested ") {
+    should("determineNext should factor in dental if requested ") {
         val progression = MarketplacePremProgressionFixture(
             birthYM = person21YO, medalType = MPMedalType.SILVER,
             planType = MPPlanType.HMO, includeDental = true)
@@ -95,8 +95,8 @@ class MarketplacePremProgressionFixture(
         0.9 + (medal.ordinal * 0.1) + (plan.ordinal * 0.1)
 }
 
-class MPAgeMapTest : FunSpec({
-    test("loads successful and returns factor for age (factor should increase after 21)") {
+class MPAgeMapTest : ShouldSpec({
+    should("loads successful and returns factor for age (factor should increase after 21)") {
         val factor21YO = MPAgeMap.getAgeFactor(21)
         val factor41YO = MPAgeMap.getAgeFactor(41)
         val factor61YO = MPAgeMap.getAgeFactor(61)
@@ -105,8 +105,8 @@ class MPAgeMapTest : FunSpec({
     }
 })
 
-class MPMedalPlanMapTest : FunSpec({
-    test("loads successful and returns factor for medal and plan") {
+class MPMedalPlanMapTest : ShouldSpec({
+    should("loads successful and returns factor for medal and plan") {
         val silverHMO =  MPMedalPlanMap.getMedalPlanFactor(MPMedalType.SILVER, MPPlanType.HMO)
         val silverEPO =  MPMedalPlanMap.getMedalPlanFactor(MPMedalType.SILVER, MPPlanType.EPO)
         val silverPPO =  MPMedalPlanMap.getMedalPlanFactor(MPMedalType.SILVER, MPPlanType.PPO)

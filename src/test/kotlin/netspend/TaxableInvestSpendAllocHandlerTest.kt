@@ -2,14 +2,14 @@ package netspend
 
 import asset.AssetChange
 import asset.assetRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class TaxableInvestSpendAllocHandlerTest : FunSpec({
+class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
 
     val year = currentDate.year + 1
     val stUnrealized = 2000.0
@@ -20,7 +20,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
 
     val handler = TaxableInvestSpendAllocHandler()
 
-    test("withdraw will use any unrealized gains from current year first") {
+    should("withdraw will use any unrealized gains from current year first") {
         val withdrawAmount = stUnrealized / 2
         val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain
@@ -39,7 +39,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
         assetRec.totalUnrealized().shouldBe(ltUnrealized + stUnrealized - withdrawAmount)
     }
 
-    test("withdraw will use all unrealized gains from current year then use up starting (lt) gains if withdraw amount is more than current year unrealized") {
+    should("withdraw will use all unrealized gains from current year then use up starting (lt) gains if withdraw amount is more than current year unrealized") {
         val withdrawAmount = stUnrealized + ltUnrealized / 2
         val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain
@@ -58,7 +58,7 @@ class TaxableInvestSpendAllocHandlerTest : FunSpec({
         assetRec.totalUnrealized().shouldBe(ltUnrealized + stUnrealized - withdrawAmount)
     }
 
-    test("withdraw will use all unrealized gains (current year + previous if withdraw amount is more than total unrealized") {
+    should("withdraw will use all unrealized gains (current year + previous if withdraw amount is more than total unrealized") {
         val withdrawAmount = stUnrealized + ltUnrealized + 100.0
         val assetRec = assetRecFixture(year, startBal = 20000.0,
             startUnrealized = ltUnrealized, gains = gain

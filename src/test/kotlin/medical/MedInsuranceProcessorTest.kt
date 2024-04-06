@@ -3,13 +3,13 @@ package medical
 import Amount
 import YearlyDetail
 import config.*
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import util.currentDate
 import yearlyDetailFixture
 
-class MedInsuranceProcessorTest : FunSpec({
+class MedInsuranceProcessorTest : ShouldSpec({
 
     val memberConfig = householdMembersFixture()
     val householdConfig = householdConfigFixture()
@@ -46,7 +46,7 @@ class MedInsuranceProcessorTest : FunSpec({
         name = "Quarter", premium = 500.0, monthsCovered = 3)
 
 
-    test("processes med insurance cost, single full year coverage") {
+    should("processes med insurance cost, single full year coverage") {
         val progression = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression))
 
@@ -61,7 +61,7 @@ class MedInsuranceProcessorTest : FunSpec({
         result[0].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount)
     }
 
-    test("processes med insurance cost, multiple options only one is current") {
+    should("processes med insurance cost, multiple options only one is current") {
         val progression1 = MedInsuranceProgressionFixture(noCoverage)
         val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
@@ -77,7 +77,7 @@ class MedInsuranceProcessorTest : FunSpec({
         result[0].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount)
     }
 
-    test("process med insurance, no options current") {
+    should("process med insurance, no options current") {
         val progression1 = MedInsuranceProgressionFixture(noCoverage)
         val config = buildConfig(listOf(progression1))
 
@@ -85,7 +85,7 @@ class MedInsuranceProcessorTest : FunSpec({
         result.shouldHaveSize(0)
     }
 
-    test("processes med insurance cost, multiple options both valid, first full year") {
+    should("processes med insurance cost, multiple options both valid, first full year") {
         val progression1 = MedInsuranceProgressionFixture(fullYearCoverage)
         val progression2 = MedInsuranceProgressionFixture(quarterYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
@@ -101,7 +101,7 @@ class MedInsuranceProcessorTest : FunSpec({
         result[0].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount)
     }
 
-    test("processes med insurance cost, multiple options both valid, first only partial year") {
+    should("processes med insurance cost, multiple options both valid, first only partial year") {
         val progression1 = MedInsuranceProgressionFixture(quarterYearCoverage)
         val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
         val config = buildConfig(listOf(progression1, progression2))
@@ -126,7 +126,7 @@ class MedInsuranceProcessorTest : FunSpec({
         result[1].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount * 3 / 4)
     }
 
-    test("processes med insurance cost for multiple people") {
+    should("processes med insurance cost for multiple people") {
         val progression1 = MedInsuranceProgressionFixture(quarterYearCoverage)
         val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
         val progression3 = MedInsuranceProgressionFixture(fullYearCoverage)

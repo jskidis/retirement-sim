@@ -2,13 +2,13 @@ package medical
 
 import inflation.InflationRAC
 import inflationRecFixture
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import tax.FilingStatus
 import util.currentDate
 import yearlyDetailFixture
 
-class MedicarePremCalcTest : FunSpec({
+class MedicarePremCalcTest : ShouldSpec({
     val year = currentDate.year + 5
     val brackets = listOf(
         MedicarePremBracketRec(
@@ -42,7 +42,7 @@ class MedicarePremCalcTest : FunSpec({
         stdRAC = InflationRAC(.03, cmpdStdInfl, cmpdStdInfl + .03),
         medRAC = InflationRAC(.05, cmpdMedInfl, cmpdMedInfl + .05))
 
-    test("getPremium calculates premium when filing method is single and agi (adjusted for inflation) is in first bracket") {
+    should("getPremium calculates premium when filing method is single and agi (adjusted for inflation) is in first bracket") {
         val agi = (brackets[0].singleBracket.end - 1.0) * cmpdStdInfl
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.SINGLE)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
@@ -52,7 +52,7 @@ class MedicarePremCalcTest : FunSpec({
                 brackets[0].partPrems.partDPrem * cmpdMedInfl)
     }
 
-    test("getPremium calculates premium when filing method is head of household and agi (adjusted for inflation) is in first bracket") {
+    should("getPremium calculates premium when filing method is head of household and agi (adjusted for inflation) is in first bracket") {
         val agi = (brackets[0].singleBracket.end - 1.0) * cmpdStdInfl
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.HOUSEHOLD)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
@@ -62,7 +62,7 @@ class MedicarePremCalcTest : FunSpec({
                 brackets[0].partPrems.partDPrem * cmpdMedInfl)
     }
 
-    test("getPremium calculates premium when filing method is jointly and agi (adjusted for inflation) is in first bracket") {
+    should("getPremium calculates premium when filing method is jointly and agi (adjusted for inflation) is in first bracket") {
         val agi = (brackets[0].jointBracket.end - 1.0) * cmpdStdInfl
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.JOINTLY)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
@@ -72,7 +72,7 @@ class MedicarePremCalcTest : FunSpec({
                 brackets[0].partPrems.partDPrem * cmpdMedInfl)
     }
 
-    test("getPremium calculates premium when filing method is single and agi (adjusted for inflation) is in second bracket") {
+    should("getPremium calculates premium when filing method is single and agi (adjusted for inflation) is in second bracket") {
         val agi = (brackets[1].singleBracket.end - 1.0) * cmpdStdInfl
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.SINGLE)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
@@ -82,7 +82,7 @@ class MedicarePremCalcTest : FunSpec({
                 brackets[1].partPrems.partDPrem * cmpdMedInfl)
     }
 
-    test("getPremium calculates premium when filing method is jointly and agi is in the last bracket") {
+    should("getPremium calculates premium when filing method is jointly and agi is in the last bracket") {
         val agi = 5000000.0
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.JOINTLY)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD)
@@ -92,7 +92,7 @@ class MedicarePremCalcTest : FunSpec({
                 brackets[2].partPrems.partDPrem * cmpdMedInfl)
     }
 
-    test("getPremium calculates premium using all the parts ") {
+    should("getPremium calculates premium using all the parts ") {
         val agi = (brackets[0].singleBracket.end - 1.0) * cmpdStdInfl
         val currYear = yearlyDetailFixture(year, inflation, filingStatus = FilingStatus.SINGLE)
         val parts = listOf(MedicarePartType.PARTB, MedicarePartType.PARTD,
