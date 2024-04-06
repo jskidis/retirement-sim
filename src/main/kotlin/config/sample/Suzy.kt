@@ -1,33 +1,26 @@
 package config.sample
 
 import Amount
+import RecIdentifier
 import config.DependentConfigBuilder
 import config.Person
-import expense.ExpenseConfig
-import expense.ExpenseConfigProgression
-import expense.SCurveDecreasingExpense
+import expense.BasicExpenseProgression
+import expense.ExpenseRec
 import inflation.StdInflationAmountAdjuster
 import medical.*
-import tax.NonTaxableProfile
+import progression.Progression
+import tax.NonDeductProfile
 
 object Suzy: DependentConfigBuilder {
     val expenseStart: Amount = 20000.0
 
-    override fun expenses(person: Person): List<ExpenseConfigProgression> {
-        val config = ExpenseConfig(
-            name = "Expenses", person = person.name,
-            taxabilityProfile = NonTaxableProfile()
-        )
+    override fun expenses(person: Person): List<Progression<ExpenseRec>> {
         return listOf(
-            ExpenseConfigProgression(
-                config = config,
-                progression = SCurveDecreasingExpense(
-                    startAmount = expenseStart,
-                    startDecYear = Smiths.startYear,
-                    numYears = 10,
-                    config = config,
-                    adjusters = listOf(StdInflationAmountAdjuster())
-                )
+            BasicExpenseProgression(
+                ident = RecIdentifier(name = "Expenses", person = person.name),
+                startAmount = expenseStart,
+                taxabilityProfile = NonDeductProfile(),
+                adjusters = listOf(StdInflationAmountAdjuster())
             )
         )
     }

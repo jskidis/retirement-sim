@@ -2,10 +2,12 @@ package expense
 
 import Amount
 import Name
+import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import progression.AmountAdjusterWithGapFiller
 import progression.GapAmountAdjusterFixture
+import tax.NonDeductProfile
 import tax.TaxableAmounts
 import yearlyDetailFixture
 
@@ -16,9 +18,11 @@ class BasicExpenseProgressionTest : ShouldSpec({
     val prevYearMultiplier = 1.1
     val gapFillerMultipler = 2.0
 
-    val expenseConfig = expenseConfigFixture(expenseName, person)
-    val progression = BasicExpenseProgressionFixture(startAmount, expenseConfig,
-        GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
+    val ident = RecIdentifier(expenseName, person)
+    val progression = BasicExpenseProgressionFixture(
+        ident = ident,
+        startAmount = startAmount,
+        adjuster = GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)
@@ -29,7 +33,7 @@ class BasicExpenseProgressionTest : ShouldSpec({
 
     should("determineNext applies amount adjuster to previous years amount") {
         val prevYear = yearlyDetailFixture().copy(expenses = listOf(
-            ExpenseRec(2024, expenseConfig, 2000.0, TaxableAmounts(person))
+            ExpenseRec(2024, ident, 2000.0, TaxableAmounts(person))
         ))
 
         val result = progression.determineNext(prevYear)
@@ -52,8 +56,8 @@ class BasicExpenseProgressionTest : ShouldSpec({
     }
 })
 
-class BasicExpenseProgressionFixture(startAmount: Amount,
-    expenseConfig: ExpenseConfig,
-    adjuster: AmountAdjusterWithGapFiller)
-    : BasicExpenseProgression(startAmount, expenseConfig, listOf(adjuster)
-)
+class BasicExpenseProgressionFixture(
+    startAmount: Amount,
+    ident: RecIdentifier,
+    adjuster: AmountAdjusterWithGapFiller
+) : BasicExpenseProgression(ident, startAmount, NonDeductProfile(), listOf(adjuster))

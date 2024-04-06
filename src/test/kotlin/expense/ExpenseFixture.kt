@@ -2,17 +2,13 @@ package expense
 
 import Amount
 import Name
+import RecIdentifier
 import Year
-import YearlyDetail
-import progression.AmountProviderProgression
+import progression.Progression
+import tax.NonTaxableProfile
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import util.currentDate
-
-fun expenseConfigFixture(
-    name: Name = "Expense",
-    person: Name = "Person",
-) = ExpenseConfig(name, person)
 
 fun expenseRecFixture(
     year: Year = currentDate.year + 1,
@@ -21,7 +17,7 @@ fun expenseRecFixture(
     amount: Amount = 0.0,
 ) = ExpenseRec(
     year = year,
-    config = expenseConfigFixture(name, person),
+    ident = RecIdentifier(name, person),
     amount = amount,
     taxDeductions = TaxableAmounts(person))
 
@@ -33,30 +29,21 @@ fun expenseRecFixture(
     taxProfile: TaxabilityProfile,
 ) = ExpenseRec(
     year = year,
-    config = ExpenseConfig(name, person, taxProfile),
+    ident = RecIdentifier(name, person),
     amount = amount,
     taxDeductions = taxProfile.calcTaxable(name, amount)
 )
 
-fun expenseCfgProgessFixture(
-    name: Name = "Expense",
+fun expenseProgressionFixture(
+    name: Name = "Income",
     person: Name = "Person",
-    amount: Amount = 0.0,
-): ExpenseConfigProgression {
-    val config = ExpenseConfig(name, person)
-    return ExpenseConfigProgression(
-        config, ExpenseProgressionFixture(amount, config)
+    amount: Amount = 0.0
+): Progression<ExpenseRec> {
+    return BasicExpenseProgression(
+        ident = RecIdentifier(name, person),
+        startAmount = amount,
+        taxabilityProfile = NonTaxableProfile(),
+        adjusters = listOf()
     )
 }
 
-class ExpenseProgressionFixture(val amount: Double, val expenseConfig: ExpenseConfig)
-    : AmountProviderProgression<ExpenseRec> {
-
-    override fun determineAmount(prevYear: YearlyDetail?): Amount = amount
-    override fun createRecord(value: Amount, year: Year) = ExpenseRec(
-        year = year,
-        config = expenseConfig,
-        amount = amount,
-        taxDeductions = TaxableAmounts(expenseConfig.name)
-    )
-}

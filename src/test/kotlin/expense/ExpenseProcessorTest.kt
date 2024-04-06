@@ -17,13 +17,13 @@ class ExpenseProcessorTest : ShouldSpec({
     val parent1Name = "Parent1"
     val parent2Name = "Parent2"
 
-    val householdProgression1 = expenseCfgProgessFixture(
+    val householdProgression1 = expenseProgressionFixture(
         name = "Household Exp1", person = householdName, amount = 1000.0)
-    val householdProgression2 = expenseCfgProgessFixture(
+    val householdProgression2 = expenseProgressionFixture(
         name = "Household Exp2", person = householdName, amount = 2000.0)
-    val parent1Progression = expenseCfgProgessFixture(
+    val parent1Progression = expenseProgressionFixture(
         name = "Parent 1 Exp", person = parent1Name, amount = 3000.0)
-    val parent2Progression = expenseCfgProgessFixture(
+    val parent2Progression = expenseProgressionFixture(
         name = "Parent 2 Exp", person = parent2Name, amount = 4000.0)
 
     val parent1 = parentConfigFixture(
@@ -42,24 +42,24 @@ class ExpenseProcessorTest : ShouldSpec({
         result.shouldHaveSize(4)
 
         result.find {
-            it.config.person == householdName &&
-                it.config.name == householdProgression1.config.name
+            it.ident.person == householdName &&
+                it.ident.name == "Household Exp1"
         }.shouldNotBeNull().amount.shouldBe(1000.0)
 
         result.find {
-            it.config.person == householdName &&
-                it.config.name == householdProgression2.config.name
+            it.ident.person == householdName &&
+                it.ident.name == "Household Exp2"
 
         }.shouldNotBeNull().amount.shouldBe(2000.0)
 
         result.find {
-            it.config.person == parent1Name &&
-                it.config.name == parent1Progression.config.name
+            it.ident.person == parent1Name &&
+                it.ident.name == "Parent 1 Exp"
         }.shouldNotBeNull().amount.shouldBe(3000.0)
 
         result.find {
-            it.config.person == parent2Name &&
-                it.config.name == parent2Progression.config.name
+            it.ident.person == parent2Name &&
+                it.ident.name == "Parent 2 Exp"
         }.shouldNotBeNull().amount.shouldBe(4000.0)
     }
 })

@@ -3,9 +3,10 @@ package config
 import Name
 import YearMonth
 import asset.AssetProgression
-import expense.ExpenseConfigProgression
-import income.IncomeProgression
+import expense.ExpenseRec
+import income.IncomeRec
 import medical.MedInsuranceProgression
+import progression.Progression
 import socsec.SSBenefitConfigProgression
 
 data class Person (
@@ -18,8 +19,8 @@ enum class ActuarialGender { MALE, FEMALE }
 
 open class PersonConfig(
     val person: Person,
-    val incomes: List<IncomeProgression>,
-    val expenses: List<ExpenseConfigProgression>,
+    val incomes: List<Progression<IncomeRec>>,
+    val expenses: List<Progression<ExpenseRec>>,
     val assets: List<AssetProgression>,
     val benefits: List<SSBenefitConfigProgression>,
     val medInsurance: List<MedInsuranceProgression>
@@ -27,8 +28,8 @@ open class PersonConfig(
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
     fun actuarialGender(): ActuarialGender = person.actuarialGender
-    fun incomes(): List<IncomeProgression> = incomes
-    fun expenses(): List<ExpenseConfigProgression> = expenses
+    fun incomes(): List<Progression<IncomeRec>> = incomes
+    fun expenses(): List<Progression<ExpenseRec>> = expenses
     fun assets(): List<AssetProgression> = assets
     fun benefits(): List<SSBenefitConfigProgression> = benefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
@@ -36,8 +37,8 @@ open class PersonConfig(
 
 open class ParentConfig(
     person: Person,
-    incomes: List<IncomeProgression> = ArrayList(),
-    expenses: List<ExpenseConfigProgression> = ArrayList(),
+    incomes: List<Progression<IncomeRec>> = ArrayList(),
+    expenses: List<Progression<ExpenseRec>> = ArrayList(),
     assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),
     medInsurance: List<MedInsuranceProgression>
@@ -45,8 +46,8 @@ open class ParentConfig(
 
 open class DependantConfig(
     person: Person,
-    incomes: List<IncomeProgression> = ArrayList(),
-    expenses: List<ExpenseConfigProgression> = ArrayList(),
+    incomes: List<Progression<IncomeRec>> = ArrayList(),
+    expenses: List<Progression<ExpenseRec>> = ArrayList(),
     assets: List<AssetProgression> = ArrayList(),
     benefits: List<SSBenefitConfigProgression> = ArrayList(),
     medInsurance: List<MedInsuranceProgression>,

@@ -2,10 +2,10 @@ package medical
 
 import Amount
 import Name
+import RecIdentifier
 import Year
 import YearlyDetail
 import config.SimConfig
-import expense.ExpenseConfig
 import expense.ExpenseRec
 import tax.TaxableAmounts
 
@@ -44,10 +44,7 @@ object MedInsuranceProcessor {
     ) =
         ExpenseRec(
             year = year,
-            config = ExpenseConfig(
-                name = name,
-                person = person
-            ),
+            ident = RecIdentifier(name, person),
             amount = premium,
             taxDeductions = TaxableAmounts(
                 person = person,

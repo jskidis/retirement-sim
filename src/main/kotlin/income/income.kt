@@ -31,26 +31,10 @@ data class IncomeRec(
     override fun toString(): String = toJsonStr()
 }
 
-/*
-data class IncomeConfig(
-    override val name: Name,
-    override val person: Name,
-    override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
-) : AmountConfig {
-    override fun toString(): String = toJsonStr()
-}
-
-data class IncomeConfigProgression(
-    val config: IncomeConfig,
-    val progression: Progression<IncomeRec>,
-)
-*/
-
 open class IncomeRecProvider(
     val ident: RecIdentifier,
     val taxabilityProfile: TaxabilityProfile
-)
-    : AmountToRecProvider<IncomeRec> {
+) : AmountToRecProvider<IncomeRec> {
 
     override fun createRecord(value: Amount, year: Year) = IncomeRec(
         year = year,

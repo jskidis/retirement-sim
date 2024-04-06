@@ -2,22 +2,23 @@ package expense
 
 import Amount
 import AmountRec
-import Name
+import RecIdentifier
 import Year
 import config.AmountConfig
+import config.SimpleAmountConfig
 import progression.AmountToRecProvider
-import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
-import tax.UnusedProfile
 import toJsonStr
 
 data class ExpenseRec(
     val year: Year,
-    val config: ExpenseConfig,
+    val ident: RecIdentifier,
     val amount: Amount,
     val taxDeductions: TaxableAmounts,
 ): AmountRec {
+    // TODO: Remove me
+    val config: AmountConfig = SimpleAmountConfig(ident.name, ident.person)
 
     override fun year(): Year  = year
     override fun config(): AmountConfig = config
@@ -28,27 +29,16 @@ data class ExpenseRec(
     override fun toString(): String = toJsonStr()
 }
 
-data class ExpenseConfig(
-    override val name: Name,
-    override val person: Name,
-    override val taxabilityProfile: TaxabilityProfile = UnusedProfile(),
-): AmountConfig {
-    override fun toString(): String = toJsonStr()
-}
-
-data class ExpenseConfigProgression(
-    val config: ExpenseConfig,
-    val progression: Progression<ExpenseRec>,
-)
-
-open class ExpenseRecProvider(val config: ExpenseConfig)
-    : AmountToRecProvider<ExpenseRec> {
+open class ExpenseRecProvider(
+    val ident: RecIdentifier,
+    val taxabilityProfile: TaxabilityProfile
+) : AmountToRecProvider<ExpenseRec> {
 
     override fun createRecord(value: Amount, year: Year) = ExpenseRec(
         year = year,
-        config = config,
+        ident = ident,
         amount = value,
-        taxDeductions = config.taxabilityProfile.calcTaxable(config.person, value)
+        taxDeductions = taxabilityProfile.calcTaxable(ident.person, value)
     )
 }
 

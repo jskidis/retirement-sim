@@ -12,15 +12,16 @@ import config.ParentConfigBuilder
 import config.Person
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
-import expense.ExpenseConfig
-import expense.ExpenseConfigProgression
+import expense.ExpenseRec
 import income.EmploymentIncomeProgression
-import income.IncomeProgression
+import income.IncomeRec
 import inflation.StdInflationAmountAdjuster
 import medical.*
+import progression.Progression
 import socsec.FixedDateAmountSSBenefitProgression
 import socsec.SSBenefitConfig
 import socsec.SSBenefitConfigProgression
+import tax.NonDeductProfile
 import tax.NonTaxableProfile
 import tax.SSBenefitTaxableProfile
 import util.DateRange
@@ -47,28 +48,22 @@ object Richard : ParentConfigBuilder {
     )
 
     override fun incomes(person: Person)
-        : List<IncomeProgression> {
+        : List<Progression<IncomeRec>> {
         val employmentConfigs = employmentConfigs(person)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
     }
 
-    override fun expenses(person: Person): List<ExpenseConfigProgression> {
-        val expenseConfig = ExpenseConfig(
-            name = "Expenses", person = person.name,
-            taxabilityProfile = NonTaxableProfile()
-        )
+    override fun expenses(person: Person): List<Progression<ExpenseRec>> {
         return listOf(
-            ExpenseConfigProgression(
-                config = expenseConfig,
-                progression = BasicExpenseProgression(
-                    startAmount = expenseStart,
-                    config = expenseConfig,
-                    adjusters = listOf(
-                        StdInflationAmountAdjuster(),
-                        AgeBasedExpenseAdjuster(person.birthYM)
-                    )
+            BasicExpenseProgression(
+                ident = RecIdentifier(name = "Expenses", person = person.name),
+                startAmount = expenseStart,
+                taxabilityProfile = NonDeductProfile(),
+                adjusters = listOf(
+                    StdInflationAmountAdjuster(),
+                    AgeBasedExpenseAdjuster(person.birthYM)
                 )
             )
         )

@@ -4,9 +4,10 @@ import Amount
 import Name
 import RecIdentifier
 import Year
-import tax.NonTaxableProfile
+import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
+import tax.WageTaxableProfile
 import util.currentDate
 
 fun incomeRecFixture(
@@ -36,11 +37,11 @@ fun incomeProgressionFixture(
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0
-): IncomeProgression {
+): Progression<IncomeRec> {
     return IncomeProgression(
         ident = RecIdentifier(name, person),
         startAmount = amount,
-        taxabilityProfile = NonTaxableProfile(),
+        taxabilityProfile = WageTaxableProfile(),
         adjusters = listOf()
     )
 }

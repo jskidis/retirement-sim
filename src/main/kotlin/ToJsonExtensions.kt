@@ -1,6 +1,5 @@
 import asset.AssetChange
 import asset.AssetRec
-import expense.ExpenseConfig
 import expense.ExpenseRec
 import income.IncomeRec
 import socsec.SSBenefitConfig
@@ -11,8 +10,6 @@ import util.moneyFormat
 import util.strWhenNotZero
 
 fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
-
-fun ExpenseConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 fun SSBenefitConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 
 fun AssetRec.toJsonStr(): String = "{" +
