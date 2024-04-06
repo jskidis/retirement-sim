@@ -4,8 +4,6 @@ import Amount
 import AmountRec
 import RecIdentifier
 import Year
-import config.AmountConfig
-import config.SimpleAmountConfig
 import income.IncomeRec
 import tax.TaxableAmounts
 import toJsonStr
@@ -19,13 +17,11 @@ data class AssetRec(
     val gains: AssetChange,
 ) : AmountRec {
     val tributions: MutableList<AssetChange> = ArrayList()
-    // TODO: Remove me
-    val config: AmountConfig = SimpleAmountConfig(ident.name, ident.person)
 
     override fun toString(): String = toJsonStr()
 
     override fun year(): Year = year
-    override fun config(): AmountConfig = config
+    override fun ident(): RecIdentifier = ident
     override fun amount(): Amount = finalBalance()
     override fun retainRec(): Boolean = startBal != 0.0 || finalBalance() != 0.0
 

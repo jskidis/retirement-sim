@@ -1,21 +1,20 @@
 package config
 
 import asset.AssetProgression
-import expense.ExpenseRec
-import income.IncomeRec
+import expense.ExpenseProgression
+import income.IncomeProgression
 import medical.MedInsuranceProgression
-import progression.Progression
-import socsec.SSBenefitConfigProgression
+import socsec.SSBenefitProgression
 
 interface ConfigBuilder {
     fun buildConfig(): SimConfig
 }
 
 interface PersonConfigBuilder {
-    fun incomes(person: Person): List<Progression<IncomeRec>> = ArrayList()
-    fun expenses(person: Person): List<Progression<ExpenseRec>> = ArrayList()
+    fun incomes(person: Person): List<IncomeProgression> = ArrayList()
+    fun expenses(person: Person): List<ExpenseProgression> = ArrayList()
     fun assets(person: Person): List<AssetProgression> = ArrayList()
-    fun benefits(person: Person): List<SSBenefitConfigProgression> = ArrayList()
+    fun benefits(person: Person): List<SSBenefitProgression> = ArrayList()
     fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
 }
 
@@ -50,6 +49,6 @@ interface HouseholdConfigBuilder {
         jointAssets = assets()
     )
 
-    fun expenses(): List<Progression<ExpenseRec>> = ArrayList()
+    fun expenses(): List<ExpenseProgression> = ArrayList()
     fun assets(): List<AssetProgression> = ArrayList()
 }

@@ -26,8 +26,8 @@ class BasicExpenseProgressionTest : ShouldSpec({
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)
-        result.config.name.shouldBe(expenseName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(expenseName)
+        result.ident.person.shouldBe(person)
         result.amount.shouldBe(startAmount)
     }
 
@@ -37,8 +37,8 @@ class BasicExpenseProgressionTest : ShouldSpec({
         ))
 
         val result = progression.determineNext(prevYear)
-        result.config.name.shouldBe(expenseName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(expenseName)
+        result.ident.person.shouldBe(person)
         result.amount.shouldBe(2000.0 * prevYearMultiplier)
     }
 
@@ -50,8 +50,8 @@ class BasicExpenseProgressionTest : ShouldSpec({
         ))
 
         val result = progression.determineNext(prevYear)
-        result.config.name.shouldBe(expenseName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(expenseName)
+        result.ident.person.shouldBe(person)
         result.amount.shouldBe(startAmount * gapFillerMultipler)
     }
 })

@@ -1,17 +1,20 @@
 package socsec
 
 import Amount
+import RecIdentifier
 import YearMonth
 import YearlyDetail
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
+import tax.TaxabilityProfile
 import util.currentDate
 
 open class FixedDateAmountSSBenefitProgression(
-    val config: SSBenefitConfig,
+    val ident: RecIdentifier,
     val birthYM: YearMonth,
     val targetYM: YearMonth,
     val baseAmount: Amount,
+    val taxabilityProfile: TaxabilityProfile,
     val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
 ) : SSBenefitProgression,
     CmpdInflationProvider by StdCmpdInflationProvider() {
@@ -35,9 +38,9 @@ open class FixedDateAmountSSBenefitProgression(
 
         return SSBenefitRec(
             year = year,
-            config = config,
+            ident = ident,
             amount = value,
-            taxableAmount = config.taxabilityProfile.calcTaxable(config.person, value)
+            taxableAmount = taxabilityProfile.calcTaxable(ident.person, value)
         )
     }
 }

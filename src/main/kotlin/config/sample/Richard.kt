@@ -12,15 +12,13 @@ import config.ParentConfigBuilder
 import config.Person
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
-import expense.ExpenseRec
+import expense.ExpenseProgression
 import income.EmploymentIncomeProgression
-import income.IncomeRec
+import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
-import progression.Progression
 import socsec.FixedDateAmountSSBenefitProgression
-import socsec.SSBenefitConfig
-import socsec.SSBenefitConfigProgression
+import socsec.SSBenefitProgression
 import tax.NonDeductProfile
 import tax.NonTaxableProfile
 import tax.SSBenefitTaxableProfile
@@ -48,14 +46,14 @@ object Richard : ParentConfigBuilder {
     )
 
     override fun incomes(person: Person)
-        : List<Progression<IncomeRec>> {
+        : List<IncomeProgression> {
         val employmentConfigs = employmentConfigs(person)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
     }
 
-    override fun expenses(person: Person): List<Progression<ExpenseRec>> {
+    override fun expenses(person: Person): List<ExpenseProgression> {
         return listOf(
             BasicExpenseProgression(
                 ident = RecIdentifier(name = "Expenses", person = person.name),
@@ -93,20 +91,14 @@ object Richard : ParentConfigBuilder {
         return listOf(richIRA)
     }
 
-    override fun benefits(person: Person): List<SSBenefitConfigProgression> {
-        val benefitConfig = SSBenefitConfig(
-            name = "Primary", person = person.name,
-            taxabilityProfile = SSBenefitTaxableProfile()
-        )
+    override fun benefits(person: Person): List<SSBenefitProgression> {
         return listOf(
-            SSBenefitConfigProgression(
-                config = benefitConfig,
-                progression = FixedDateAmountSSBenefitProgression(
-                    config = benefitConfig,
-                    birthYM = person.birthYM,
-                    targetYM = targetSSDate,
-                    baseAmount = baseSSBenefit,
-                )
+            FixedDateAmountSSBenefitProgression(
+                ident = RecIdentifier(name = "Primary", person = person.name),
+                birthYM = person.birthYM,
+                targetYM = targetSSDate,
+                baseAmount = baseSSBenefit,
+                taxabilityProfile = SSBenefitTaxableProfile(),
             )
         )
     }

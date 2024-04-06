@@ -8,9 +8,8 @@ import asset.TaxableInvestGainCreator
 import config.AssetAttributeMap
 import config.HouseholdConfigBuilder
 import expense.BasicExpenseProgression
-import expense.ExpenseRec
+import expense.ExpenseProgression
 import inflation.StdInflationAmountAdjuster
-import progression.Progression
 import tax.NonDeductProfile
 import tax.NonWageTaxableProfile
 import util.YearBasedConfig
@@ -26,7 +25,7 @@ object Household : HouseholdConfigBuilder {
     val investBal = 200000.0
 
 
-    override fun expenses(): List<Progression<ExpenseRec>> {
+    override fun expenses(): List<ExpenseProgression> {
         return listOf(
             BasicExpenseProgression(
                 ident = RecIdentifier(name = "Expenses", person = "Household"),

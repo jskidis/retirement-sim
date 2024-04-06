@@ -4,9 +4,8 @@ import Amount
 import AmountRec
 import RecIdentifier
 import Year
-import config.AmountConfig
-import config.SimpleAmountConfig
 import progression.AmountToRecProvider
+import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import toJsonStr
@@ -18,11 +17,8 @@ data class IncomeRec(
     val bonus: Amount = 0.0,
     val taxableIncome: TaxableAmounts,
 ) : AmountRec {
-    // TODO: Remove me
-    val config: AmountConfig = SimpleAmountConfig(ident.name, ident.person)
-
     override fun year(): Year = year
-    override fun config(): AmountConfig = config
+    override fun ident(): RecIdentifier = ident
     override fun amount(): Amount = baseAmount + bonus
 
     override fun taxable(): TaxableAmounts = taxableIncome
@@ -42,3 +38,5 @@ open class IncomeRecProvider(
         baseAmount = value,
         taxableIncome = taxabilityProfile.calcTaxable(ident.person, value))
 }
+
+typealias IncomeProgression = Progression<IncomeRec>

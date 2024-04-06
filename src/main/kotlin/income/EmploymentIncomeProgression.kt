@@ -8,7 +8,7 @@ import progression.DateRangeAmountAdjuster
 open class EmploymentIncomeProgression(
     val employmentConfig: EmploymentConfig,
     adjusters: List<AmountAdjusterWithGapFiller>,
-) : IncomeProgression(
+) : BasicIncomeProgression(
     ident = employmentConfig.ident,
     startAmount = employmentConfig.startSalary,
     taxabilityProfile = employmentConfig.taxabilityProfile,

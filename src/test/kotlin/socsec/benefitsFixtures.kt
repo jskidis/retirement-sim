@@ -2,26 +2,12 @@ package socsec
 
 import Amount
 import Name
+import RecIdentifier
 import Year
 import YearlyDetail
 import tax.TaxableAmounts
 import util.currentDate
 import util.yearFromPrevYearDetail
-
-fun benefitsConfigFixture(
-    name: Name = "Benefit",
-    person: Name = "Person",
-) = SSBenefitConfig(name, person)
-
-fun benefitsConfigProgressFixture(
-    name: Name = "Benefit",
-    person: Name = "Person",
-    amount: Amount = 0.0,
-): SSBenefitConfigProgression {
-    val config = SSBenefitConfig(name, person)
-    val progression = SSBenefitProgressionFixture(amount, person, config)
-    return SSBenefitConfigProgression(config, progression)
-}
 
 fun benefitsRecFixture(
     year: Year = currentDate.year + 1,
@@ -30,15 +16,25 @@ fun benefitsRecFixture(
     amount: Amount = 0.0,
 ) = SSBenefitRec(
     year = year,
-    config = benefitsConfigFixture(name, person),
+    ident = RecIdentifier(name, person),
     amount = amount,
     taxableAmount = TaxableAmounts(person)
 )
 
-class SSBenefitProgressionFixture(
-    val amount: Amount, val person: Name, val config: SSBenefitConfig,
-) : SSBenefitProgression {
-    override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec =
-        SSBenefitRec(yearFromPrevYearDetail(prevYear), config, amount, TaxableAmounts(person))
+fun benefitsProgressionFixture(
+    name: Name = "Income",
+    person: Name = "Person",
+    amount: Amount = 0.0
+): SSBenefitProgression {
+    return SSBenefitProgressionFixture(
+        ident = RecIdentifier(name, person),
+        amount = amount
+    )
 }
 
+class SSBenefitProgressionFixture(
+    val amount: Amount, val ident: RecIdentifier,
+) : SSBenefitProgression {
+    override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec =
+        SSBenefitRec(yearFromPrevYearDetail(prevYear), ident, amount, TaxableAmounts(ident.person))
+}

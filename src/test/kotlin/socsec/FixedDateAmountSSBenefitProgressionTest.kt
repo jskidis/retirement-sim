@@ -1,6 +1,7 @@
 package socsec
 
 import Amount
+import RecIdentifier
 import YearMonth
 import inflation.InflationRAC
 import inflationRecFixture
@@ -12,7 +13,9 @@ import yearlyDetailFixture
 
 class FixedDateAmountSSBenefitProgressionTest : FunSpec({
 
-    val config = SSBenefitConfig("Primary", "Person", BenefitTaxableProfileFixture())
+    val ident = RecIdentifier("Primary", "Person")
+    val taxabilityProfile = BenefitTaxableProfileFixture()
+
     val baseAmount = 1000.0
     val currentYear = currentDate.year
     val cmpndInf = 1.03
@@ -28,14 +31,14 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     test("determineNext when prevYear is null, target is future") {
         val adjustment = 1.0
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, futureYearTarget, baseAmount,
+            ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
         )
 
         //note: even though fixture returns a non-zero adjustment rate, it's ignored because target is in future
         val expectedAmount = 0.0
         val result = progression.determineNext(null)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(currentYear)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -44,13 +47,13 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     test("determineNext when prevYear is null, target is past year") {
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, pastYearTarget, baseAmount,
+            ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
         )
 
         val expectedAmount = baseAmount * adjustment
         val result = progression.determineNext(null)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(currentYear)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -59,14 +62,14 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     test("determineNext when prevYear is null, target is current year") {
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, currentYearTarget, baseAmount,
+            ident, birthYM, currentYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
         )
 
         val expectedAmount = (1 - currentYearTarget.monthFraction()) * baseAmount * adjustment
 
         val result = progression.determineNext(null)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(currentDate.year)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -74,7 +77,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
 
     test("determineNext when prevYear not null, target is future year") {
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, futureYearTarget, baseAmount,
+            ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(0.0)::calcBenefitAdjustment
         )
 
@@ -82,7 +85,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         val expectedAmount = 0.0
 
         val result = progression.determineNext(prevYear)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(prevYear.year + 1)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -91,7 +94,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     test("determineNext when prevYear not null, target is past year") {
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, pastYearTarget, baseAmount,
+            ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
         )
 
@@ -99,7 +102,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         val expectedAmount = baseAmount * adjustment * cmpndInf
 
         val result = progression.determineNext(prevYear)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(prevYear.year + 1)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -108,7 +111,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
     test("determineNext when prevYear not null, target is current year") {
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, currentYearTarget.copy(year = currentYear + 1), baseAmount,
+            ident, birthYM, currentYearTarget.copy(year = currentYear + 1), baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
         )
 
@@ -117,7 +120,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
             (1 - currentYearTarget.monthFraction()) * baseAmount * adjustment * cmpndInf
 
         val result = progression.determineNext(prevYear)
-        result.config.shouldBe(config)
+        result.ident.shouldBe(ident)
         result.year.shouldBe(prevYear.year + 1)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
@@ -127,7 +130,7 @@ class FixedDateAmountSSBenefitProgressionTest : FunSpec({
         val adjustment1 = 1.0
         val adjustment2 = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
-            config, birthYM, pastYearTarget, baseAmount,
+            ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
             BenefitAdjustmentCalcFixture(adjustment1, adjustment2)::calcBenefitAdjustmentMulti
         )
 

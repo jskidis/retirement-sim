@@ -5,16 +5,15 @@ import RecIdentifier
 import config.DependentConfigBuilder
 import config.Person
 import expense.BasicExpenseProgression
-import expense.ExpenseRec
+import expense.ExpenseProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
-import progression.Progression
 import tax.NonDeductProfile
 
 object Suzy: DependentConfigBuilder {
     val expenseStart: Amount = 20000.0
 
-    override fun expenses(person: Person): List<Progression<ExpenseRec>> {
+    override fun expenses(person: Person): List<ExpenseProgression> {
         return listOf(
             BasicExpenseProgression(
                 ident = RecIdentifier(name = "Expenses", person = person.name),

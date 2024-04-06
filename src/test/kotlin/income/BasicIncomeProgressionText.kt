@@ -19,15 +19,15 @@ class BasicIncomeProgressionTest : ShouldSpec({
     val gapFillerMultipler = 2.0
 
     val ident = RecIdentifier(incomeName, person)
-    val progression = BasicIncomeProgressionFixture(
+    val progression = BasicBasicIncomeProgressionFixture(
         ident = ident,
         startAmount = startAmount,
         adjuster = GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)
-        result.config.name.shouldBe(incomeName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(incomeName)
+        result.ident.person.shouldBe(person)
         result.amount().shouldBe(startAmount)
     }
 
@@ -39,8 +39,8 @@ class BasicIncomeProgressionTest : ShouldSpec({
         ))
 
         val result = progression.determineNext(prevYear)
-        result.config.name.shouldBe(incomeName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(incomeName)
+        result.ident.person.shouldBe(person)
         result.amount().shouldBe(2000.0 * prevYearMultiplier)
     }
 
@@ -52,16 +52,16 @@ class BasicIncomeProgressionTest : ShouldSpec({
         ))
 
         val result = progression.determineNext(prevYear)
-        result.config.name.shouldBe(incomeName)
-        result.config.person.shouldBe(person)
+        result.ident.name.shouldBe(incomeName)
+        result.ident.person.shouldBe(person)
         result.amount().shouldBe(startAmount * gapFillerMultipler)
     }
 })
 
-class BasicIncomeProgressionFixture(
+class BasicBasicIncomeProgressionFixture(
     startAmount: Amount,
     ident: RecIdentifier,
     adjuster: AmountAdjusterWithGapFiller
 )
-    : IncomeProgression(ident, startAmount, WageTaxableProfile(), listOf(adjuster)
+    : BasicIncomeProgression(ident, startAmount, WageTaxableProfile(), listOf(adjuster)
 )

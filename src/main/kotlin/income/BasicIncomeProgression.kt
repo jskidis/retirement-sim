@@ -6,7 +6,7 @@ import YearlyDetail
 import progression.*
 import tax.TaxabilityProfile
 
-open class IncomeProgression(
+open class BasicIncomeProgression(
     val ident: RecIdentifier,
     val startAmount: Amount,
     val taxabilityProfile: TaxabilityProfile,

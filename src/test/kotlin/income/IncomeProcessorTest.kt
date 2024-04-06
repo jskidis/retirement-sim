@@ -41,13 +41,13 @@ class IncomeProcessorTest : ShouldSpec({
         result.shouldHaveSize(2)
 
         result.find {
-            it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount() == parent1Income
+            it.ident.name == "Parent 1 Inc" &&
+                it.ident.person == parent1Name && it.amount() == parent1Income
         }.shouldNotBeNull()
 
         result.find {
-            it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount() == parent2Income
+            it.ident.name == "Parent 2 Inc" &&
+                it.ident.person == parent2Name && it.amount() == parent2Income
         }.shouldNotBeNull()
     }
 
@@ -55,8 +55,8 @@ class IncomeProcessorTest : ShouldSpec({
         val result: List<IncomeRec> = IncomeProcessor.process(config, null)
 
         val parent1Rec = result.find {
-            it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount() == parent1Income
+            it.ident.name == "Parent 1 Inc" &&
+                it.ident.person == parent1Name && it.amount() == parent1Income
         }
         parent1Rec.shouldNotBeNull()
         // salary above cap
@@ -64,8 +64,8 @@ class IncomeProcessorTest : ShouldSpec({
             ConstantsProvider.getValue(SS_INCOME_CAP), .001)
 
         val parent2Rec = result.find {
-            it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount() == parent2Income
+            it.ident.name == "Parent 2 Inc" &&
+                it.ident.person == parent2Name && it.amount() == parent2Income
         }
         parent2Rec.shouldNotBeNull()
         // salary above cap
@@ -83,16 +83,16 @@ class IncomeProcessorTest : ShouldSpec({
         val result: List<IncomeRec> = IncomeProcessor.process(config, prevYear)
 
         val parent1Rec = result.find {
-            it.config.name == "Parent 1 Inc" &&
-                it.config.person == parent1Name && it.amount() == parent1Income
+            it.ident.name == "Parent 1 Inc" &&
+                it.ident.person == parent1Name && it.amount() == parent1Income
         }
         parent1Rec.shouldNotBeNull()
         // salary below inflation adjusted cap
         parent1Rec.taxableIncome.socSec.shouldBe(parent1Income)
 
         val parent2Rec = result.find {
-            it.config.name == "Parent 2 Inc" &&
-                it.config.person == parent2Name && it.amount() == parent2Income
+            it.ident.name == "Parent 2 Inc" &&
+                it.ident.person == parent2Name && it.amount() == parent2Income
         }
         parent2Rec.shouldNotBeNull()
         // salary above inflation adjusted cap

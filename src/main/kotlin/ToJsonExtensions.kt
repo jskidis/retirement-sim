@@ -2,7 +2,6 @@ import asset.AssetChange
 import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
-import socsec.SSBenefitConfig
 import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
@@ -10,10 +9,9 @@ import util.moneyFormat
 import util.strWhenNotZero
 
 fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
-fun SSBenefitConfig.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 
 fun AssetRec.toJsonStr(): String = "{" +
-    "\"config\":$ident" +
+    "\"ident\":$ident" +
     ", \"startBal\":\"${moneyFormat.format(startBal)}\"" +
     strWhenNotZero(
         startUnrealized == 0.0,
@@ -45,20 +43,20 @@ fun AssetChange.toJsonStr(): String = "{" +
     "}"
 
 fun ExpenseRec.toJsonStr() = "{" +
-    "\"config\":$config, " +
+    "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(taxDeductions.total() == 0.0, ", \"deductions\":$taxDeductions") +
     "}"
 
 fun IncomeRec.toJsonStr() = "{" +
-    "\"config\":$config, " +
+    "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(baseAmount)}\"" +
     strWhenNotZero(bonus == 0.0, ", \"bonus\":\"${moneyFormat.format(bonus)}\"") +
     strWhenNotZero(taxableIncome.total() == 0.0, ", \"taxable\":${taxableIncome}") +
     "}"
 
 fun SSBenefitRec.toJsonStr() = "{" +
-    "\"config\":$config, " +
+    "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(taxableAmount.total() == 0.0, ", \"taxable\":${taxableAmount}") +
     "}"

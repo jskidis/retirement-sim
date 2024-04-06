@@ -7,18 +7,19 @@ import Year
 import YearMonth
 import asset.AssetProgression
 import asset.assetProgressionFixture
+import expense.ExpenseProgression
 import expense.ExpenseRec
 import expense.expenseProgressionFixture
 import income.BonusCalculator
-import income.IncomeRec
+import income.IncomeProgression
 import income.incomeProgressionFixture
 import inflation.InflationRec
 import inflationConfigFixture
 import medical.MedInsuranceProgression
 import netspend.NetSpendAllocationConfig
 import progression.Progression
-import socsec.SSBenefitConfigProgression
-import socsec.benefitsConfigProgressFixture
+import socsec.SSBenefitProgression
+import socsec.benefitsProgressionFixture
 import tax.TaxCalcConfig
 import tax.taxConfigFixture
 import util.DateRange
@@ -47,7 +48,7 @@ fun personFixture(
 
 fun householdConfigFixture(
     householdMembers: HouseholdMembers = householdMembersFixture(),
-    expenses: List<Progression<ExpenseRec>> = ArrayList(),
+    expenses: List<ExpenseProgression> = ArrayList(),
     jointAssets: List<AssetProgression> = ArrayList(),
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
 
@@ -69,14 +70,14 @@ fun householdMembersFixture(
 
 fun parentConfigFixture(
     name: Name,
-    incomeConfigs: List<Progression<IncomeRec>> = listOf(
+    incomeConfigs: List<IncomeProgression> = listOf(
         incomeProgressionFixture("Income", name)),
     expenseConfigs: List<Progression<ExpenseRec>> = listOf(
         expenseProgressionFixture("Expense", name)),
     assetConfigs: List<AssetProgression> = listOf(
         assetProgressionFixture("Asset", name)),
-    benefitConfigs: List<SSBenefitConfigProgression> = listOf(
-        benefitsConfigProgressFixture("SSBenefits")),
+    benefitConfigs: List<SSBenefitProgression> = listOf(
+        benefitsProgressionFixture("SSBenefits")),
     medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
 ) =
     ParentConfig(

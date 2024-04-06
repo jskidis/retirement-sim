@@ -1,5 +1,4 @@
 import asset.AssetRec
-import config.AmountConfig
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -44,7 +43,7 @@ data class RecIdentifier(
 
 interface AmountRec {
     fun year(): Year
-    fun config(): AmountConfig
+    fun ident(): RecIdentifier
     fun amount(): Amount
     fun taxable(): TaxableAmounts
     fun retainRec(): Boolean
