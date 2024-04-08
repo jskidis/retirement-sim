@@ -12,6 +12,7 @@ import util.RandomizerFactory
 import util.yearFromPrevYearDetail
 
 object SimulationRun {
+    // Checking something with commit settings
     fun runSim(
         configBuilder: ConfigBuilder,
         outputYearDetails: Boolean = true,
