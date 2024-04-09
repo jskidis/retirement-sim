@@ -104,3 +104,18 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"expenses\":${expenses}" +
     ", \"assets\":${assets}" +
     "}"
+
+fun yearlyDetailHeaders(): String =
+    "Year, Incomes, Benefits, Asset CF, Expenses, Taxes, CO Taxes, NetSpend, Asset Value, Infl Adj"
+
+fun YearlyDetail.toCSV(): String =
+    "$year" +
+        ", ${totalIncome()}" +
+        ", ${totalBenefits()}" +
+        ", ${totalAssetCashflow()}" +
+        ", ${totalExpense()}" +
+        ", ${taxes.total()}" +
+        ", ${finalPassTaxes.total() - taxes.total()}" +
+        ", ${netSpend()}" +
+        ", ${totalAssetValues()}" +
+        ", ${totalAssetValues() / inflation.std.cmpdEnd} "

@@ -6,10 +6,10 @@ import asset.AssetChange
 import asset.AssetRec
 import tax.TaxableAmounts
 
-class TaxableInvestSpendAllocHandler : BasicSpendAlloc() {
+class TaxableInvestSpendAllocHandler(minAcctBal: Amount = 0.0) : BasicSpendAlloc(minAcctBal) {
 
     override fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
-        val drawAmount = Math.min(amount, assetRec.finalBalance())
+        val drawAmount = Math.min(amount, maxWithdraw(assetRec))
         val stUnrealized = Math.min(
             drawAmount, assetRec.totalUnrealized() - assetRec.startUnrealized
         )

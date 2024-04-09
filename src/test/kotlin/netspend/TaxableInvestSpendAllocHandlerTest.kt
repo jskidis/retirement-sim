@@ -18,7 +18,6 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
     val gain = AssetChange(name = "Gain", amount = 5000.0, unrealized = stUnrealized)
     val currYear = yearlyDetailFixture(year = year)
 
-    val handler = TaxableInvestSpendAllocHandler()
 
     should("withdraw will use any unrealized gains from current year first") {
         val withdrawAmount = stUnrealized / 2
@@ -26,6 +25,7 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
             startUnrealized = ltUnrealized, gains = gain
         )
 
+        val handler = TaxableInvestSpendAllocHandler()
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
@@ -45,6 +45,7 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
             startUnrealized = ltUnrealized, gains = gain
         )
 
+        val handler = TaxableInvestSpendAllocHandler()
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
@@ -64,6 +65,7 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
             startUnrealized = ltUnrealized, gains = gain
         )
 
+        val handler = TaxableInvestSpendAllocHandler()
         val result = handler.withdraw(withdrawAmount, assetRec, currYear)
 
         result.shouldBe(withdrawAmount)
@@ -75,5 +77,19 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.state.shouldBe(stUnrealized + ltUnrealized)
         assetRec.tributions[0].isCarryOver.shouldBeTrue()
         assetRec.totalUnrealized().shouldBe(0.0)
+    }
+
+    should("not allow withdraws below minimum balance") {
+        val gainAmt = 100.0
+        val smallGain = AssetChange(name = "Gain", amount = gainAmt)
+
+        val startBal = 2000.0
+        val assetRec = assetRecFixture(year, startBal = startBal, gains = smallGain)
+
+        val minBalance = 1000.0
+        val handler = TaxableInvestSpendAllocHandler(minBalance)
+
+        val expectedWithdraw = startBal + gainAmt - minBalance
+        handler.withdraw(100000.0, assetRec, currYear).shouldBe(expectedWithdraw)
     }
 })

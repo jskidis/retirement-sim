@@ -30,6 +30,8 @@ object SimulationRun {
             println("[")
             years.forEach { println(it.toString() + ", ") }
             println("]")
+//            println(yearlyDetailHeaders())
+//            years.forEach { println(it.toCSV()) }
         }
 
         val infAdjAssets = currYearDetail.totalAssetValues() / currYearDetail.inflation.std.cmpdEnd

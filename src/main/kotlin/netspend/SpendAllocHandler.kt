@@ -38,9 +38,12 @@ interface SpendAllocHandler {
     }
 }
 
-open class BasicSpendAlloc() : SpendAllocHandler {
+open class BasicSpendAlloc(val minBal: Amount = 0.0) : SpendAllocHandler {
     override fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount =
-        addWithdrawTribution(Math.min(amount, assetRec.finalBalance()), assetRec)
+        addWithdrawTribution(Math.min(amount, maxWithdraw(assetRec)), assetRec)
+
+    fun maxWithdraw(assetRec: AssetRec): Amount =
+        assetRec.finalBalance() - minBal
 
     override fun deposit(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount =
         addDepositTribution(amount, assetRec)

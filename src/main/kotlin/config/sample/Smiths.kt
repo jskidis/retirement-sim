@@ -71,7 +71,7 @@ class Smiths : ConfigBuilder {
         )
         val investAllocConfig = NetSpendAssetConfig(
             ident = Household.investAcct,
-            spendAllocHandler = TaxableInvestSpendAllocHandler(),
+            spendAllocHandler = TaxableInvestSpendAllocHandler(minAcctBal = 1000.0),
         )
         val janeIraAllocConfig = NetSpendAssetConfig(
             ident = Jane.iraAcct,
