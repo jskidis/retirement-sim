@@ -41,6 +41,7 @@ fun AssetChange.toJsonStr(): String = "{" +
     ", \"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
     strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
+    strWhenNotZero(!isCashflowEvent, ", \"cashflowEvent\":true") +
     "}"
 
 fun ExpenseRec.toJsonStr() = "{" +
@@ -87,8 +88,8 @@ fun YearlyDetail.toJsonStr() = "{" +
         totalBenefits() == 0.0,
         ", \"benefit\":\"${moneyFormat.format(totalBenefits())}\"") +
     strWhenNotZero(
-        reqDistributions() == 0.0,
-        ", \"reqDist\":\"${moneyFormat.format((reqDistributions()))}\"") +
+        totalAssetCashflow() == 0.0,
+        ", \"assetCashflow\":\"${moneyFormat.format((totalAssetCashflow()))}\"") +
     ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
     ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +

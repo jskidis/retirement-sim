@@ -4,7 +4,6 @@ import Amount
 import AmountRec
 import RecIdentifier
 import Year
-import income.IncomeRec
 import tax.TaxableAmounts
 import toJsonStr
 import util.PortionOfYearPast
@@ -45,16 +44,6 @@ data class AssetRec(
     fun totalUnrealized(): Amount =
         startUnrealized + (tributions + gains).sumOf { it.unrealized }
 
-    fun incomeRecs(): List<IncomeRec> =
-        tributions.filter { it.isCashflowEvent }.map {
-            IncomeRec(
-                year = year,
-                ident = RecIdentifier(
-                    name = it.name,
-                    person = ident.person
-                ),
-                baseAmount = -it.amount,
-                taxableIncome = it.taxable ?: TaxableAmounts(ident.person)
-            )
-        }
+    fun cashflowEvents(): List<AssetChange> =
+        tributions.filter { it.isCashflowEvent }
 }

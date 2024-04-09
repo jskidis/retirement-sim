@@ -1,5 +1,5 @@
+import asset.AssetChange
 import asset.AssetRec
-import asset.RmdCashFlowEventHandler
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -20,6 +20,7 @@ data class YearlyDetail(
     val expenses: List<ExpenseRec> = ArrayList(),
     val assets: List<AssetRec> = ArrayList(),
     val benefits: List<SSBenefitRec> = ArrayList(),
+    val cashFlowEvents: List<AssetChange> = ArrayList(),
     val taxes: TaxesRec = TaxesRec(),
     val finalPassTaxes: TaxesRec = TaxesRec(),
     val netSpend: Amount = 0.0,
@@ -30,11 +31,8 @@ data class YearlyDetail(
     fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun totalBenefits() = benefits.sumOf { it.amount() }
+    fun totalAssetCashflow() = assets.sumOf{ -it.cashflowEvents().sumOf{ it2 -> it2.amount } }
     fun netSpend() = netSpend
-
-    fun reqDistributions() = incomes.filter {
-        RmdCashFlowEventHandler.CHANGE_NAME.equals(it.ident.name)
-    }.sumOf { it.amount() }
 
     fun netDistributions() = assets.sumOf { asset->
         asset.tributions.sumOf { it.amount }

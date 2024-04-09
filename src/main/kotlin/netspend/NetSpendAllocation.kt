@@ -22,7 +22,8 @@ object NetSpendAllocation {
             (it.finalPassTaxes.total() - it.taxes.total()) * (1 + currYear.inflation.std.rate)
         } ?: 0.0
         val netSpend = (currYear.totalIncome() + currYear.totalBenefits() -
-            currYear.totalExpense() - currYear.taxes.total() - carryOverTaxes)
+            currYear.totalExpense() + currYear.totalAssetCashflow() -
+            currYear.taxes.total() - carryOverTaxes)
         return (1- PortionOfYearPast.calc(currYear.year)) * netSpend
     }
 

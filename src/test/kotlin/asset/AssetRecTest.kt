@@ -90,10 +90,9 @@ class AssetRecTest : ShouldSpec({
         val otherTribution = AssetChange("NetSpend", 1000.0)
         currRec.tributions.add(otherTribution)
 
-        val results = currRec.incomeRecs()
+        val results = currRec.cashflowEvents()
         results.shouldHaveSize(1)
-        results[0].year.shouldBe(currRec.year)
-        results[0].amount().shouldBe(amount)
-        results[0].taxableIncome.shouldBe(taxable)
+        results[0].amount.shouldBe(amount)
+        results[0].taxable.shouldBe(taxable)
     }
 })
