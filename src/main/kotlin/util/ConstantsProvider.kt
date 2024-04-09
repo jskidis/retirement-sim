@@ -9,7 +9,13 @@ object ConstantsProvider {
         STD_DEDUCT_HOUSEHOLD { override fun toString() = "stdDeductHousehold" },
         SS_INCOME_CAP { override fun toString() = "ssIncomeCap" },
         MARKETPLACE_BASE_PREM { override fun toString() = "marketplaceBasePrem" },
-        DENTAL_BASE_PREM { override fun toString() = "dentalBasePrem" }
+        DENTAL_BASE_PREM { override fun toString() = "dentalBasePrem" },
+        CONTRIB_LIMIT_401K { override fun toString() = "contribLimit401k" },
+        CATCHUP_LIMIT_401K { override fun toString() = "catchupLimit401k" },
+        CONTRIB_LIMIT_IRA { override fun toString() = "contribLimitIRA" },
+        CATCHUP_LIMIT_IRA { override fun toString() = "catchupLimitIRA" },
+        ROTH_INCOME_LIMIT_SINGLE { override fun toString() = "rothIncomeLimitSingle" },
+        ROTH_INCOME_LIMIT_JOINTLY { override fun toString() = "rothIncomeLimitJointly" },
     }
 
     fun getValue(key: KEYS): Double =
