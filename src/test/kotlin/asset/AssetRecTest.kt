@@ -84,7 +84,7 @@ class AssetRecTest : ShouldSpec({
         val taxable = TaxableAmounts(person = ident.person, fed = amount, state = amount)
         val reqDistChange = AssetChange(
             name = "ReqDist", amount = -amount,
-            taxable = taxable, isReqDist = true)
+            taxable = taxable, isCashflowEvent = true)
         currRec.tributions.add(reqDistChange)
 
         val otherTribution = AssetChange("NetSpend", 1000.0)

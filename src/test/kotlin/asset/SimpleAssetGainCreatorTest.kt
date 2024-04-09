@@ -30,7 +30,7 @@ class SimpleAssetGainCreatorTest : ShouldSpec({
         results.amount.shouldBe(gainAmount)
         results.taxable.shouldBe(expectedTaxable)
         results.isCarryOver.shouldBeFalse()
-        results.isReqDist.shouldBeFalse()
+        results.isCashflowEvent.shouldBeFalse()
     }
 })
 

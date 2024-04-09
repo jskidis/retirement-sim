@@ -148,15 +148,15 @@ class AssetProgressionTest : ShouldSpec({
                 taxability = NonTaxableProfile(),
                 attributesSet = attributeSet
             ),
-            requiredDistHandler = RmdRequiredDistFixture(personFixture(), rmdPct)
+            cashflowEvents = listOf(RmdCashFlowEventFixture(personFixture(), rmdPct))
         )
 
         val results = progression.determineNext(prevYear.copy(year = 2024))
         results.tributions.shouldNotBeEmpty()
         results.tributions[0].amount.shouldBe(-startBalance * rmdPct)
-        results.tributions[0].name.shouldBe(RequiredDistHandler.CHANGE_NAME)
+        results.tributions[0].name.shouldBe(RmdCashFlowEventHandler.CHANGE_NAME)
         results.tributions[0].isCarryOver.shouldBeFalse()
-        results.tributions[0].isReqDist.shouldBeTrue()
+        results.tributions[0].isCashflowEvent.shouldBeTrue()
     }
 })
 

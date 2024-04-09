@@ -1,5 +1,5 @@
 import asset.AssetRec
-import asset.RequiredDistHandler
+import asset.RmdCashFlowEventHandler
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -33,7 +33,7 @@ data class YearlyDetail(
     fun netSpend() = netSpend
 
     fun reqDistributions() = incomes.filter {
-        RequiredDistHandler.CHANGE_NAME.equals(it.ident.name)
+        RmdCashFlowEventHandler.CHANGE_NAME.equals(it.ident.name)
     }.sumOf { it.amount() }
 
     fun netDistributions() = assets.sumOf { asset->

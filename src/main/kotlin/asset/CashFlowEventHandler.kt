@@ -5,19 +5,16 @@ import Year
 import config.Person
 import tax.TaxableAmounts
 
-interface RequiredDistHandler {
-    fun generateDistribution(balance: Amount, year: Year): AssetChange?
+interface CashFlowEventHandler {
+    fun generateCashFlowTribution(balance: Amount, year: Year): AssetChange?
 
-    companion object { const val CHANGE_NAME = "ReqDist" }
 }
 
-class NullRequestDist : RequiredDistHandler {
-    override fun generateDistribution(balance: Amount, year: Year): AssetChange? = null
-}
+open class RmdCashFlowEventHandler(val person: Person) : CashFlowEventHandler, RmdPctLookup {
 
-open class RmdRequiredDistHandler(val person: Person) : RequiredDistHandler, RmdPctLookup {
+    companion object { const val CHANGE_NAME = "RMD" }
 
-    override fun generateDistribution(balance: Amount, year: Year): AssetChange? {
+    override fun generateCashFlowTribution(balance: Amount, year: Year): AssetChange? {
         val pct = getRmdPct(age = year - person.birthYM.year)
         return if (pct == 0.0) null
         else createAssetChange(amount = pct * balance, person)
@@ -25,10 +22,10 @@ open class RmdRequiredDistHandler(val person: Person) : RequiredDistHandler, Rmd
 
     private fun createAssetChange(amount: Amount, person: Person): AssetChange =
         AssetChange(
-            name = RequiredDistHandler.CHANGE_NAME,
+            name = CHANGE_NAME,
             amount = -amount,
             taxable = TaxableAmounts(person = person.name, fed = amount, state = amount),
-            isReqDist = true
+            isCashflowEvent = true
         )
 
     override fun getRmdPct(age: Int): Double = RmdPct.getRmdPct(age)

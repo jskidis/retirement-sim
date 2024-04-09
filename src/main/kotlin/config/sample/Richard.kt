@@ -4,7 +4,7 @@ import Amount
 import RecIdentifier
 import YearMonth
 import asset.AssetProgression
-import asset.RmdRequiredDistHandler
+import asset.RmdCashFlowEventHandler
 import asset.SimpleAssetGainCreator
 import config.AssetAttributeMap
 import config.EmploymentConfig
@@ -71,7 +71,7 @@ object Richard : ParentConfigBuilder {
         val richIRA = AssetProgression(
             ident = iraAcct,
             startBalance = iraAcctBal,
-            requiredDistHandler = RmdRequiredDistHandler(person),
+            cashflowEvents = listOf(RmdCashFlowEventHandler(person)),
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(

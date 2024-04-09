@@ -12,13 +12,10 @@ open class AssetProgression(
     val ident: RecIdentifier,
     val startBalance: Amount,
     val gainCreator: AssetGainCreator,
-    val requiredDistHandler: RequiredDistHandler = NullRequestDist(),
+    val cashflowEvents: List<CashFlowEventHandler> = ArrayList(),
 ) : PrevRecProviderProgression<AssetRec> {
 
-    override fun previousRec(prevYear: YearlyDetail): AssetRec? =
-        prevYear.assets.find {
-            it.ident.person == ident.person && it.ident.name == ident.name
-        }
+    override fun previousRec(prevYear: YearlyDetail): AssetRec? = findAssetRec(prevYear)
 
     override fun initialRec(): AssetRec =
         buildRec(
@@ -44,6 +41,11 @@ open class AssetProgression(
             roiGaussRnd = getROIRandom(prevYear)
         )
 
+    fun findAssetRec(yearDetail: YearlyDetail): AssetRec? =
+        yearDetail.assets.find {
+            it.ident.person == ident.person && it.ident.name == ident.name
+        }
+
     fun buildRec(year: Year, balance: Amount, unrealized: Amount, roiGaussRnd: Double): AssetRec {
         val assetRec = AssetRec(
             year = year,
@@ -58,8 +60,10 @@ open class AssetProgression(
             )
         )
 
-        val reqDistribution = requiredDistHandler.generateDistribution(balance, year)
-        if (reqDistribution != null) assetRec.tributions.add(reqDistribution)
+        cashflowEvents.map {
+            val cashflowChange = it.generateCashFlowTribution(balance, year)
+            if (cashflowChange != null) assetRec.tributions.add(cashflowChange)
+        }
 
         return assetRec
     }
