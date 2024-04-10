@@ -1,6 +1,9 @@
 package config
 
 import Year
+import asset.AssetProgression
+import expense.ExpenseProgression
+import income.IncomeProgression
 import inflation.InflationRec
 import netspend.NetSpendAllocationConfig
 import progression.Progression
@@ -15,5 +18,16 @@ data class SimConfig(
     val taxConfig: TaxCalcConfig,
     val assetOrdering: NetSpendAllocationConfig,
     val rothConversion: RothConversionConfig? = null,
-    val taxesProcessor: ITaxesProcessor = TaxesProcessor
-)
+    val taxesProcessor: ITaxesProcessor = TaxesProcessor,
+) {
+    fun incomeConfigs(): List<IncomeProgression> =
+        household.members.people().flatMap { it.incomes() }
+
+    fun expenseConfigs(): List<ExpenseProgression>  =
+        household.expenses +
+            household.members.people().flatMap { it.expenses() }
+
+    fun assetConfigs(): List<AssetProgression> =
+        household.jointAssets +
+            household.members.people().flatMap { it.assets() }
+}

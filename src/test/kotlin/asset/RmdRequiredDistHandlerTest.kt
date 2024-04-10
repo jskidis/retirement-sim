@@ -1,5 +1,6 @@
 package asset
 
+import RecIdentifier
 import YearMonth
 import config.Person
 import config.personFixture
@@ -9,24 +10,31 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import tax.NonWageTaxableProfile
+import util.currentDate
+import yearlyDetailFixture
 
 class RmdRequiredDistHandlerTest : ShouldSpec({
+    val year = currentDate.year +1
+    val balance = 1000.0
+    val assetIdent = RecIdentifier(name = "Asset", person = "Person")
+    val assetRec = assetRecFixture(year, assetIdent, balance)
 
-    should("generateDistribution doesn't create distribution if rmd pct is 0") {
-        val balance = 1000.0
+    should("generateCashFlowTribution doesn't create distribution if rmd pct is 0") {
         val person = personFixture(birthYM = YearMonth(1999, 0))
         val handler = RmdCashFlowEventFixture(person, 0.0)
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec))
 
-        handler.generateCashFlowTribution(balance, 2024).shouldBeNull()
+        handler.generateCashFlowTribution(assetRec, currYear).shouldBeNull()
     }
 
-    should("generateDistribution creates distribution if rmd pct is > 0") {
+    should("generateCashFlowTribution creates distribution if rmd pct is > 0") {
         val pct = 0.10
-        val balance = 1000.0
         val person = personFixture(birthYM = YearMonth(1949, 0))
         val handler = RmdCashFlowEventFixture(person, pct)
+        val currYear = yearlyDetailFixture(year = year, assets = listOf(assetRec))
 
-        val result = handler.generateCashFlowTribution(balance, 2024)
+        val result = handler.generateCashFlowTribution(assetRec, currYear)
         result.shouldNotBeNull()
         result.amount.shouldBe(-balance * pct)
         result.name.shouldBe(RmdCashFlowEventHandler.CHANGE_NAME)
@@ -36,7 +44,7 @@ class RmdRequiredDistHandlerTest : ShouldSpec({
 })
 
 class RmdCashFlowEventFixture(person: Person, val rmdPct: Double)
-    : RmdCashFlowEventHandler(person) {
+    : RmdCashFlowEventHandler(person, NonWageTaxableProfile()) {
 
     override fun getRmdPct(age: Int): Double = rmdPct
 }

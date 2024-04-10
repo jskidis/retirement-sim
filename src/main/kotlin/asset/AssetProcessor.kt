@@ -5,14 +5,8 @@ import config.SimConfig
 
 object AssetProcessor {
     fun process(config: SimConfig, prevYear: YearlyDetail?)
-        : List<AssetRec> {
-
-        val assets: List<AssetProgression> =
-            config.household.jointAssets +
-                config.household.members.people().flatMap { it.assets() }
-
-        return assets.map {
+        : List<AssetRec> =
+        config.assetConfigs().map {
             it.determineNext(prevYear)
         }.filter { it.retainRec() }
-    }
 }

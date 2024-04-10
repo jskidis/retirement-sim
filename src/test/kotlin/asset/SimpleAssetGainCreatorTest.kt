@@ -48,3 +48,5 @@ class SimpleAssetGainCreatorFixture(
         balance: Amount, attribs: PortfolioAttribs, gaussianRnd: Double,
     ): Amount = gainAmount
 }
+
+

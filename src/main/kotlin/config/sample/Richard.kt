@@ -21,6 +21,7 @@ import socsec.FixedDateAmountSSBenefitProgression
 import socsec.SSBenefitProgression
 import tax.NonDeductProfile
 import tax.NonTaxableProfile
+import tax.NonWageTaxableProfile
 import tax.SSBenefitTaxableProfile
 import util.DateRange
 import util.YearBasedConfig
@@ -71,7 +72,7 @@ object Richard : ParentConfigBuilder {
         val richIRA = AssetProgression(
             ident = iraAcct,
             startBalance = iraAcctBal,
-            cashflowEvents = listOf(RmdCashFlowEventHandler(person)),
+            cashflowEvents = listOf(RmdCashFlowEventHandler(person, NonWageTaxableProfile())),
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(

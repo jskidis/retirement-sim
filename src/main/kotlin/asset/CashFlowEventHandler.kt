@@ -1,30 +1,36 @@
 package asset
 
 import Amount
-import Year
+import YearlyDetail
 import config.Person
-import tax.TaxableAmounts
+import tax.TaxabilityProfile
 
 interface CashFlowEventHandler {
-    fun generateCashFlowTribution(balance: Amount, year: Year): AssetChange?
+    fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail): AssetChange?
 
 }
 
-open class RmdCashFlowEventHandler(val person: Person) : CashFlowEventHandler, RmdPctLookup {
+open class RmdCashFlowEventHandler(
+    val person: Person,
+    val taxabilityProfile: TaxabilityProfile
+) : CashFlowEventHandler, RmdPctLookup {
 
     companion object { const val CHANGE_NAME = "RMD" }
 
-    override fun generateCashFlowTribution(balance: Amount, year: Year): AssetChange? {
-        val pct = getRmdPct(age = year - person.birthYM.year)
+    override fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail): AssetChange? {
+        val pct = getRmdPct(age = currYear.year - person.birthYM.year)
         return if (pct == 0.0) null
-        else createAssetChange(amount = pct * balance, person)
+        else {
+            createAssetChange(amount = pct * assetRec.startBal, person)
+        }
+
     }
 
     private fun createAssetChange(amount: Amount, person: Person): AssetChange =
         AssetChange(
             name = CHANGE_NAME,
             amount = -amount,
-            taxable = TaxableAmounts(person = person.name, fed = amount, state = amount),
+            taxable = taxabilityProfile.calcTaxable(person = person.name, amount),
             isCashflowEvent = true
         )
 

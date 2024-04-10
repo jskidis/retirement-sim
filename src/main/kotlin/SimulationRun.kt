@@ -6,6 +6,7 @@ import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
 import medical.MedInsuranceProcessor
+import netspend.CashFlowEventProcessor
 import netspend.NetSpendAllocation
 import socsec.SSBenefitsProcessor
 import util.RandomizerFactory
@@ -61,7 +62,8 @@ object SimulationRun {
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance.filter{it.retainRec()})
 
-        val cashflowEvents = assets.flatMap { it.cashflowEvents() }
+
+        val cashflowEvents = CashFlowEventProcessor.process(config, currYear)
         currYear = currYear.copy(cashFlowEvents = cashflowEvents)
 
         val taxesProcessor = config.taxesProcessor

@@ -2,11 +2,9 @@ package asset
 
 import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import tax.TaxableAmounts
 import util.currentDate
 
 class AssetRecTest : ShouldSpec({
@@ -75,24 +73,5 @@ class AssetRecTest : ShouldSpec({
 
         val presentRec = addTributions(rec.copy(year = futureYear))
         presentRec.finalBalance().shouldBe(startBal + gainAmont + totalContrib)
-    }
-
-    should("generate income recs from req dist asset changes") {
-        val amount = 3000.0
-        val currRec = rec.copy()
-
-        val taxable = TaxableAmounts(person = ident.person, fed = amount, state = amount)
-        val reqDistChange = AssetChange(
-            name = "ReqDist", amount = -amount,
-            taxable = taxable, isCashflowEvent = true)
-        currRec.tributions.add(reqDistChange)
-
-        val otherTribution = AssetChange("NetSpend", 1000.0)
-        currRec.tributions.add(otherTribution)
-
-        val results = currRec.cashflowEvents()
-        results.shouldHaveSize(1)
-        results[0].amount.shouldBe(amount)
-        results[0].taxable.shouldBe(taxable)
     }
 })

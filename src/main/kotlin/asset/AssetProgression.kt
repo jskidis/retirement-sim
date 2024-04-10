@@ -47,7 +47,7 @@ open class AssetProgression(
         }
 
     fun buildRec(year: Year, balance: Amount, unrealized: Amount, roiGaussRnd: Double): AssetRec {
-        val assetRec = AssetRec(
+        return AssetRec(
             year = year,
             ident = ident,
             startBal = balance,
@@ -59,13 +59,6 @@ open class AssetProgression(
                 gaussianRnd = roiGaussRnd
             )
         )
-
-        cashflowEvents.map {
-            val cashflowChange = it.generateCashFlowTribution(balance, year)
-            if (cashflowChange != null) assetRec.tributions.add(cashflowChange)
-        }
-
-        return assetRec
     }
 
     open fun getROIRandom(prevYear: YearlyDetail?): Double =

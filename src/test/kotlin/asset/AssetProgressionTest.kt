@@ -3,12 +3,8 @@ package asset
 import Amount
 import Name
 import RecIdentifier
-import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import tax.NonTaxableProfile
@@ -132,31 +128,6 @@ class AssetProgressionTest : ShouldSpec({
         results.gains.amount.shouldBe(0.0)
         results.startUnrealized.shouldBe(0.0)
         results.tributions.shouldBeEmpty()
-    }
-
-    should("determineNext creates req dist is req dist handler returns)") {
-        val rmdPct = 0.10
-
-        val attributeSet = YearBasedConfig(
-            listOf(
-                YearConfigPair(nextYear, tenPctReturn)
-            ))
-        val progression = AssetProgression(
-            startBalance = startBalance,
-            ident = baseAssetIdent,
-            gainCreator = SimpleAssetGainCreator(
-                taxability = NonTaxableProfile(),
-                attributesSet = attributeSet
-            ),
-            cashflowEvents = listOf(RmdCashFlowEventFixture(personFixture(), rmdPct))
-        )
-
-        val results = progression.determineNext(prevYear.copy(year = 2024))
-        results.tributions.shouldNotBeEmpty()
-        results.tributions[0].amount.shouldBe(-startBalance * rmdPct)
-        results.tributions[0].name.shouldBe(RmdCashFlowEventHandler.CHANGE_NAME)
-        results.tributions[0].isCarryOver.shouldBeFalse()
-        results.tributions[0].isCashflowEvent.shouldBeTrue()
     }
 })
 
