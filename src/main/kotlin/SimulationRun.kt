@@ -20,12 +20,15 @@ object SimulationRun {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
         config.household.members.parent1
-        var currYearDetail = generateYearlyDetail(config, null)
+
+        var prevYear: YearlyDetail? = null
 
         do {
-            years.add(currYearDetail)
-            currYearDetail = generateYearlyDetail(configBuilder.buildConfig(), currYearDetail)
-        } while (currYearDetail.year <= 2060 && currYearDetail.totalAssetValues() > 0.0)
+            years.add(generateYearlyDetail(config, prevYear))
+            prevYear = years.last()
+        } while (years.last().year < 2060 && years.last().totalAssetValues() > 0.0)
+
+        val yearLast = years.last()
 
         if (outputYearDetails) {
             println("[")
@@ -35,7 +38,7 @@ object SimulationRun {
 //            years.forEach { println(it.toCSV()) }
         }
 
-        val infAdjAssets = currYearDetail.totalAssetValues() / currYearDetail.inflation.std.cmpdEnd
+        val infAdjAssets = yearLast.totalAssetValues() / yearLast.inflation.std.cmpdEnd
         val avgRandom = years.sumOf {
             (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()] ?: 0.0) +
                 (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()] ?: 0.0)
@@ -61,7 +64,6 @@ object SimulationRun {
         val previousAGI = prevYear?.finalPassTaxes?.agi ?: config.household.initialAGI
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance.filter{it.retainRec()})
-
 
         val cashflowEvents = CashFlowEventProcessor.process(config, currYear)
         currYear = currYear.copy(cashFlowEvents = cashflowEvents)

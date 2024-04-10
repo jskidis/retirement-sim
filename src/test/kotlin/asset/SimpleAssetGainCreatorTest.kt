@@ -3,6 +3,7 @@ package asset
 import Amount
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
 import tax.NonWageTaxableProfile
 import tax.TaxabilityProfile
@@ -30,7 +31,7 @@ class SimpleAssetGainCreatorTest : ShouldSpec({
         results.amount.shouldBe(gainAmount)
         results.taxable.shouldBe(expectedTaxable)
         results.isCarryOver.shouldBeFalse()
-        results.isCashflowEvent.shouldBeFalse()
+        results.cashflow.shouldBeZero()
     }
 })
 

@@ -29,7 +29,7 @@ data class AssetRec(
     fun totalTributions(): Amount = tributions.sumOf { it.amount }
 
     override fun taxable(): TaxableAmounts {
-        return (tributions.filter { !it.isCashflowEvent }.map { it.taxable } + gains.taxable)
+        return (tributions.map { it.taxable } + gains.taxable)
             .mapNotNull { it }
             .fold(TaxableAmounts(ident.person)) { acc, it ->
                 acc.plus(it)
@@ -43,7 +43,4 @@ data class AssetRec(
 
     fun totalUnrealized(): Amount =
         startUnrealized + (tributions + gains).sumOf { it.unrealized }
-
-    fun cashflowEvents(): List<AssetChange> =
-        tributions.filter { it.isCashflowEvent }
 }

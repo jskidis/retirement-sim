@@ -41,7 +41,7 @@ fun AssetChange.toJsonStr(): String = "{" +
     ", \"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
     strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
-    strWhenNotZero(!isCashflowEvent, ", \"cashflowEvent\":true") +
+    strWhenNotZero(!isCarryOver, ", \"carryover\":true") +
     "}"
 
 fun ExpenseRec.toJsonStr() = "{" +

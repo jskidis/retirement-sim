@@ -6,7 +6,6 @@ import config.Person
 import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -39,7 +38,7 @@ class RmdRequiredDistHandlerTest : ShouldSpec({
         result.amount.shouldBe(-balance * pct)
         result.name.shouldBe(RmdCashFlowEventHandler.CHANGE_NAME)
         result.isCarryOver.shouldBeFalse()
-        result.isCashflowEvent.shouldBeTrue()
+        result.cashflow.shouldBe(balance * pct)
     }
 })
 

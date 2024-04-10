@@ -31,7 +31,7 @@ data class YearlyDetail(
     fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun totalBenefits() = benefits.sumOf { it.amount() }
-    fun totalAssetCashflow() = assets.sumOf{ -it.cashflowEvents().sumOf{ it2 -> it2.amount } }
+    fun totalAssetCashflow() = cashFlowEvents.sumOf{ it.cashflow }
     fun netSpend() = netSpend
 
     fun netDistributions() = assets.sumOf { asset->

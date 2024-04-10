@@ -10,8 +10,8 @@ data class AssetChange(
     val amount: Amount,
     val taxable: TaxableAmounts? = null,
     val unrealized: Amount = 0.0,
+    val cashflow: Amount = 0.0,
     val isCarryOver: Boolean = false,
-    val isCashflowEvent: Boolean = false,
 ) {
     override fun toString(): String = toJsonStr()
 }

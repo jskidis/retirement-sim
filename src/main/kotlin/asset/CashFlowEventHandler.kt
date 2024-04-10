@@ -31,7 +31,7 @@ open class RmdCashFlowEventHandler(
             name = CHANGE_NAME,
             amount = -amount,
             taxable = taxabilityProfile.calcTaxable(person = person.name, amount),
-            isCashflowEvent = true
+            cashflow = amount
         )
 
     override fun getRmdPct(age: Int): Double = RmdPct.getRmdPct(age)
