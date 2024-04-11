@@ -1,11 +1,14 @@
-package netspend
+package cashflow
 
 import Amount
 import Name
 import RecIdentifier
 import Year
 import YearlyDetail
-import asset.*
+import asset.AssetChange
+import asset.AssetGainCreator
+import asset.AssetProgression
+import asset.AssetRec
 import config.configFixture
 import config.householdConfigFixture
 import io.kotest.core.spec.style.ShouldSpec

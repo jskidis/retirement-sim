@@ -1,4 +1,4 @@
-package netspend
+package cashflow
 
 import YearlyDetail
 import asset.AssetChange

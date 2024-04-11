@@ -1,9 +1,10 @@
-package asset
+package cashflow
 
 import Amount
 import RecIdentifier
 import YearMonth
 import YearlyDetail
+import asset.assetRecFixture
 import config.EmploymentConfig
 import config.personFixture
 import income.IncomeRec

@@ -4,8 +4,8 @@ import Amount
 import RecIdentifier
 import YearMonth
 import asset.AssetProgression
-import asset.RmdCashFlowEventHandler
 import asset.SimpleAssetGainCreator
+import cashflow.RmdCashFlowEventHandler
 import config.AssetAttributeMap
 import config.EmploymentConfig
 import config.ParentConfigBuilder

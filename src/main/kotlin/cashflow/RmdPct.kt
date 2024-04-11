@@ -1,4 +1,4 @@
-package asset
+package cashflow
 
 import org.apache.commons.csv.CSVRecord
 import util.CSVReader

@@ -4,6 +4,7 @@ import Amount
 import RecIdentifier
 import Year
 import YearlyDetail
+import cashflow.CashFlowEventHandler
 import progression.PrevRecProviderProgression
 import util.RandomizerFactory
 import util.currentDate

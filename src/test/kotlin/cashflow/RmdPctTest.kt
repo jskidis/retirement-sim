@@ -1,4 +1,4 @@
-package asset
+package cashflow
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeGreaterThan

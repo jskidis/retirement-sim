@@ -3,7 +3,12 @@ package config.sample
 import Amount
 import RecIdentifier
 import YearMonth
-import asset.*
+import asset.AssetProgression
+import asset.SimpleAssetGainCreator
+import cashflow.EmployerMatchAmountRetriever
+import cashflow.EmployerRetirement
+import cashflow.MaxPlusCatchupAmountRetriever
+import cashflow.RmdCashFlowEventHandler
 import config.*
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression

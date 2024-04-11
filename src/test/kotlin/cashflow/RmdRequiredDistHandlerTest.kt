@@ -1,7 +1,8 @@
-package asset
+package cashflow
 
 import RecIdentifier
 import YearMonth
+import asset.assetRecFixture
 import config.Person
 import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec

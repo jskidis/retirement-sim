@@ -1,7 +1,9 @@
-package asset
+package cashflow
 
 import Amount
 import YearlyDetail
+import asset.AssetChange
+import asset.AssetRec
 import config.EmploymentConfig
 import config.Person
 import income.IncomeRec

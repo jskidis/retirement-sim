@@ -1,4 +1,4 @@
-package asset
+package cashflow
 
 import YearMonth
 import income.incomeRecFixture
