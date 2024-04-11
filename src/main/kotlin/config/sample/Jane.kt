@@ -3,9 +3,7 @@ package config.sample
 import Amount
 import RecIdentifier
 import YearMonth
-import asset.AssetProgression
-import asset.RmdCashFlowEventHandler
-import asset.SimpleAssetGainCreator
+import asset.*
 import config.*
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
@@ -16,10 +14,7 @@ import inflation.StdInflationAmountAdjuster
 import medical.*
 import socsec.FixedDateAmountSSBenefitProgression
 import socsec.SSBenefitProgression
-import tax.NonDeductProfile
-import tax.NonTaxableProfile
-import tax.NonWageTaxableProfile
-import tax.SSBenefitTaxableProfile
+import tax.*
 import util.DateRange
 import util.YearBasedConfig
 import util.YearConfigPair
@@ -32,7 +27,10 @@ object Jane : ParentConfigBuilder {
     val baseSSBenefit: Amount = 40500.0
 
     val iraAcct = RecIdentifier(name = "Jane-IRA", person = Smiths.jane.name)
-    val iraAcctBal: Amount = 1000000.0
+    val iraAcctBal: Amount = 500000.0
+
+    val four01kAcct = RecIdentifier(name = "Jane-401k", person = Smiths.jane.name)
+    val four01kAcctBal = 250000.0
 
     override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
         EmploymentConfig(
@@ -70,6 +68,7 @@ object Jane : ParentConfigBuilder {
     }
 
     override fun assets(person: Person): List<AssetProgression> {
+        val employmentConfig = employmentConfigs(person)[0]
         val janeIRA = AssetProgression(
             ident = iraAcct,
             startBalance = iraAcctBal,
@@ -89,7 +88,42 @@ object Jane : ParentConfigBuilder {
                     ))
             )
         )
-        return listOf(janeIRA)
+        val jane401K = AssetProgression(
+            ident = four01kAcct,
+            startBalance = four01kAcctBal,
+            cashflowEvents = listOf(
+                RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
+                EmployerRetirement(
+                    empConfig = employmentConfig,
+                    person = person,
+                    contributionName = "Jane-401K-Contrib",
+                    taxabilityProfile = FedAndStateDeductProfile(),
+                    amountRetriever = MaxPlusCatchupAmountRetriever()
+                ),
+                EmployerRetirement(
+                    empConfig = employmentConfig,
+                    person = person,
+                    contributionName = "Jane-401K-Match",
+                    taxabilityProfile = FedAndStateDeductProfile(),
+                    amountRetriever = EmployerMatchAmountRetriever(.03)
+                ),
+            ),
+            gainCreator = SimpleAssetGainCreator(
+                taxability = NonTaxableProfile(),
+                attributesSet = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(
+                            startYear = Smiths.startYear - 1,
+                            config = AssetAttributeMap.assetComp("US Stocks")
+                        ),
+                        YearConfigPair(
+                            startYear = employmentDates.end.year,
+                            config = AssetAttributeMap.assetComp("Stocks/Bonds 60/40")
+                        )
+                    ))
+            )
+        )
+        return listOf(janeIRA, jane401K)
     }
 
     override fun benefits(person: Person): List<SSBenefitProgression> {

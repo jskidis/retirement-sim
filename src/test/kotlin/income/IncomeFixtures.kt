@@ -14,10 +14,12 @@ fun incomeRecFixture(
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0,
+    bonus: Amount = 0.0
 ) = IncomeRec(
     year = year,
     ident = RecIdentifier(name = name, person = person),
     baseAmount = amount,
+    bonus = bonus,
     taxableIncome = TaxableAmounts(person))
 
 fun incomeRecFixture(

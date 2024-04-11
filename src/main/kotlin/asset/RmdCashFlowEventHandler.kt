@@ -5,11 +5,6 @@ import YearlyDetail
 import config.Person
 import tax.TaxabilityProfile
 
-interface CashFlowEventHandler {
-    fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail): AssetChange?
-
-}
-
 open class RmdCashFlowEventHandler(
     val person: Person,
     val taxabilityProfile: TaxabilityProfile

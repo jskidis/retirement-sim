@@ -75,15 +75,19 @@ class Smiths : ConfigBuilder {
         )
         val janeIraAllocConfig = NetSpendAssetConfig(
             ident = Jane.iraAcct,
-            spendAllocHandler = IRASpendAlloc(jane)
+            spendAllocHandler = IRASpendAlloc(jane, NonWageTaxableProfile())
+        )
+        val jane401kAllocConfig = NetSpendAssetConfig(
+            ident = Jane.four01kAcct,
+            spendAllocHandler = IRASpendAlloc(jane, NonWageTaxableProfile())
         )
         val richardIraAllocConfig = NetSpendAssetConfig(
             ident = Richard.iraAcct,
-            spendAllocHandler = IRASpendAlloc(jane)
+            spendAllocHandler = IRASpendAlloc(jane, NonWageTaxableProfile())
         )
 
         val withdrawOrder = listOf(
-            savingsAllocConfig, investAllocConfig,
+            savingsAllocConfig, investAllocConfig, jane401kAllocConfig,
             richardIraAllocConfig, janeIraAllocConfig
         )
         val depositOrder = listOf(savingsAllocConfig, investAllocConfig)

@@ -2,6 +2,7 @@ package asset
 import Amount
 import Name
 import Year
+import YearlyDetail
 
 interface AssetGainCreator {
     fun createGain(
@@ -19,4 +20,10 @@ interface GrossGainsCalc {
         gaussianRnd: Double,
     ): Amount = balance * (attribs.mean + (attribs.stdDev * gaussianRnd))
 }
+
+interface CashFlowEventHandler {
+    fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail): AssetChange?
+}
+
+
 
