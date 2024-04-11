@@ -1,6 +1,7 @@
 package config
 
 import Year
+import YearlyDetail
 import asset.AssetProgression
 import expense.ExpenseProgression
 import income.IncomeProgression
@@ -10,12 +11,13 @@ import progression.Progression
 import tax.ITaxesProcessor
 import tax.TaxCalcConfig
 import tax.TaxesProcessor
+import util.YearBasedConfig
 
 data class SimConfig(
     val startYear: Year,
     val household: HouseholdConfig,
     val inflationConfig: Progression<InflationRec>,
-    val taxConfig: TaxCalcConfig,
+    val taxConfig: YearBasedConfig<TaxCalcConfig>,
     val assetOrdering: NetSpendAllocationConfig,
     val rothConversion: RothConversionConfig? = null,
     val taxesProcessor: ITaxesProcessor = TaxesProcessor,
@@ -30,4 +32,7 @@ data class SimConfig(
     fun assetConfigs(): List<AssetProgression> =
         household.jointAssets +
             household.members.people().flatMap { it.assets() }
+
+    fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
+        taxConfig.getConfigForYear(currYear.year)
 }

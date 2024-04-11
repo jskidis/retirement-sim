@@ -25,13 +25,14 @@ import tax.TaxCalcConfig
 import tax.TaxesProcessorFixture
 import tax.taxConfigFixture
 import util.DateRange
+import util.YearBasedConfig
 import util.currentDate
 
 fun configFixture(
     startYear: Year = currentDate.year + 1,
     householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
-    taxConfig: TaxCalcConfig = taxConfigFixture(),
+    taxConfig: YearBasedConfig<TaxCalcConfig> = taxConfigFixture(),
     assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
     rothConversion: RothConversionConfig? = null,
     taxesProcessor: ITaxesProcessor = TaxesProcessorFixture()

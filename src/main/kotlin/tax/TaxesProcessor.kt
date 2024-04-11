@@ -21,15 +21,15 @@ object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflati
         config: SimConfig,
     ): TaxesRec {
         val taxable = determineTaxableAmounts(currYear)
-
-        val ltgTaxes = config.taxConfig.fedLTG.marginalRate(
+        val taxConfig = config.currTaxConfig(currYear)
+        val ltgTaxes = taxConfig.fedLTG.marginalRate(
             taxable.fed + taxable.fedLTG, currYear) * taxable.fedLTG
 
         return TaxesRec(
-            fed = config.taxConfig.fed.determineTax(taxable.fed, currYear) + ltgTaxes,
-            state = config.taxConfig.state.determineTax(taxable.state, currYear),
-            socSec = config.taxConfig.socSec.determineTax(taxable.socSec, currYear),
-            medicare = config.taxConfig.medicare.determineTax(taxable.medicare, currYear),
+            fed = taxConfig.fed.determineTax(taxable.fed, currYear) + ltgTaxes,
+            state = taxConfig.state.determineTax(taxable.state, currYear),
+            socSec = taxConfig.socSec.determineTax(taxable.socSec, currYear),
+            medicare = taxConfig.medicare.determineTax(taxable.medicare, currYear),
             agi = taxable.fed + taxable.fedLTG
         )
     }

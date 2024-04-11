@@ -8,22 +8,24 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import util.ConstantsProvider
 import util.ConstantsProvider.KEYS.STD_DEDUCT_JOINTLY
+import util.currentDate
 import yearlyDetailFixture
 
 class TaxesProcessorTest : ShouldSpec({
     val person = "Person1"
+    val year = currentDate.year + 1
 
     val wageInc = incomeRecFixture(
-        2024, "Wage Income", person, 100000.0, WageTaxableProfile()
+        year, "Wage Income", person, 100000.0, WageTaxableProfile()
     )
     val fedOnlyInc = incomeRecFixture(
-        2024, "Other Income", person, 10000.0, FedOnlyTaxableProfile()
+        year, "Other Income", person, 10000.0, FedOnlyTaxableProfile()
     )
     val nonDeductExp = expenseRecFixture(
-        2024, "Non Deductible Expense", person, 50000.0, NonTaxableProfile()
+        year, "Non Deductible Expense", person, 50000.0, NonTaxableProfile()
     )
     val decductExp = expenseRecFixture(
-        2024, "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
+        year, "Fed Deduc Expense", person, 50000.0, FedAndStateDeductProfile()
     )
 
     val fedTaxRate = .10
@@ -39,8 +41,12 @@ class TaxesProcessorTest : ShouldSpec({
     val stdDeduct = ConstantsProvider.getValue(STD_DEDUCT_JOINTLY)
 
     val config = configFixture().copy(
-        taxConfig = TaxCalcConfig(
-            fedTaxCalc, fedLTGTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc))
+        taxConfig = taxConfigFixture(
+            TaxCalcConfig(
+                fedTaxCalc, fedLTGTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc
+            )
+        )
+    )
 
     should("processTaxes single wage income only no expense") {
         val currYear = yearlyDetailFixture().copy(

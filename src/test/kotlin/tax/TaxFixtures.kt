@@ -6,6 +6,8 @@ import YearlyDetail
 import config.SimConfig
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
+import util.YearBasedConfig
+import util.YearConfigPair
 
 class TaxCalcFixture(val fixedPct: Double = 0.0) : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = fixedPct
@@ -31,11 +33,13 @@ class BracketBasedTaxCalcFixture(
 ) : BracketBasedTaxCalc {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = tax
     override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate = marginalRate
-    override fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount = topOfCurrBracket
+    override fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount =
+        topOfCurrBracket
+
     override fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount = topAmountBelowPct
 }
 
-fun taxConfigFixture() = TaxCalcConfig(
+fun baseTaxConfigFixture() = TaxCalcConfig(
     fed = BracketTaxCalcFixture(),
     fedLTG = BracketTaxCalcFixture(),
     state = TaxCalcFixture(),
@@ -43,13 +47,17 @@ fun taxConfigFixture() = TaxCalcConfig(
     medicare = TaxCalcFixture(),
 )
 
+fun taxConfigFixture(taxCalc: TaxCalcConfig = baseTaxConfigFixture()) = YearBasedConfig(
+    listOf(YearConfigPair(startYear = 1900, config = taxCalc))
+)
+
 class TaxesProcessorFixture(
     val taxesRec: TaxesRec = TaxesRec(),
     val taxableAmounts: TaxableAmounts = TaxableAmounts("Person"),
-    val stdDeduction: Amount = 0.0
+    val stdDeduction: Amount = 0.0,
 ) : ITaxesProcessor {
     override fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec = taxesRec
     override fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts = taxableAmounts
-    override fun determineStdDeduct(currYear: YearlyDetail): Double  = stdDeduction
+    override fun determineStdDeduct(currYear: YearlyDetail): Double = stdDeduction
 }
 

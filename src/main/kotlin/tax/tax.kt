@@ -72,3 +72,18 @@ data class TaxBracket(
     val single: BracketCase = BracketCase(),
 )
 
+val currTaxConfig = TaxCalcConfig(
+    fed = CurrentFedTaxBrackets,
+    fedLTG = CurrentFedLTGBrackets,
+    state = CurrentStateTaxBrackets,
+    socSec = EmployeeSocSecTaxCalc(),
+    medicare = EmployeeMedicareTaxCalc(),
+)
+
+val rollbackTaxConfig = TaxCalcConfig(
+    fed = RollbackFedTaxBrackets,
+    fedLTG = RollbackFedLTGBrackets,
+    state = FutureStateTaxBrackets,
+    socSec = EmployeeSocSecTaxCalc(),
+    medicare = EmployeeMedicareTaxCalc(),
+)

@@ -15,7 +15,7 @@ object RothConversionProcessor {
             val taxableAmounts = config.taxesProcessor.determineTaxableAmounts(currYear)
             val amountCalc = rothConfig.amountCalc.getConfigForYear(currYear.year)
             val amount = amountCalc.amountToConvert(
-                currYear, taxableAmounts, config.taxConfig)
+                currYear, taxableAmounts, config.currTaxConfig(currYear))
 
             val remaining = rothConfig.sourceDestPairs.fold(amount) { acc, it ->
                 if (acc < 1.0) 0.0

@@ -5,7 +5,9 @@ import YearMonth
 import config.*
 import inflation.FixedRateInflationProgression
 import netspend.*
-import tax.*
+import tax.NonWageTaxableProfile
+import tax.currTaxConfig
+import tax.rollbackTaxConfig
 import util.YearBasedConfig
 import util.YearConfigPair
 import util.currentDate
@@ -49,13 +51,10 @@ class Smiths : ConfigBuilder {
 
         val inflationConfig = FixedRateInflationProgression(0.03)
 
-        val taxCalcConfig = TaxCalcConfig(
-            fed = CurrentFedTaxBrackets,
-            fedLTG = CurrentFedLTGBrackets,
-            state = CurrentStateTaxBrackets,
-            socSec = EmployeeSocSecTaxCalc(),
-            medicare = EmployeeMedicareTaxCalc(),
-        )
+        val taxCalcConfig = YearBasedConfig(listOf(
+            YearConfigPair(startYear = 2024, config = currTaxConfig),
+            YearConfigPair(startYear = 2027, config = rollbackTaxConfig),
+        ))
 
         val savingsAllocConfig = NetSpendAssetConfig(
             ident = Household.savingsAcct,
