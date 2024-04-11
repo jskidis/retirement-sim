@@ -8,7 +8,6 @@ import tax.TaxableAmounts
 import tax.baseTaxConfigFixture
 import yearlyDetailFixture
 
-
 class RothConversionAmountCalcTest : ShouldSpec({
     val taxableAmount = 100000.0
     val topOfCurrBracket = 120000.0
