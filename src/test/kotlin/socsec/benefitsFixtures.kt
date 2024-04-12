@@ -2,6 +2,7 @@ package socsec
 
 import Amount
 import Name
+import Rate
 import RecIdentifier
 import Year
 import YearlyDetail
@@ -14,11 +15,15 @@ fun benefitsRecFixture(
     name: Name = "Benefit",
     person: Name = "Person",
     amount: Amount = 0.0,
+    baseAmount: Amount = 0.0,
+    benefitAdjustment: Rate = 0.0,
 ) = SSBenefitRec(
     year = year,
     ident = RecIdentifier(name, person),
     amount = amount,
-    taxableAmount = TaxableAmounts(person)
+    taxableAmount = TaxableAmounts(person),
+    baseAmount = baseAmount,
+    benefitAdjustment = benefitAdjustment
 )
 
 fun benefitsProgressionFixture(
