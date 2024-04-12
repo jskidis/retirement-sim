@@ -11,17 +11,13 @@ import tax.TaxableAmounts
 import toJsonStr
 
 data class ExpenseRec(
-    val year: Year,
-    val ident: RecIdentifier,
+    override val year: Year,
+    override val ident: RecIdentifier,
     val amount: Amount,
     val taxDeductions: TaxableAmounts,
 ): AmountRec {
-    override fun year(): Year  = year
-    override fun ident(): RecIdentifier = ident
     override fun amount(): Amount  = amount
     override fun taxable(): TaxableAmounts = taxDeductions
-    override fun retainRec(): Boolean = amount != 0.0
-
     override fun toString(): String = toJsonStr()
 }
 

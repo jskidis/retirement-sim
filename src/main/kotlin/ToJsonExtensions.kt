@@ -48,20 +48,20 @@ fun AssetChange.toJsonStr(): String = "{" +
 fun ExpenseRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
-    strWhenNotZero(taxDeductions.total() == 0.0, ", \"deductions\":$taxDeductions") +
+    strWhenNotZero(taxable().total() == 0.0, ", \"deductions\":${taxable()}") +
     "}"
 
 fun IncomeRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(baseAmount)}\"" +
     strWhenNotZero(bonus == 0.0, ", \"bonus\":\"${moneyFormat.format(bonus)}\"") +
-    strWhenNotZero(taxableIncome.total() == 0.0, ", \"taxable\":${taxableIncome}") +
+    strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
     "}"
 
 fun SSBenefitRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
-    strWhenNotZero(taxableAmount.total() == 0.0, ", \"taxable\":${taxableAmount}") +
+    strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
     "}"
 
 fun TaxesRec.toJsonStr() = "{" +

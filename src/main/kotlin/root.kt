@@ -92,11 +92,11 @@ data class RecIdentifier(
 }
 
 interface AmountRec {
-    fun year(): Year
-    fun ident(): RecIdentifier
+    val year: Year
+    val ident: RecIdentifier
     fun amount(): Amount
     fun taxable(): TaxableAmounts
-    fun retainRec(): Boolean
+    fun retainRec(): Boolean = amount() != 0.0
 }
 
 data class YearMonth (

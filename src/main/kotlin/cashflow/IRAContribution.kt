@@ -41,5 +41,5 @@ class IRAContribution(
 
     private fun personIncome(person: Name, currYear: YearlyDetail): Amount =
         currYear.incomes.filter { it.ident.person == person }
-            .sumOf { it.taxableIncome.socSec }
+            .sumOf { it.taxable().socSec }
 }

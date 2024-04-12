@@ -11,19 +11,14 @@ import tax.TaxableAmounts
 import toJsonStr
 
 data class IncomeRec(
-    val year: Year,
-    val ident: RecIdentifier,
+    override val year: Year,
+    override val ident: RecIdentifier,
     val baseAmount: Amount,
     val bonus: Amount = 0.0,
     val taxableIncome: TaxableAmounts,
 ) : AmountRec {
-    override fun year(): Year = year
-    override fun ident(): RecIdentifier = ident
     override fun amount(): Amount = baseAmount + bonus
-
     override fun taxable(): TaxableAmounts = taxableIncome
-    override fun retainRec(): Boolean = baseAmount != 0.0
-
     override fun toString(): String = toJsonStr()
 }
 

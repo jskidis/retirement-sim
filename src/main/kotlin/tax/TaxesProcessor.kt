@@ -37,10 +37,10 @@ object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflati
     override fun determineTaxableAmounts(currYear: YearlyDetail)
         : TaxableAmounts {
         val taxableAmounts =
-            currYear.incomes.map { it.taxableIncome } +
-                currYear.expenses.map { it.taxDeductions } +
+            currYear.incomes.map { it.taxable() } +
+                currYear.expenses.map { it.taxable() } +
                 currYear.assets.map { it.taxable() } +
-                currYear.benefits.map { it.taxableAmount }
+                currYear.benefits.map { it.taxable() }
 
         val stdDeduct = determineStdDeduct(currYear)
 
