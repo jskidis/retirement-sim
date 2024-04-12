@@ -16,7 +16,7 @@ object SimulationRun {
     fun runSim(
         configBuilder: ConfigBuilder,
         outputYearDetails: Boolean = true,
-    ): Pair<Amount, Double> {
+    ): SimResult {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
         config.household.members.parent1
@@ -28,22 +28,18 @@ object SimulationRun {
             prevYear = years.last()
         } while (years.last().year < 2060 && years.last().totalAssetValues() > 0.0)
 
-        val yearLast = years.last()
-
         if (outputYearDetails) {
             println("[")
             years.forEach { println(it.toString() + ", ") }
             println("]")
-//            println(yearlyDetailHeaders())
-//            years.forEach { println(it.toCSV()) }
         }
 
-        val infAdjAssets = yearLast.totalAssetValues() / yearLast.inflation.std.cmpdEnd
-        val avgRandom = years.sumOf {
-            (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()] ?: 0.0) +
-                (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()] ?: 0.0)
-        } / years.size / 2.0
-        return Pair(infAdjAssets, avgRandom)
+//        val avgRandom = years.sumOf {
+//            (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()] ?: 0.0) +
+//                (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()] ?: 0.0)
+//        } / years.size / 2.0
+
+        return SimResult(years.map { YearlySummary.fromDetail(it) })
     }
 
 

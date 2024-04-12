@@ -6,6 +6,7 @@ import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
 import util.moneyFormat
+import util.twoDecimalFormat
 
 fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
 
@@ -92,6 +93,7 @@ fun YearlyDetail.toJsonStr() = "{" +
         ", \"assetCashflow\":\"${moneyFormat.format((totalAssetCashflow()))}\"") +
     ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
     ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
+    ", \"averageROR\":\"${twoDecimalFormat.format(averageRor() * 100)}\"" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
@@ -105,17 +107,20 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"assets\":${assets}" +
     "}"
 
-fun yearlyDetailHeaders(): String =
-    "Year, Incomes, Benefits, Asset CF, Expenses, Taxes, CO Taxes, NetSpend, Asset Value, Infl Adj"
+fun yearlySummaryHeaders(): String =
+    "Sim #, Year, Inflation, Assets, Inf Adj, Avg ROR, Incomes, Benefits, Expenses, Cashflow Events, Net Spend, AGI, Taxes, Payroll Taxes"
 
-fun YearlyDetail.toCSV(): String =
-    "$year" +
-        ", ${totalIncome()}" +
-        ", ${totalBenefits()}" +
-        ", ${totalAssetCashflow()}" +
-        ", ${totalExpense()}" +
-        ", ${taxes.total()}" +
-        ", ${finalPassTaxes.total() - taxes.total()}" +
-        ", ${netSpend()}" +
-        ", ${totalAssetValues()}" +
-        ", ${totalAssetValues() / inflation.std.cmpdEnd} "
+fun YearlySummary.toCSV(simNum: Int): String =
+    "$simNum, $year" +
+        ", ${inflation}" +
+        ", ${assetValue}" +
+        ", ${inflAdjAssets()}" +
+        ", ${avgROR}" +
+        ", ${income}" +
+        ", ${benefits}" +
+        ", ${expenses}" +
+        ", ${cashflowEvents}" +
+        ", ${netSpend} " +
+        ", ${agi} " +
+        ", ${taxes} " +
+        ", ${payrollTaxes} "

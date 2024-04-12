@@ -92,12 +92,17 @@ class Smiths : ConfigBuilder {
         val depositOrder = listOf(savingsAllocConfig, investAllocConfig)
         val assetOrdering = NetSpendAllocationConfig(withdrawOrder, depositOrder)
 
+        val simSuccess = SimSuccess {
+            it.assetValue / it.inflation > 1000000.0
+        }
+
         return SimConfig(
             startYear = startYear,
             household = householdConfig,
             inflationConfig = inflationConfig,
             taxConfig = taxCalcConfig,
-            assetOrdering = assetOrdering
+            assetOrdering = assetOrdering,
+            simSuccess = simSuccess
         )
     }
 }

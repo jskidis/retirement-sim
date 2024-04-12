@@ -32,6 +32,7 @@ data class YearlyDetail(
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun totalBenefits() = benefits.sumOf { it.amount() }
     fun totalAssetCashflow() = cashFlowEvents.sumOf{ it.cashflow }
+    fun averageRor() = assets.sumOf { it.gains.amount } / assets.sumOf { it.startBal }
     fun netSpend() = netSpend
 
     fun netDistributions() = assets.sumOf { asset->
@@ -39,6 +40,49 @@ data class YearlyDetail(
     }
     override fun toString(): String = toJsonStr()
 }
+
+data class YearlySummary(
+    val year: Year,
+    val inflation: Rate,
+    val assetValue: Amount,
+    val avgROR: Rate,
+    val income: Amount,
+    val benefits: Amount,
+    val expenses: Amount,
+    val cashflowEvents: Amount,
+    val netSpend: Amount,
+    val agi: Amount,
+    val taxes: Amount,
+    val payrollTaxes: Amount,
+) {
+    fun inflAdjAssets(): Amount = assetValue / inflation
+    companion object {
+        fun fromDetail(detail: YearlyDetail): YearlySummary =
+            YearlySummary(
+                year = detail.year,
+                inflation = detail.inflation.std.cmpdEnd,
+                assetValue = detail.totalAssetValues(),
+                avgROR = detail.averageRor(),
+                income = detail.totalIncome(),
+                benefits = detail.totalBenefits(),
+                expenses = detail.totalExpense(),
+                cashflowEvents = detail.totalAssetCashflow(),
+                netSpend = detail.netSpend,
+                agi = detail.finalPassTaxes.agi,
+                taxes = detail.finalPassTaxes.fed + detail.finalPassTaxes.state,
+                payrollTaxes = detail.finalPassTaxes.socSec + detail.finalPassTaxes.medicare,
+            )
+    }
+}
+
+data class SimResult (
+    val summaries: List<YearlySummary>
+) {
+    fun lastYear(): YearlySummary = summaries.last()
+}
+
+
+
 
 data class RecIdentifier(
     val name: Name,
