@@ -20,7 +20,10 @@ data class SSBenefitRec(
 
     override fun amount(): Amount = amount
     override fun taxable(): TaxableAmounts = taxableAmount
+    override fun retainRec(): Boolean = true
     override fun toString(): String = toJsonStr()
+
+    fun hasClaimed(): Boolean = benefitAdjustment != 0.0
 }
 
 typealias SSBenefitProgression = Progression<SSBenefitRec>
