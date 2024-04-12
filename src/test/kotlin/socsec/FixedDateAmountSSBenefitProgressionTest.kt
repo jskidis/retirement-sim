@@ -32,7 +32,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment = 1.0
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(adjustment)
         )
 
         //note: even though fixture returns a non-zero adjustment rate, it's ignored because target is in future
@@ -48,7 +48,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(adjustment)
         )
 
         val expectedAmount = baseAmount * adjustment
@@ -63,7 +63,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, currentYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(adjustment)
         )
 
         val expectedAmount = (1 - currentYearTarget.monthFraction()) * baseAmount * adjustment
@@ -78,7 +78,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
     should("determineNext when prevYear not null, target is future year") {
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, futureYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(0.0)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(0.0)
         )
 
         val prevYear = yearlyDetailFixture(currentYear, inflation)
@@ -95,7 +95,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(adjustment)
         )
 
         val prevYear = yearlyDetailFixture(currentYear, inflation)
@@ -112,7 +112,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment = 0.9
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, currentYearTarget.copy(year = currentYear + 1), baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment)::calcBenefitAdjustment
+            BenefitAdjustmentCalcFixture(adjustment)
         )
 
         val prevYear = yearlyDetailFixture(currentYear, inflation)
@@ -131,7 +131,7 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
         val adjustment2 = 1.1
         val progression = FixedDateAmountSSBenefitProgression(
             ident, birthYM, pastYearTarget, baseAmount, taxabilityProfile,
-            BenefitAdjustmentCalcFixture(adjustment1, adjustment2)::calcBenefitAdjustmentMulti
+            BenefitAdjustmentCalcFixture(adjustment1, adjustment2)
         )
 
         val prevYear1 = yearlyDetailFixture(currentYear, inflation)
@@ -145,10 +145,11 @@ class FixedDateAmountSSBenefitProgressionTest : ShouldSpec({
 })
 
 @Suppress("UNUSED_PARAMETER")
-class BenefitAdjustmentCalcFixture(val adjustment1: Double, val adjustment2: Double = 0.0) {
+class BenefitAdjustmentCalcFixture(val adjustment1: Double, val adjustment2: Double = 0.0)
+    : IBenefitAdjustmentCalc {
     var wasCalled = false
 
-    fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Double = adjustment1
+    override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Double = adjustment1
 
     fun calcBenefitAdjustmentMulti(birthYM: YearMonth, startYM: YearMonth): Double {
         val adj = if (wasCalled) adjustment2 else adjustment1

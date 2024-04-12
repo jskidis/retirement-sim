@@ -15,7 +15,7 @@ open class FixedDateAmountSSBenefitProgression(
     val targetYM: YearMonth,
     val baseAmount: Amount,
     val taxabilityProfile: TaxabilityProfile,
-    val benefitAdjustmentF: (YearMonth, YearMonth) -> Double = BenefitAdjustmentCalc::calcBenefitAdjustment,
+    val benefitAdjustmentCalc: IBenefitAdjustmentCalc = BenefitAdjustmentCalc,
 ) : SSBenefitProgression,
     CmpdInflationProvider by StdCmpdInflationProvider() {
 
@@ -26,7 +26,7 @@ open class FixedDateAmountSSBenefitProgression(
         val cmpInflation = getCmpdInflationEnd(prevYear)
 
         if (benefitAdjustment == 0.0 && targetYM.year <= year)
-            benefitAdjustment = benefitAdjustmentF(birthYM, targetYM)
+            benefitAdjustment = benefitAdjustmentCalc.calcBenefitAdjustment(birthYM, targetYM)
 
         val pctInYear =
             if (year != targetYM.year) 1.0
