@@ -26,4 +26,7 @@ data class SSBenefitRec(
     fun hasClaimed(): Boolean = benefitAdjustment != 0.0
 }
 
-typealias SSBenefitProgression = Progression<SSBenefitRec>
+interface SSBenefitProgression: Progression<SSBenefitRec> {
+    fun isPrimary(): Boolean
+}
+

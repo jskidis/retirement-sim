@@ -3,9 +3,9 @@ package socsec
 import YearMonth
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
-import socsec.BenefitAdjustmentCalc.calcBenefitAdjustment
+import socsec.StdBenefitAdjustmentCalc.calcBenefitAdjustment
 
-class BenefitAdjustmentCalcTest : ShouldSpec({
+class StdBenefitAdjustmentCalcTest : ShouldSpec({
 
     should("calcBenefitAdjustment Post 1954") {
         val birthYM = YearMonth(year = 1960, month = 0)

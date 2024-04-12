@@ -3,12 +3,11 @@ package socsec
 import Rate
 import YearMonth
 
-fun interface IBenefitAdjustmentCalc {
+fun interface BenefitAdjustmentCalc {
     fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Rate
 }
 
-
-object BenefitAdjustmentCalc : IBenefitAdjustmentCalc {
+object StdBenefitAdjustmentCalc : BenefitAdjustmentCalc {
     override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Rate {
         val ageAtStart = startYM.toDec() - birthYM.toDec()
 
