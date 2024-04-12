@@ -7,9 +7,9 @@ import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import util.ConstantsProvider
-import util.ConstantsProvider.KEYS.*
+import util.ConstantsProvider.KEYS.RETIREMENT_CATCHUP_AGE
+import util.RetirementLimits
 import util.currentDate
-import util.determineRetirementLimits
 import yearlyDetailFixture
 
 class EmpRetirementAmountRetrieverTest : ShouldSpec({
@@ -21,8 +21,8 @@ class EmpRetirementAmountRetrieverTest : ShouldSpec({
     val inflation = inflationRecFixture(stdRAC = InflationRAC(.03, 1.3, 1.33))
     val currYear = yearlyDetailFixture(year, inflation)
 
-    val reg401kLimit = determineRetirementLimits(CONTRIB_LIMIT_401K, inflation)
-    val catchUp401kLimit = determineRetirementLimits(CATCHUP_LIMIT_401K, inflation)
+    val reg401kLimit = RetirementLimits.calc401kCap(currYear)
+    val catchUp401kLimit = RetirementLimits.calc401kCatchup(currYear, birthYMOverCatchup)
 
     val salary = 50000.0
     val bonus = 5000.0
