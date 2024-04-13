@@ -85,12 +85,13 @@ private fun runMultiple(
     val sorted = ((runs.map { it.inflAdjAssets() }).sorted())
     val median = sorted[runs.size / 2]
     val average = sorted.sumOf { it } / numSims
-    val successPct = 100.0 * runs.filter {
-        config.simSuccess.wasSuccessRun(it)
-    }.size / numSims
+    val successPct = 100.0 * runs.filter {config.simSuccess.wasSuccessRun(it)}.size / numSims
+    val brokePct = 100.0 * runs.filter {
+        it.expenses > it.assetValue}.size / numSims
 
     println("")
     println("Success Pct: $successPct")
+    println("Broke Pct: $brokePct")
     println("Median: ${moneyFormat.format(median)}")
     println("Average: ${moneyFormat.format(average)}")
     println("Baseline: ${moneyFormat.format(baseline)}")

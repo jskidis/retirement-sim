@@ -1,6 +1,7 @@
 package inflation
 
 import Rate
+import toJsonStr
 
 interface RACProvider {
     fun racFromRec(inflation: InflationRec): InflationRAC
@@ -25,6 +26,8 @@ data class InflationRAC(
             cmpdEnd = prev.cmpdEnd * (1.0 + currRate)
         )
     }
+
+    override fun toString() = toJsonStr()
 }
 
 data class InflationRec(

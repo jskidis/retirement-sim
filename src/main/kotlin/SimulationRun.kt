@@ -26,18 +26,15 @@ object SimulationRun {
         do {
             years.add(generateYearlyDetail(config, prevYear))
             prevYear = years.last()
-        } while (years.last().year < 2060 && years.last().totalAssetValues() > 0.0)
+        } while (years.last().year < 2060 &&
+            years.last().totalAssetValues() > years.last().totalExpense()
+        )
 
         if (outputYearDetails) {
             println("[")
             years.forEach { println(it.toString() + ", ") }
             println("]")
         }
-
-//        val avgRandom = years.sumOf {
-//            (it.randomValues[RandomizerFactory.GaussKeys.ROI.toString()] ?: 0.0) +
-//                (it.randomValues[RandomizerFactory.GaussKeys.INFLATION.toString()] ?: 0.0)
-//        } / years.size / 2.0
 
         return SimResult(years.map { YearlySummary.fromDetail(it) })
     }

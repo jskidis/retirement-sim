@@ -2,6 +2,7 @@ import asset.AssetChange
 import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
+import inflation.InflationRAC
 import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
@@ -82,6 +83,11 @@ fun TaxableAmounts.toJsonStr() = "{" +
     strWhenNotZero(medicare == 0.0, ", \"medicare\":\"${moneyFormat.format(medicare)}\"") +
     "}"
 
+fun InflationRAC.toJsonStr() = "{" +
+    "\"rate\":${twoDecimalFormat.format(rate)}" +
+    ",\"compound\":${twoDecimalFormat.format(cmpdEnd)}" +
+    "}"
+
 fun YearlyDetail.toJsonStr() = "{" +
     "\"year\": ${year}" +
     ", \"income\":\"${moneyFormat.format(totalIncome())}\"" +
@@ -99,6 +105,7 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
     ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
     ", \"carryOver\":\"${moneyFormat.format((finalPassTaxes.total() - taxes.total()))}\"" +
+    ", \"inflation\": ${inflation.std}" +
     ", \"taxes\":${taxes}" +
     ", \"finalPass\":${finalPassTaxes}" +
     ", \"incomes\":${incomes}" +
