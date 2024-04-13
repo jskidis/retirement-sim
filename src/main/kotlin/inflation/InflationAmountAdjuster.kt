@@ -15,3 +15,6 @@ interface InflationAmountAdjuster : AmountAdjusterWithGapFiller, CmpdInflationPr
 
 class StdInflationAmountAdjuster : InflationAmountAdjuster,
     CmpdInflationProvider by StdCmpdInflationProvider()
+
+class WageInflationAmountAdjust: InflationAmountAdjuster,
+    CmpdInflationProvider by WageCmpdInflationProvider()

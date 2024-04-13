@@ -19,6 +19,7 @@ open class PrimarySSBenefitProgression(
     val claimDateProvider: BenefitsClaimDateProvider = StdBenefitsClaimDateProvider(targetYM),
     val benefitAdjCalc: BenefitAdjustmentCalc = StdBenefitAdjustmentCalc,
     val defaultAdjProvider: DefaultAdjustmentProvider = StdDefaultAdjustmentProvider(),
+    val payoutAdjProvider: PayoutAdjProvider = StdPayoutAdjProvider(),
     val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider()
 ) : SSBenefitProgression {
 
@@ -51,7 +52,8 @@ open class PrimarySSBenefitProgression(
             else prevRec?.claimDate
 
         val baseAmount = baseAmountProvider.baseAmount(prevRec, prevYear)
-        val value = benefitAdj * baseAmount * cmpInflation * pctInYear
+        val value = payoutAdjProvider.adjustPayout(
+            benefitAdj * baseAmount * cmpInflation * pctInYear)
 
         return SSBenefitRec(
             year = year,
