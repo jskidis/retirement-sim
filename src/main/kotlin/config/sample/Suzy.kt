@@ -28,7 +28,7 @@ object Suzy: DependentConfigBuilder {
         return listOf(
             DependantInsFixedYearProgression(2030),
             EmployerInsPremProgression(
-                employments = Jane.employmentConfigs(Smiths.jane),
+                employments = listOf(Jane.janeEmpConfig),
                 relation = RelationToInsured.DEPENDANT
             ),
             MarketplacePremProgression(

@@ -35,18 +35,15 @@ object Richard : ParentConfigBuilder {
     val iraAcct = RecIdentifier(name = "Richard-IRA", person = Smiths.richard.name)
     val iraAcctBal: Amount = 500000.0
 
-
-    override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
-        EmploymentConfig(
-            ident = RecIdentifier(name = "PartTime", person = person.name),
-            startSalary = incomeStart,
-            dateRange = employmentDates
-        )
+    val richardEmpConfig = EmploymentConfig(
+        ident = RecIdentifier(name = "PartTime", person = Smiths.richard.name),
+        startSalary = incomeStart,
+        dateRange = employmentDates
     )
 
     override fun incomes(person: Person)
         : List<IncomeProgression> {
-        val employmentConfigs = employmentConfigs(person)
+        val employmentConfigs = listOf(richardEmpConfig)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
@@ -102,8 +99,7 @@ object Richard : ParentConfigBuilder {
     override fun benefits(person: Person): List<SSBenefitProgression> {
         return listOf(
             FixedDateAmountSSBenefitProgression(
-                ident = RecIdentifier(name = "Primary", person = person.name),
-                birthYM = person.birthYM,
+                person = person,
                 targetYM = targetSSDate,
                 baseAmount = baseSSBenefit,
                 taxabilityProfile = SSBenefitTaxableProfile(),
@@ -121,7 +117,7 @@ object Richard : ParentConfigBuilder {
                     MedicarePartType.DENTAL,
                 )),
             EmployerInsPremProgression(
-                employments = Jane.employmentConfigs(Smiths.jane),
+                employments = listOf(Jane.janeEmpConfig),
                 relation = RelationToInsured.SPOUSE
             ),
             MarketplacePremProgression(

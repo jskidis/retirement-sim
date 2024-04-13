@@ -85,7 +85,7 @@ fun parentConfigFixture(
     assetConfigs: List<AssetProgression> = listOf(
         assetProgressionFixture("Asset", name)),
     benefitConfigs: List<SSBenefitProgression> = listOf(
-        benefitsProgressionFixture("SSBenefits")),
+        benefitsProgressionFixture()),
     medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
 ) =
     ParentConfig(

@@ -17,7 +17,7 @@ import income.EmploymentIncomeProgression
 import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
-import socsec.FixedDateAmountSSBenefitProgression
+import socsec.IncByIncomeFlexClaimSSBenefitProgression
 import socsec.SSBenefitProgression
 import tax.*
 import util.DateRange
@@ -29,7 +29,9 @@ object Jane : ParentConfigBuilder {
     val expenseStart: Amount = 30000.0
     val employmentDates: DateRange = DateRange(end = YearMonth(2037, 6))
     val targetSSDate: YearMonth = YearMonth(year = 2042, 6)
+
     val baseSSBenefit: Amount = 40500.0
+    val ssBenefitIncPer100k: Amount = 600.0
 
     val iraAcct = RecIdentifier(name = "Jane-IRA", person = Smiths.jane.name)
     val iraAcctBal: Amount = 500000.0
@@ -37,22 +39,21 @@ object Jane : ParentConfigBuilder {
     val four01kAcct = RecIdentifier(name = "Jane-401k", person = Smiths.jane.name)
     val four01kAcctBal = 250000.0
 
-    override fun employmentConfigs(person: Person): List<EmploymentConfig> = listOf(
-        EmploymentConfig(
-            ident = RecIdentifier(name = "Accenture", person = person.name),
-            startSalary = incomeStart,
-            dateRange = employmentDates,
-            employerInsurance = EmployerInsurance(
-                selfCost = 2500.0,
-                spouseCost = 3000.0,
-                dependantCost = 1000.0
-            )
+    val janeEmpConfig = EmploymentConfig(
+        ident = RecIdentifier(name = "BigCo", person = Smiths.jane.name),
+        startSalary = incomeStart,
+        dateRange = employmentDates,
+        employerInsurance = EmployerInsurance(
+            selfCost = 2500.0,
+            spouseCost = 3000.0,
+            dependantCost = 1000.0
         )
     )
 
+
     override fun incomes(person: Person)
         : List<IncomeProgression> {
-        val employmentConfigs = employmentConfigs(person)
+        val employmentConfigs = listOf(janeEmpConfig)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
@@ -73,7 +74,6 @@ object Jane : ParentConfigBuilder {
     }
 
     override fun assets(person: Person): List<AssetProgression> {
-        val employmentConfig = employmentConfigs(person)[0]
         val janeIRA = AssetProgression(
             ident = iraAcct,
             startBalance = iraAcctBal,
@@ -99,14 +99,14 @@ object Jane : ParentConfigBuilder {
             cashflowEvents = listOf(
                 RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
                 EmployerRetirement(
-                    empConfig = employmentConfig,
+                    empConfig = janeEmpConfig,
                     person = person,
                     contributionName = "Jane-401K-Contrib",
                     taxabilityProfile = FedAndStateDeductProfile(),
                     amountRetriever = MaxPlusCatchupAmountRetriever()
                 ),
                 EmployerRetirement(
-                    empConfig = employmentConfig,
+                    empConfig = janeEmpConfig,
                     person = person,
                     contributionName = "Jane-401K-Match",
                     taxabilityProfile = FedAndStateDeductProfile(),
@@ -133,11 +133,12 @@ object Jane : ParentConfigBuilder {
 
     override fun benefits(person: Person): List<SSBenefitProgression> {
         return listOf(
-            FixedDateAmountSSBenefitProgression(
-                ident = RecIdentifier(name = "Primary", person = person.name),
-                birthYM = person.birthYM,
+            IncByIncomeFlexClaimSSBenefitProgression(
+                person = person,
                 targetYM = targetSSDate,
                 baseAmount = baseSSBenefit,
+                incPer100k = ssBenefitIncPer100k,
+                multipleOfExpense = 5.0,
                 taxabilityProfile = SSBenefitTaxableProfile(),
             )
         )
@@ -146,7 +147,7 @@ object Jane : ParentConfigBuilder {
     override fun medInsurance(person: Person): List<MedInsuranceProgression> {
         return listOf(
             EmployerInsPremProgression(
-                employments = employmentConfigs(person),
+                employments = listOf(janeEmpConfig),
                 relation = RelationToInsured.SELF
             ),
             MedicareProgression(

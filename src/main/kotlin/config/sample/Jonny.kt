@@ -28,7 +28,7 @@ object Jonny : DependentConfigBuilder {
         return listOf(
             DependantInsFixedYearProgression(2036),
             EmployerInsPremProgression(
-                employments = Jane.employmentConfigs(Smiths.jane),
+                employments = listOf(Jane.janeEmpConfig),
                 relation = RelationToInsured.DEPENDANT
             ),
             MarketplacePremProgression(
