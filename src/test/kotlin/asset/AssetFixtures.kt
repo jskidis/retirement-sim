@@ -1,7 +1,6 @@
 package asset
 
 import Amount
-import Name
 import RecIdentifier
 import Year
 import YearlyDetail
@@ -32,17 +31,8 @@ fun assetProgressionFixture(
     AssetProgression(
         ident = RecIdentifier(name, person),
         startBalance = startBal,
-        gainCreator = GainCreatorFixture(name, gains),
+        gainCreator = { _, _, _, _ -> AssetChange(name, gains) }
     )
-
-class GainCreatorFixture(val name: Name, val gains: Amount): AssetGainCreator {
-    override fun createGain(
-        year: Year,
-        person: Name,
-        balance: Amount,
-        gaussianRnd: Double,
-    ): AssetChange = AssetChange(name, gains)
-}
 
 class RothConversionAmountCalcFixture(val amountToConvert: Amount): RothConversionAmountCalc {
     override fun amountToConvert(

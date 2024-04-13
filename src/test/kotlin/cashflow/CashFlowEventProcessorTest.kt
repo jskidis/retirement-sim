@@ -1,10 +1,6 @@
 package cashflow
 
-import Amount
-import Name
 import RecIdentifier
-import Year
-import YearlyDetail
 import asset.AssetChange
 import asset.AssetGainCreator
 import asset.AssetProgression
@@ -21,7 +17,9 @@ class CashFlowEventProcessorTest : ShouldSpec({
     val year = currentDate.year +1
 
     val gains = AssetChange("Gains", 0.0)
-    val gainCreator = AssetGainCreatorFixture()
+    val gainCreator = AssetGainCreator {
+        _, person, _, _ -> AssetChange(person, 0.0)
+    }
 
     val ident1 = RecIdentifier(name = "Asset 1", person = "Person")
     val ident2 = RecIdentifier(name = "Asset 2", person = "Person")
@@ -41,11 +39,11 @@ class CashFlowEventProcessorTest : ShouldSpec({
     val change4_2 = AssetChange("CFE4-2", 4000.0, null)
     val change5 = AssetChange("CFE5", 1000.0, null)
 
-    val handler1 = CashFlowEventHandlerFixture(change1)
-    val handler2 = CashFlowEventHandlerFixture(change2)
-    val handler4_1 = CashFlowEventHandlerFixture(change4_1)
-    val handler4_2 = CashFlowEventHandlerFixture(change4_2)
-    val handler5 = CashFlowEventHandlerFixture(change5)
+    val handler1 = CashFlowEventHandler{_, _ -> change1}
+    val handler2 = CashFlowEventHandler{_, _ -> change2}
+    val handler4_1 = CashFlowEventHandler{_, _ -> change4_1}
+    val handler4_2 = CashFlowEventHandler{_, _ -> change4_2}
+    val handler5 = CashFlowEventHandler{_, _ -> change5}
 
     val startBal = 0.0
     val prog1 = AssetProgression(ident1, startBal, gainCreator, listOf(handler1))
@@ -65,14 +63,3 @@ class CashFlowEventProcessorTest : ShouldSpec({
         // change 5 belongs to prog 5 but there's no matching asset rec, so no change returned
     }
 })
-
-class CashFlowEventHandlerFixture(val assetChange: AssetChange?) : CashFlowEventHandler {
-    override fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail)
-        : AssetChange? = assetChange
-}
-
-class AssetGainCreatorFixture : AssetGainCreator {
-    override fun createGain(
-        year: Year, person: Name, balance: Amount, gaussianRnd: Double,
-    ): AssetChange = AssetChange(person, 0.0)
-}

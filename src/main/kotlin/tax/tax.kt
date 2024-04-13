@@ -45,7 +45,7 @@ data class TaxesRec(
     override fun toString(): String = toJsonStr()
 }
 
-interface TaxCalculator {
+fun interface TaxCalculator {
     fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
 }
 

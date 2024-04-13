@@ -4,15 +4,19 @@ import Amount
 import YearMonth
 import YearlyDetail
 
-open class MedicareProgression(val birthYM: YearMonth, val parts: List<MedicarePartType>)
-    : MedInsuranceProgression, MedicarePremProvider by MedicarePremCalc()
+open class MedicareProgression(
+    val birthYM: YearMonth,
+    val parts: List<MedicarePartType>,
+    val medicarePremProvider: MedicarePremProvider = MedicarePremCalc()
+) : MedInsuranceProgression
 {
     override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
         val monthsCovered = determineMonthsCovered(currYear)
         return if (monthsCovered == 0) InsurancePrem(name = DESCRIPTION)
         else InsurancePrem(
             name = DESCRIPTION,
-            premium = getMedicarePremium(currYear, previousAGI, parts) * (monthsCovered / 12.0),
+            premium = (monthsCovered / 12.0) *
+                medicarePremProvider.getMedicarePremium(currYear, previousAGI, parts),
             monthsCovered = monthsCovered
         )
     }

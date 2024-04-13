@@ -1,8 +1,6 @@
 package medical
 
-import Amount
 import YearMonth
-import YearlyDetail
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -54,10 +52,9 @@ class MedicareProgressionTest : ShouldSpec({
 class MedicareProgressionFixture(
     birthYM: YearMonth,
     parts: List<MedicarePartType>,
-    val premium: Double,
-) : MedicareProgression(birthYM, parts) {
-
-    override fun getMedicarePremium(
-        currYear: YearlyDetail, previousAGI: Amount, parts: List<MedicarePartType>,
-    ): Double = premium
-}
+    premium: Double,
+) : MedicareProgression(
+    birthYM = birthYM,
+    parts = parts,
+    medicarePremProvider = MedicarePremProvider { _, _, _ -> premium }
+)

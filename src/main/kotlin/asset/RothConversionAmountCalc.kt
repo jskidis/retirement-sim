@@ -7,7 +7,7 @@ import tax.TaxCalcConfig
 import tax.TaxableAmounts
 
 
-interface RothConversionAmountCalc {
+fun interface RothConversionAmountCalc {
     fun amountToConvert(
         currYear: YearlyDetail,
         taxableAmounts: TaxableAmounts,

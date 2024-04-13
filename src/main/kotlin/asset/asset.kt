@@ -3,7 +3,7 @@ import Amount
 import Name
 import Year
 
-interface AssetGainCreator {
+fun interface AssetGainCreator {
     fun createGain(
         year: Year,
         person: Name,

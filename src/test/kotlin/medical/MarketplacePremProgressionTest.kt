@@ -86,14 +86,20 @@ class MarketplacePremProgressionTest : ShouldSpec({
 })
 
 class MarketplacePremProgressionFixture(
-    birthYM: YearMonth, medalType: MPMedalType, planType: MPPlanType, includeDental: Boolean = false
-) : MarketplacePremProgression(birthYM, medalType, planType, includeDental ) {
-
-    override fun getAgeFactor(age: Int): Double = 1.0 + ((age - 21) * .01)
-
-    override fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double =
+    birthYM: YearMonth,
+    medalType: MPMedalType,
+    planType: MPPlanType,
+    includeDental: Boolean = false,
+) : MarketplacePremProgression(
+    birthYM = birthYM,
+    medalType = medalType,
+    planType = planType,
+    includeDental = includeDental,
+    ageFactorRetrieval = MPAgeFactorRetrieval { age -> 1.0 + ((age - 21) * .01) },
+    medalPlanRetrieval = MPMedalPlanFactorRetrieval { medal, plan ->
         0.9 + (medal.ordinal * 0.1) + (plan.ordinal * 0.1)
-}
+    }
+)
 
 class MPAgeMapTest : ShouldSpec({
     should("loads successful and returns factor for age (factor should increase after 21)") {

@@ -4,7 +4,7 @@ import Amount
 import YearlyDetail
 import util.RandomizerFactory
 
-interface BonusCalculator {
+fun interface BonusCalculator {
     fun calcBonus(salary: Amount, prevYear: YearlyDetail?): Amount
 }
 

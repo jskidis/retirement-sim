@@ -52,7 +52,7 @@ data class MedicarePremBracketRec(
     val partPrems: MedicarePartPrems,
 )
 
-interface MedicarePartPrem {
+fun interface MedicarePartPrem {
     fun getPartPrem(partPremRec: MedicarePartPrems): Amount
 }
 

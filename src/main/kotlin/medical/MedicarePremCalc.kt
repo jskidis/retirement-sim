@@ -36,7 +36,7 @@ open class MedicarePremCalc : MedicarePremProvider,
     open fun getBrackets(): List<MedicarePremBracketRec> = MedicarePremiumBrackets.brackets
 }
 
-interface MedicarePremProvider {
+fun interface MedicarePremProvider {
     fun getMedicarePremium(
         currYear: YearlyDetail,
         previousAGI: Amount,

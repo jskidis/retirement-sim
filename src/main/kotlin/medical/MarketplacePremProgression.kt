@@ -18,37 +18,32 @@ open class MarketplacePremProgression(
     val medalType: MPMedalType,
     val planType: MPPlanType,
     val includeDental: Boolean = false,
-) : MedInsuranceProgression,
-    MPAgeFactorRetrieval, MPMealPlanFactorRetrieval,
-    CmpdInflationProvider by MedCmpdInflationProvider()
+    val ageFactorRetrieval: MPAgeFactorRetrieval = MPAgeMap,
+    val medalPlanRetrieval: MPMedalPlanFactorRetrieval = MPMedalPlanMap,
+    val cmpdInflationProver: CmpdInflationProvider = MedCmpdInflationProvider()
+) : MedInsuranceProgression
 {
     override fun determineNext(currYear: YearlyDetail, previousAGI: Amount): InsurancePrem {
         val premium = (ConstantsProvider.getValue(MARKETPLACE_BASE_PREM) +
             if(includeDental) ConstantsProvider.getValue(DENTAL_BASE_PREM) else 0.0) *
-            getCmpdInflationStart(currYear) *
-            getAgeFactor(currYear.year - birthYM.year) *
-            getMedalPlanFactor(medalType, planType)
+            cmpdInflationProver.getCmpdInflationStart(currYear) *
+            ageFactorRetrieval.getAgeFactor(currYear.year - birthYM.year) *
+            medalPlanRetrieval.getMedalPlanFactor(medalType, planType)
 
         return InsurancePrem(
             name = DESCRIPTION, premium = premium, monthsCovered = 12)
     }
-
-    override fun getAgeFactor(age: Int): Double =
-        MPAgeMap.getAgeFactor(age)
-
-    override fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double =
-        MPMedalPlanMap.getMedalPlanFactor(medal, plan)
 
     companion object {
         const val DESCRIPTION = "MedIns-Marketplace"
     }
 }
 
-interface MPAgeFactorRetrieval {
+fun interface MPAgeFactorRetrieval {
     fun getAgeFactor(age: Int): Double
 }
 
-interface MPMealPlanFactorRetrieval {
+fun interface MPMedalPlanFactorRetrieval {
     fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double
 }
 
@@ -58,12 +53,12 @@ data class MedalPlanFactor(
     val factor: Double,
 )
 
-object MPAgeMap {
+object MPAgeMap : MPAgeFactorRetrieval {
     val ageMap: YearBasedConfig<Double> by lazy {
         YearBasedConfig(list = loadMap())
     }
 
-    fun getAgeFactor(age: Int): Double = ageMap.getConfigForYear(age)
+    override fun getAgeFactor(age: Int): Double = ageMap.getConfigForYear(age)
 
     private fun loadMap(): List<YearConfigPair<Double>> =
         getReader().readCsvFromResource("tables/mp-prem-age.csv")
@@ -74,12 +69,12 @@ object MPAgeMap {
     }
 }
 
-object MPMedalPlanMap {
+object MPMedalPlanMap : MPMedalPlanFactorRetrieval {
     val planMap: List<MedalPlanFactor> by lazy {
         loadMap()
     }
 
-    fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double =
+    override fun getMedalPlanFactor(medal: MPMedalType, plan: MPPlanType): Double =
         planMap.find { it.medal == medal && it.plan == plan }?.factor
             ?: throw RuntimeException("Unable to find premium for marketplace medal & plan")
 
