@@ -6,7 +6,6 @@ import Rate
 import RecIdentifier
 import Year
 import YearMonth
-import YearlyDetail
 import config.Person
 import config.personFixture
 import tax.SSBenefitTaxableProfile
@@ -39,14 +38,13 @@ fun benefitsProgressionFixture(): SSBenefitProgression {
 class SSBenefitProgressionFixture(
     person: Person = personFixture(birthYM = YearMonth(currentDate.year - 65)),
     taxabilityProfile: TaxabilityProfile = SSBenefitTaxableProfile(),
-    val amount: Amount = 0.0,
-    val targetDate: YearMonth = YearMonth(currentDate.year),
-    val benefitAdj: Double = 1.0
-) : PrimarySSBenefitProgression(person, taxabilityProfile) {
-
-    override fun isPrimary(): Boolean  = true
-    override fun baseAmount(prevRec: SSBenefitRec?, prevYear: YearlyDetail?) = amount
-    override fun claimDate(prevRec: SSBenefitRec?, prevYear: YearlyDetail?) = targetDate
-    override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Rate = benefitAdj
-    override fun initialAdjustment(): Rate = 0.0
-}
+    amount: Amount = 0.0,
+    targetDate: YearMonth = YearMonth(currentDate.year),
+    benefitAdj: Double = 1.0
+) : PrimarySSBenefitProgression(
+        person = person,
+        taxabilityProfile = taxabilityProfile,
+        baseAmount = amount,
+        targetYM = targetDate,
+        benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> benefitAdj }
+)

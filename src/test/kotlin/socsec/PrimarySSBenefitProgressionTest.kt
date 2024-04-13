@@ -4,7 +4,6 @@ import Amount
 import Rate
 import RecIdentifier
 import YearMonth
-import YearlyDetail
 import config.Person
 import config.personFixture
 import inflation.InflationRAC
@@ -150,17 +149,18 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
 
 class PrimarySSBenefitProgressionFixture(
     person: Person,
-    val targetYM: YearMonth,
-    val baseAmount: Amount,
-    val adjustment: Rate,
-    val initialAdjustment: Double = 0.0,
-) : PrimarySSBenefitProgression(person, BenefitTaxableProfileFixture) {
-
-    override fun baseAmount(prevRec: SSBenefitRec?, prevYear: YearlyDetail?): Amount = baseAmount
-    override fun claimDate(prevRec: SSBenefitRec?, prevYear: YearlyDetail?): YearMonth = targetYM
-    override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Double = adjustment
-    override fun initialAdjustment() : Rate = initialAdjustment
-}
+    targetYM: YearMonth,
+    baseAmount: Amount,
+    adjustment: Rate,
+    initialAdjustment: Double = 0.0,
+) : PrimarySSBenefitProgression(
+        person = person,
+        taxabilityProfile = BenefitTaxableProfileFixture,
+        baseAmount = baseAmount,
+        targetYM = targetYM,
+        benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> adjustment },
+        defaultAdjProvider = DefaultAdjustmentProvider { initialAdjustment }
+)
 
 object BenefitTaxableProfileFixture : NonTaxableProfile() {
     const val taxablePct = 0.5

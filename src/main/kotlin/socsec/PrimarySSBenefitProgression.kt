@@ -1,6 +1,6 @@
 package socsec
 
-import Rate
+import Amount
 import RecIdentifier
 import YearMonth
 import YearlyDetail
@@ -10,21 +10,19 @@ import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
 import util.currentDate
 
-// TODO: convert from interfaces to delagation members
-abstract class PrimarySSBenefitProgression(
+open class PrimarySSBenefitProgression(
     val person: Person,
-    val taxabilityProfile: TaxabilityProfile
-) : SSBenefitProgression,
-    BenefitBaseAmountProvider,
-    BenefitsClaimDateProvider,
-    BenefitAdjustmentCalc,
-    DefaultAdjustmentProvider,
-    CmpdInflationProvider by StdCmpdInflationProvider() {
+    val taxabilityProfile: TaxabilityProfile,
+    val baseAmount: Amount = 0.0,
+    val baseAmountProvider: BenefitBaseAmountProvider = StdBenefitBaseAmountProvider(baseAmount),
+    val targetYM: YearMonth = YearMonth(currentDate.year),
+    val claimDateProvider: BenefitsClaimDateProvider = StdBenefitsClaimDateProvider(targetYM),
+    val benefitAdjCalc: BenefitAdjustmentCalc = StdBenefitAdjustmentCalc,
+    val defaultAdjProvider: DefaultAdjustmentProvider = StdDefaultAdjustmentProvider(),
+    val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider()
+) : SSBenefitProgression {
 
     override fun isPrimary(): Boolean = true
-    override fun initialAdjustment(): Rate = 0.0
-    override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth)
-        : Rate = StdBenefitAdjustmentCalc.calcBenefitAdjustment(birthYM, startYM)
 
     companion object {
         const val IDENT_NAME = "SSPrimary"
@@ -33,16 +31,16 @@ abstract class PrimarySSBenefitProgression(
 
     override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
         val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
-        val cmpInflation = getCmpdInflationEnd(prevYear)
+        val cmpInflation = cmpdInflationProvider.getCmpdInflationEnd(prevYear)
 
         val prevRec = prevYear?.benefits?.find { it.ident == ident }
-        val targetStart = claimDate(prevRec, prevYear)
+        val targetStart = claimDateProvider.claimDate(prevRec, prevYear)
         val hasClaimed = targetStart.year < year || (prevRec?.claimDate != null)
         val newClaim = !hasClaimed && targetStart.year == year
 
         val benefitAdj =
-            if (!newClaim) prevRec?.benefitAdjustment ?: initialAdjustment()
-            else calcBenefitAdjustment(person.birthYM, targetStart)
+            if (!newClaim) prevRec?.benefitAdjustment ?: defaultAdjProvider.initialAdjustment()
+            else benefitAdjCalc.calcBenefitAdjustment(person.birthYM, targetStart)
 
         val pctInYear =
             if (!newClaim) 1.0
@@ -52,7 +50,7 @@ abstract class PrimarySSBenefitProgression(
             if (newClaim) targetStart
             else prevRec?.claimDate
 
-        val baseAmount = baseAmount(prevRec, prevYear)
+        val baseAmount = baseAmountProvider.baseAmount(prevRec, prevYear)
         val value = benefitAdj * baseAmount * cmpInflation * pctInYear
 
         return SSBenefitRec(

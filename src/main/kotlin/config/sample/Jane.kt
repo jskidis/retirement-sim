@@ -17,7 +17,9 @@ import income.EmploymentIncomeProgression
 import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
-import socsec.IncByIncomeFlexClaimSSBenefitProgression
+import socsec.FlexibleClaimDateProvider
+import socsec.NewIncomeAdjustBaseAmountProvider
+import socsec.PrimarySSBenefitProgression
 import socsec.SSBenefitProgression
 import tax.*
 import util.DateRange
@@ -133,13 +135,13 @@ object Jane : ParentConfigBuilder {
 
     override fun benefits(person: Person): List<SSBenefitProgression> {
         return listOf(
-            IncByIncomeFlexClaimSSBenefitProgression(
+            PrimarySSBenefitProgression(
                 person = person,
-                targetYM = targetSSDate,
-                baseAmount = baseSSBenefit,
-                incPer100k = ssBenefitIncPer100k,
-                multipleOfExpense = 5.0,
                 taxabilityProfile = SSBenefitTaxableProfile(),
+                baseAmountProvider = NewIncomeAdjustBaseAmountProvider(
+                    baseSSBenefit, ssBenefitIncPer100k),
+                claimDateProvider = FlexibleClaimDateProvider(
+                    person.birthYM, targetSSDate, 5.0),
             )
         )
     }
