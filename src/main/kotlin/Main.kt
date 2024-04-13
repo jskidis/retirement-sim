@@ -25,7 +25,26 @@ private fun runSingle(configBuilder: ConfigBuilder) {
     println("Result: ${moneyFormat.format(result.lastYear().inflAdjAssets())}")
 }
 
-private fun runMultiple(numSims: Int, configBuilder: ConfigBuilder, outputFilename: String?) {
+//private suspend fun suspendSingle(num: Int, configBuilder: ConfigBuilder, writer: BufferedWriter?)
+//    : YearlySummary = singleRunFromMultiple(num, configBuilder, writer)
+
+private fun singleRunFromMultiple(num: Int, configBuilder: ConfigBuilder, writer: BufferedWriter?)
+    : YearlySummary {
+    val result = SimulationRun.runSim(configBuilder, false)
+    if (writer != null) {
+        result.summaries.forEach {
+            writer.write(it.toCSV(num))
+            writer.newLine()
+        }
+    }
+    return result.lastYear()
+}
+
+private fun runMultiple(
+    numSims: Int,
+    configBuilder: ConfigBuilder,
+    outputFilename: String?,
+) {
     val writer: BufferedWriter? =
         if (outputFilename == null) null
         else File(outputFilename).bufferedWriter()
@@ -35,7 +54,6 @@ private fun runMultiple(numSims: Int, configBuilder: ConfigBuilder, outputFilena
         writer.newLine()
     }
 
-
     RandomizerFactory.setSuppressRandom(true)
     val config = configBuilder.buildConfig()
     val baseline = SimulationRun.runSim(configBuilder, false)
@@ -43,15 +61,23 @@ private fun runMultiple(numSims: Int, configBuilder: ConfigBuilder, outputFilena
 
     RandomizerFactory.setSuppressRandom(false)
     val start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-    val runs = (1..numSims).map { simNum ->
-        val result = SimulationRun.runSim(configBuilder, false)
-        if (writer != null) {
-            result.summaries.forEach{
-                writer.write(it.toCSV(simNum))
-                writer.newLine()
+
+/*
+    val runs: MutableList<YearlySummary> = mutableListOf()
+    runBlocking {
+        val launched = (1..numSims).map {
+            async(Dispatchers.Unconfined) {
+                suspendSingle(it, configBuilder, writer)
             }
         }
-        result.lastYear()
+        launched.forEach {
+            runs.add(it.await())
+        }
+    }
+*/
+
+    val runs = (1..numSims).map { simNum ->
+        singleRunFromMultiple(simNum, configBuilder, writer)
     }
 
     writer?.close()
@@ -75,6 +101,3 @@ private fun runMultiple(numSims: Int, configBuilder: ConfigBuilder, outputFilena
     val elapsed = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start
     println("Elapsed: ${elapsed}")
 }
-
-
-
