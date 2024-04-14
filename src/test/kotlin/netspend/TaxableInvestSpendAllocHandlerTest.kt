@@ -97,7 +97,7 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.fedLTG?.shouldBeZero()
         assetRec.tributions[0].taxable?.state.shouldBe(withdrawAmount)
         assetRec.tributions[0].isCarryOver.shouldBeTrue()
-        assetRec.totalUnrealized().shouldBeZero()
+        assetRec.totalUnrealized().shouldBe(stUnrealized - withdrawAmount)
     }
 
     should("not allow withdraws below minimum balance") {

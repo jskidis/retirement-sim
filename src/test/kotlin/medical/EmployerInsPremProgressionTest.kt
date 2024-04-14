@@ -54,7 +54,7 @@ class EmployerInsPremProgressionTest : ShouldSpec({
         val resultsSelf = progSelf.determineNext(currYear, previousAGI = 0.0)
         resultsSelf.premium.shouldBe(empInsurance.selfCost * cmpdInflation)
         resultsSelf.monthsCovered.shouldBe(12)
-        resultsSelf.fullyDeductAmount.shouldBe(resultsSelf.premium)
+        resultsSelf.fullyDeductAmount.shouldBe(-resultsSelf.premium)
         resultsSelf.name.shouldBe(EmployerInsPremProgression.DESCRIPTION)
 
         val progSpouse = EmployerInsPremProgression(listOf(config), RelationToInsured.SPOUSE)
