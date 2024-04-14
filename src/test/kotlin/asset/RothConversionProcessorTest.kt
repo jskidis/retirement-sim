@@ -203,4 +203,43 @@ class RothConversionProcessorTest : ShouldSpec({
         destAsset.tributions[0].taxable.shouldNotBeNull()
         destAsset.tributions[0].isCarryOver.shouldBeTrue()
     }
+
+    should("process a conversion of from 2ns source asset to dest asset if first source is closed") {
+        val amountToConvert = 20000.0
+        val amountAvailable = amountToConvert * 4.0
+
+        val sourceAsset2 = assetRec(sourceIdent2, amountAvailable)
+        val destAsset = assetRec(destIdent, 0.0)
+        val yearProcessed = currYear.copy(assets = listOf(sourceAsset2, destAsset))
+
+        val amountCalcConfig = amountCalcConfig(currentTaxable + amountToConvert)
+        val sourceDestPairs = listOf(
+            Pair(sourceIdent, destIdent),
+            Pair(sourceIdent2, destIdent)
+        )
+
+        val config = baseConfig.copy(rothConversion = RothConversionConfig(
+            amountCalc = amountCalcConfig,
+            sourceDestPairs = sourceDestPairs,
+            taxabilityProfile = NonWageTaxableProfile()
+        ))
+
+        val result = RothConversionProcessor.process(config, yearProcessed)
+        result.shouldBe(amountToConvert)
+
+        sourceAsset2.tributions.shouldHaveSize(1)
+        sourceAsset2.tributions[0].name.shouldBe(RothConversionProcessor.ROTH_CONV_STR)
+        sourceAsset2.tributions[0].amount.shouldBe(-amountToConvert)
+        sourceAsset2.tributions[0].taxable.shouldBeNull()
+
+        destAsset.tributions.shouldHaveSize(1)
+        destAsset.tributions[0].name.shouldBe(RothConversionProcessor.ROTH_CONV_STR)
+        destAsset.tributions[0].amount.shouldBe(amountToConvert)
+        destAsset.tributions[0].taxable.shouldNotBeNull()
+        destAsset.tributions[0].taxable?.fed.shouldBe(amountToConvert)
+        destAsset.tributions[0].taxable?.fedLTG.shouldBe(0.0)
+        destAsset.tributions[0].taxable?.state.shouldBe(amountToConvert)
+        destAsset.tributions[0].isCarryOver.shouldBeTrue()
+    }
+
 })

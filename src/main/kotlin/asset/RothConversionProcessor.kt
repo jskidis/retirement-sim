@@ -22,7 +22,7 @@ object RothConversionProcessor {
                 else {
                     val sourceRec = findAssetRec(it.first, currYear)
                     val destRec = findAssetRec(it.second, currYear)
-                    if (sourceRec == null || destRec == null) 0.0
+                    if (sourceRec == null || destRec == null) acc
                     else {
                         val distribution = Math.min(acc, sourceRec.finalBalance())
                         sourceRec.tributions.add(AssetChange(

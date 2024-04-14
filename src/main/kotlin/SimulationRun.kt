@@ -77,5 +77,6 @@ object SimulationRun {
         currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
 
         return currYear
+
     }
 }
