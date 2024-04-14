@@ -56,7 +56,7 @@ object SimulationRun {
 
         val previousAGI = prevYear?.finalPassTaxes?.agi ?: config.household.initialAGI
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
-        currYear = currYear.copy(expenses = currYear.expenses + medInsurance.filter{it.retainRec()})
+        currYear = currYear.copy(expenses = currYear.expenses + medInsurance)
 
         val cashflowEvents = CashFlowEventProcessor.process(config, currYear)
         currYear = currYear.copy(cashFlowEvents = cashflowEvents)

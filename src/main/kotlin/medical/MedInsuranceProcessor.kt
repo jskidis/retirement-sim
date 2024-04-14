@@ -20,7 +20,7 @@ object MedInsuranceProcessor {
             whichToUse(prems).map { prem ->
                 createExpenseRec(currYear.year, prem.name, person.name(),
                     prem.premium, prem.fullyDeductAmount)
-            }
+            }.filter { it.retainRec() }
         }
     }
 
