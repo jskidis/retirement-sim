@@ -22,6 +22,6 @@ object RmdPct : RmdPctLookup {
         ageMap.getConfigForYear(age)
 }
 
-interface RmdPctLookup {
+fun interface RmdPctLookup {
     fun getRmdPct(age: Int): Double
 }

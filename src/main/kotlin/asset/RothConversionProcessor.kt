@@ -2,6 +2,7 @@ package asset
 
 import Amount
 import RecIdentifier
+import Year
 import YearlyDetail
 import config.SimConfig
 
@@ -43,6 +44,8 @@ object RothConversionProcessor {
             return amount - remaining
         }
     }
+
+    fun rmdMinAge(year: Year): Int = if (year < 2033) 73 else 75
 
     private fun findAssetRec(ident: RecIdentifier, currYear: YearlyDetail): AssetRec? =
         currYear.assets.find { it.ident == ident }
