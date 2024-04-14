@@ -102,8 +102,13 @@ interface AmountRec {
 data class YearMonth (
     val year: Year,
     val month: Int = 0,
-) {
+) : Comparable<YearMonth> {
     fun toDec(): Double = year + monthFraction()
     fun monthFraction(): Double = month / 12.0
+
+    override fun compareTo(other: YearMonth): Int =
+        ((toDec() - other.toDec()) * 100).toInt()
+
+    override fun toString() = toJsonStr()
 }
 

@@ -9,6 +9,7 @@ import income.IncomeProgression
 import medical.MedInsuranceProgression
 import progression.Progression
 import socsec.SSBenefitProgression
+import socsec.SecondarySSBenefitProgression
 
 data class Person (
     val name: Name,
@@ -24,6 +25,7 @@ open class PersonConfig(
     val expenses: List<Progression<ExpenseRec>>,
     val assets: List<AssetProgression>,
     val benefits: List<SSBenefitProgression>,
+    val secondaryBenefits: List<SecondarySSBenefitProgression>,
     val medInsurance: List<MedInsuranceProgression>
 ) {
     fun name(): Name = person.name
@@ -33,6 +35,7 @@ open class PersonConfig(
     fun expenses(): List<ExpenseProgression> = expenses
     fun assets(): List<AssetProgression> = assets
     fun benefits(): List<SSBenefitProgression> = benefits
+    fun secondaryBenefits(): List<SecondarySSBenefitProgression> = secondaryBenefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
 }
 
@@ -42,8 +45,9 @@ open class ParentConfig(
     expenses: List<ExpenseProgression>,
     assets: List<AssetProgression>,
     benefits: List<SSBenefitProgression>,
+    secondaryBenefits: List<SecondarySSBenefitProgression>,
     medInsurance: List<MedInsuranceProgression>,
-) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)
+) : PersonConfig(person, incomes, expenses, assets, benefits, secondaryBenefits, medInsurance)
 
 open class DependantConfig(
     person: Person,
@@ -51,6 +55,7 @@ open class DependantConfig(
     expenses: List<ExpenseProgression>,
     assets: List<AssetProgression>,
     benefits: List<SSBenefitProgression>,
+    secondaryBenefits: List<SecondarySSBenefitProgression>,
     medInsurance: List<MedInsuranceProgression>,
-) : PersonConfig(person, incomes, expenses, assets, benefits, medInsurance)
+) : PersonConfig(person, incomes, expenses, assets, benefits, secondaryBenefits, medInsurance)
 

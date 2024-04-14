@@ -35,6 +35,10 @@ fun benefitsProgressionFixture(): SSBenefitProgression {
     return SSBenefitProgressionFixture()
 }
 
+fun secondaryProgressionFixture(): SecondarySSBenefitProgression {
+    return SecondarySSBenefitProgressionFixture()
+}
+
 class SSBenefitProgressionFixture(
     person: Person = personFixture(birthYM = YearMonth(currentDate.year - 65)),
     taxabilityProfile: TaxabilityProfile = SSBenefitTaxableProfile(),
@@ -47,4 +51,16 @@ class SSBenefitProgressionFixture(
         baseAmount = amount,
         targetYM = targetDate,
         benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> benefitAdj }
+)
+
+class SecondarySSBenefitProgressionFixture(
+    person: Person = personFixture(name = "Person", birthYM = YearMonth(currentDate.year - 65)),
+    spouse: Person = personFixture(name = "Spouse", birthYM = YearMonth(currentDate.year - 65)),
+    taxabilityProfile: TaxabilityProfile = SSBenefitTaxableProfile(),
+    benefitAdj: Double = 1.0
+) : SpousalSSBenefitProgression(
+    person = person,
+    spouse = spouse,
+    taxabilityProfile = taxabilityProfile,
+    benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> benefitAdj }
 )

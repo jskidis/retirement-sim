@@ -25,6 +25,7 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
     val currentYear = currentDate.year
     val cmpndInf = 1.03
     val inflation = inflationRecFixture(stdRAC = InflationRAC(.03, 1.0, cmpndInf))
+    val taxablePct = 0.5
 
     // the benefit adjustment fixture will return fixed adjustment so birthYM doesn't matter here
     // there are sufficient tests around that calculation no need to duplicate here
@@ -63,14 +64,14 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
         val existingAdjustment = 1.0
         val adjustment = 1.1
         val progression = PrimarySSBenefitProgressionFixture(
-            person, pastYearTarget, baseAmount, adjustment, existingAdjustment
+            person, pastYearTarget, baseAmount, adjustment, existingAdjustment, taxablePct
         )
 
         val expectedAmount = baseAmount * existingAdjustment
         val result = progression.determineNext(null)
         commonRecValidation(result)
         result.amount.shouldBe(expectedAmount)
-        result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
+        result.taxableAmount.total().shouldBe(expectedAmount * taxablePct)
         result.benefitAdjustment.shouldBe(existingAdjustment)
     }
 
@@ -85,7 +86,7 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
         val result = progression.determineNext(null)
         commonRecValidation(result)
         result.amount.shouldBe(expectedAmount)
-        result.taxableAmount.total().shouldBe(expectedAmount * 0.5)
+        result.taxableAmount.total().shouldBe(expectedAmount * taxablePct)
         result.benefitAdjustment.shouldBe(adjustment)
     }
 
@@ -109,7 +110,7 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
         val existingAdjustment = 1.0
         val adjustment = 1.1
         val progression = PrimarySSBenefitProgressionFixture(
-            person, pastYearTarget, baseAmount, adjustment
+            person, pastYearTarget, baseAmount, adjustment, 0.0, taxablePct
         )
 
         val prevYear = yearlyDetailFixture(
@@ -122,15 +123,14 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
         commonRecValidation(result)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(
-            expectedAmount *
-                BenefitTaxableProfileFixture.taxablePct)
+            expectedAmount * taxablePct)
     }
 
     should("determineNext when prevYear not null, target is current year") {
         val adjustment = 0.9
         val progression = PrimarySSBenefitProgressionFixture(
             person, currentYearTarget.copy(year = currentYear),
-            baseAmount, adjustment
+            baseAmount, adjustment, 0.0, taxablePct
         )
 
         val prevYear = yearlyDetailFixture(currentYear - 1, inflation)
@@ -141,8 +141,7 @@ class PrimarySSBenefitProgressionTest : ShouldSpec({
         commonRecValidation(result)
         result.amount.shouldBe(expectedAmount)
         result.taxableAmount.total().shouldBe(
-            expectedAmount *
-                BenefitTaxableProfileFixture.taxablePct)
+            expectedAmount * taxablePct)
         result.benefitAdjustment.shouldBe(adjustment)
     }
 })
@@ -153,16 +152,16 @@ class PrimarySSBenefitProgressionFixture(
     baseAmount: Amount,
     adjustment: Rate,
     initialAdjustment: Double = 0.0,
+    taxablePct: Double = 0.5
 ) : PrimarySSBenefitProgression(
         person = person,
-        taxabilityProfile = BenefitTaxableProfileFixture,
+        taxabilityProfile = BenefitTaxableProfileFixture(taxablePct),
         baseAmount = baseAmount,
         targetYM = targetYM,
         benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> adjustment },
         defaultAdjProvider = DefaultAdjustmentProvider { initialAdjustment }
 )
 
-object BenefitTaxableProfileFixture : NonTaxableProfile() {
-    const val taxablePct = 0.5
+class BenefitTaxableProfileFixture(val taxablePct: Rate) : NonTaxableProfile() {
     override fun fed(amount: Amount): Amount = amount * taxablePct
 }

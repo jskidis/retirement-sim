@@ -13,6 +13,11 @@ fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$na
 
 fun strWhenNotZero(isZero: Boolean, str: String): String = if (isZero) "" else str
 
+fun YearMonth.toJsonStr(): String = "{" +
+    "\"year\":$year" +
+    ", \"month\":$month" +
+    "}"
+
 fun AssetRec.toJsonStr(): String = "{" +
     "\"ident\":$ident" +
     ", \"startBal\":\"${moneyFormat.format(startBal)}\"" +
@@ -63,6 +68,9 @@ fun SSBenefitRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
+    strWhenNotZero(baseAmount == 0.0, ", \"base\":${baseAmount}") +
+    strWhenNotZero(benefitAdjustment == 0.0, ", \"adj\":${benefitAdjustment}") +
+    strWhenNotZero(claimDate == null, ", \"claimDate\":${claimDate}") +
     "}"
 
 fun TaxesRec.toJsonStr() = "{" +
@@ -85,7 +93,8 @@ fun TaxableAmounts.toJsonStr() = "{" +
 
 fun InflationRAC.toJsonStr() = "{" +
     "\"rate\":${twoDecimalFormat.format(rate)}" +
-    ",\"compound\":${twoDecimalFormat.format(cmpdEnd)}" +
+    ",\"start\":${twoDecimalFormat.format(cmpdStart)}" +
+    ",\"end\":${twoDecimalFormat.format(cmpdEnd)}" +
     "}"
 
 fun YearlyDetail.toJsonStr() = "{" +
@@ -105,9 +114,11 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
     ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
     ", \"carryOver\":\"${moneyFormat.format((finalPassTaxes.total() - taxes.total()))}\"" +
-    ", \"inflation\": ${inflation.std}" +
     ", \"taxes\":${taxes}" +
     ", \"finalPass\":${finalPassTaxes}" +
+    ", \"stdInfl\": ${inflation.std}" +
+    ", \"wageInfl\": ${inflation.wage}" +
+    ", \"medInfl\": ${inflation.med}" +
     ", \"incomes\":${incomes}" +
     ", \"benefits\":${benefits}" +
     ", \"expenses\":${expenses}" +

@@ -61,6 +61,9 @@ object SimulationRun {
         val cashflowEvents = CashFlowEventProcessor.process(config, currYear)
         currYear = currYear.copy(cashFlowEvents = cashflowEvents)
 
+        val secondaryBenefits = SSBenefitsProcessor.processSecondary(config, prevYear, currYear)
+        currYear = currYear.copy(benefits = currYear.benefits + secondaryBenefits)
+
         val taxesProcessor = config.taxesProcessor
         val taxesRec = taxesProcessor.processTaxes(currYear, config)
         currYear = currYear.copy(taxes = taxesRec)

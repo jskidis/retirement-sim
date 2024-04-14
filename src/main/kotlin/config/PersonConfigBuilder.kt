@@ -5,6 +5,7 @@ import expense.ExpenseProgression
 import income.IncomeProgression
 import medical.MedInsuranceProgression
 import socsec.SSBenefitProgression
+import socsec.SecondarySSBenefitProgression
 
 interface ConfigBuilder {
     fun buildConfig(): SimConfig
@@ -15,6 +16,7 @@ interface PersonConfigBuilder {
     fun expenses(person: Person): List<ExpenseProgression> = ArrayList()
     fun assets(person: Person): List<AssetProgression> = ArrayList()
     fun benefits(person: Person): List<SSBenefitProgression> = ArrayList()
+    fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> = ArrayList()
     fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
 }
 
@@ -25,6 +27,7 @@ interface ParentConfigBuilder : PersonConfigBuilder {
         expenses = expenses(person),
         assets = assets(person),
         benefits = benefits(person),
+        secondaryBenefits = secondaryBenefits(person),
         medInsurance = medInsurance(person)
     )
 }
@@ -36,6 +39,7 @@ interface DependentConfigBuilder : PersonConfigBuilder {
         expenses = expenses(person),
         assets = assets(person),
         benefits = benefits(person),
+        secondaryBenefits = secondaryBenefits(person),
         medInsurance = medInsurance(person)
     )
 }

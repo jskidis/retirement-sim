@@ -20,6 +20,8 @@ import inflation.StdInflationAmountAdjuster
 import medical.*
 import socsec.PrimarySSBenefitProgression
 import socsec.SSBenefitProgression
+import socsec.SecondarySSBenefitProgression
+import socsec.SpousalSSBenefitProgression
 import tax.*
 import util.DateRange
 import util.YearBasedConfig
@@ -106,6 +108,17 @@ object Richard : ParentConfigBuilder {
             )
         )
     }
+
+    override fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> {
+        return listOf(
+            SpousalSSBenefitProgression(
+                person = person,
+                spouse = Smiths.jane,
+                taxabilityProfile = SSBenefitTaxableProfile()
+            )
+        )
+    }
+
 
     override fun medInsurance(person: Person): List<MedInsuranceProgression> {
         return listOf(

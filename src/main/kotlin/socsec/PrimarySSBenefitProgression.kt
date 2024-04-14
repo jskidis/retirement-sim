@@ -6,7 +6,7 @@ import YearMonth
 import YearlyDetail
 import config.Person
 import inflation.CmpdInflationProvider
-import inflation.StdCmpdInflationProvider
+import inflation.WageCmpdInflationProvider
 import tax.TaxabilityProfile
 import util.currentDate
 
@@ -15,19 +15,15 @@ open class PrimarySSBenefitProgression(
     val taxabilityProfile: TaxabilityProfile,
     val baseAmount: Amount = 0.0,
     val baseAmountProvider: BenefitBaseAmountProvider = StdBenefitBaseAmountProvider(baseAmount),
-    val targetYM: YearMonth = YearMonth(currentDate.year),
+    val targetYM: YearMonth = maxOf(YearMonth(currentDate.year), person.birthYM.copy(year = person.birthYM.year + 62)),
     val claimDateProvider: BenefitsClaimDateProvider = StdBenefitsClaimDateProvider(targetYM),
     val benefitAdjCalc: BenefitAdjustmentCalc = StdBenefitAdjustmentCalc,
     val defaultAdjProvider: DefaultAdjustmentProvider = StdDefaultAdjustmentProvider(),
     val payoutAdjProvider: PayoutAdjProvider = StdPayoutAdjProvider(),
-    val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider()
+    val cmpdInflationProvider: CmpdInflationProvider = WageCmpdInflationProvider()
 ) : SSBenefitProgression {
 
-    override fun isPrimary(): Boolean = true
-
-    companion object {
-        const val IDENT_NAME = "SSPrimary"
-    }
+    companion object { const val IDENT_NAME = "SSPrimary" }
     val ident = RecIdentifier(name = IDENT_NAME, person = person.name)
 
     override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
@@ -48,7 +44,7 @@ open class PrimarySSBenefitProgression(
             else 1 - targetStart.monthFraction()
 
         val initialClaim =
-            if (newClaim) targetStart
+            if (newClaim && benefitAdj > 0.0) targetStart
             else prevRec?.claimDate
 
         val baseAmount = baseAmountProvider.baseAmount(prevRec, prevYear)

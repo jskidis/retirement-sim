@@ -3,7 +3,6 @@ package socsec
 import YearMonth
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
-import socsec.StdBenefitAdjustmentCalc.calcBenefitAdjustment
 
 class StdBenefitAdjustmentCalcTest : ShouldSpec({
 
@@ -33,7 +32,7 @@ class StdBenefitAdjustmentCalcTest : ShouldSpec({
         )
 
         expectedResults.forEach {
-            calcBenefitAdjustment(birthYM, startYM = it.first)
+            StdBenefitAdjustmentCalc.calcBenefitAdjustment(birthYM, startYM = it.first)
                 .shouldBeWithinPercentageOf(it.second, 0.1)
         }
     }
@@ -64,7 +63,7 @@ class StdBenefitAdjustmentCalcTest : ShouldSpec({
         )
 
         expectedResults.forEach {
-            calcBenefitAdjustment(birthYM, startYM = it.first)
+            StdBenefitAdjustmentCalc.calcBenefitAdjustment(birthYM, startYM = it.first)
                 .shouldBeWithinPercentageOf(it.second, 0.1)
         }
     }

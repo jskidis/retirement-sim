@@ -31,3 +31,19 @@ object StdBenefitAdjustmentCalc : BenefitAdjustmentCalc {
         else -> 1.32
     }
 }
+
+object SpousalBenefitAdjustmentCalc: BenefitAdjustmentCalc {
+    override fun calcBenefitAdjustment(birthYM: YearMonth, startYM: YearMonth): Rate {
+        val ageAtStart = startYM.toDec() - birthYM.toDec()
+        val fullRetirementAge = if (birthYM.year >= 1955) 67.0 else 66.0
+        val yearsFromFRA = fullRetirementAge - ageAtStart
+        return adjustment(yearsFromFRA)
+    }
+
+    private fun adjustment(yearsFromFRA: Double): Double = when {
+        yearsFromFRA > 5.0 -> 0.0
+        yearsFromFRA > 3.0 -> 0.375 - ((yearsFromFRA-3) /40)
+        yearsFromFRA > 0.0 -> 0.5 - (yearsFromFRA /24)
+        else -> 0.5
+    }
+}

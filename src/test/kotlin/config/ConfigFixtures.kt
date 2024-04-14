@@ -19,7 +19,9 @@ import medical.MedInsuranceProgression
 import netspend.NetSpendAllocationConfig
 import progression.Progression
 import socsec.SSBenefitProgression
+import socsec.SecondarySSBenefitProgression
 import socsec.benefitsProgressionFixture
+import socsec.secondaryProgressionFixture
 import tax.ITaxesProcessor
 import tax.TaxCalcConfig
 import tax.TaxesProcessorFixture
@@ -86,6 +88,8 @@ fun parentConfigFixture(
         assetProgressionFixture("Asset", name)),
     benefitConfigs: List<SSBenefitProgression> = listOf(
         benefitsProgressionFixture()),
+    secondaryBenefitConfigs: List<SecondarySSBenefitProgression> = listOf(
+        secondaryProgressionFixture()),
     medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
 ) =
     ParentConfig(
@@ -94,6 +98,7 @@ fun parentConfigFixture(
         expenseConfigs,
         assetConfigs,
         benefitConfigs,
+        secondaryBenefitConfigs,
         medInsuranceConfigs)
 
 fun employmentConfigFixture(
