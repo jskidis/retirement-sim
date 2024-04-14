@@ -6,6 +6,7 @@ import inflation.InflationRec
 import inflation.StdCmpdInflationProvider
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
 import yearlyDetailFixture
 
@@ -26,8 +27,9 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         InflationRAC(0.0),
     )
 
+    val cmpdInflation = 2.0
     val doubledInflation = noInflationRec.copy(
-        std = InflationRAC(0.1, 2.0, 2.2))
+        std = InflationRAC(0.1, cmpdInflation, 2.2))
 
     should("determineTax calculates taxes based on brackets") {
         val currYear = yearlyDetail.copy(
@@ -70,14 +72,14 @@ class BracketBasedTaxCalcTest : ShouldSpec({
             .shouldBe(0.0)
 
         // Amount is end of first bracket when adjusting for inflation
-        taxCalc.determineTax(brackets[0].jointly.end * 2.0, currYear)
-            .shouldBe(brackets[0].jointly.size() * brackets[0].pct * 2.0)
+        taxCalc.determineTax(brackets[0].jointly.end * cmpdInflation, currYear)
+            .shouldBe(brackets[0].jointly.size() * brackets[0].pct * cmpdInflation)
 
         // Amount is end of second bracket when adjusting for inflation
-        taxCalc.determineTax(brackets[1].jointly.end * 2.0, currYear)
+        taxCalc.determineTax(brackets[1].jointly.end * cmpdInflation, currYear)
             .shouldBe(
                 (brackets[0].jointly.size() * brackets[0].pct +
-                    brackets[1].jointly.size() * brackets[1].pct) * 2.0)
+                    brackets[1].jointly.size() * brackets[1].pct) * cmpdInflation)
     }
 
     should("marginalRate return the rate the matches tax bracket the inflation adjust amount") {
@@ -87,11 +89,11 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         )
 
         // Inflation adjusted amount is less than the start of the lowest brackets
-        taxCalc.marginalRate(brackets[0].jointly.start * 2.0 - 1.0, currYear)
-            .shouldBe(0.0)
+        taxCalc.marginalRate(brackets[0].jointly.start * cmpdInflation - 1.0, currYear)
+            .shouldBeZero()
 
         // Inflation adjusted amount is greater than the start of the lowest brackets but less than end
-        taxCalc.marginalRate(brackets[0].jointly.start * 2.0 + 1.0, currYear)
+        taxCalc.marginalRate(brackets[0].jointly.start * cmpdInflation + 1.0, currYear)
             .shouldBe(brackets[0].pct)
 
         // Amount is so high it must be in the highest bracket
@@ -117,12 +119,12 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         )
 
         // Inflation adjusted top of first bracket
-        taxCalc.topOfCurrBracket(brackets[0].jointly.start * 2.0 + 1.0, currYear)
-            .shouldBe(brackets[0].jointly.end * 2.0)
+        taxCalc.currentBracket(brackets[0].jointly.start * cmpdInflation + 1.0, currYear)
+            .shouldBe(brackets[0].jointly.applyInflation(cmpdInflation))
 
         // Inflation adjusted top of second bracket
-        taxCalc.topOfCurrBracket(brackets[1].jointly.start * 2.0 + 1.0, currYear)
-            .shouldBe(brackets[1].jointly.end * 2.0)
+        taxCalc.currentBracket(brackets[1].jointly.start * cmpdInflation + 1.0, currYear)
+            .shouldBe(brackets[1].jointly.applyInflation(cmpdInflation))
     }
 
     should("determine greatest amount below given pct") {
@@ -132,12 +134,12 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         )
 
         // Inflation adjusted top of first bracket
-        taxCalc.topAmountBelowPct(brackets[0].pct + .01, currYear)
-            .shouldBe(brackets[0].jointly.end * 2.0)
+        taxCalc.bracketBelowPct(brackets[0].pct + .01, currYear)
+            .shouldBe(brackets[0].jointly.applyInflation(cmpdInflation))
 
         // Inflation adjusted top of second bracket
-        taxCalc.topAmountBelowPct(brackets[1].pct + .01, currYear)
-            .shouldBe(brackets[1].jointly.end * 2.0)
+        taxCalc.bracketBelowPct(brackets[1].pct + .01, currYear)
+            .shouldBe(brackets[1].jointly.applyInflation(cmpdInflation))
     }
 
     should("successfully load brackets from files") {
@@ -159,9 +161,9 @@ class BracketBasedTaxCalcTest : ShouldSpec({
                 it.jointly.end.shouldBeGreaterThanOrEqual(it.household.end)
                 it.household.end.shouldBeGreaterThanOrEqual(it.single.end)
             }
-            brackets[brackets.size -1].single.end.shouldBe(Double.MAX_VALUE)
-            brackets[brackets.size -1].jointly.end.shouldBe(Double.MAX_VALUE)
-            brackets[brackets.size -1].household.end.shouldBe(Double.MAX_VALUE)
+            brackets[brackets.size - 1].single.end.shouldBe(Double.MAX_VALUE)
+            brackets[brackets.size - 1].jointly.end.shouldBe(Double.MAX_VALUE)
+            brackets[brackets.size - 1].household.end.shouldBe(Double.MAX_VALUE)
         }
 
         validateBrackets(CurrentFedTaxBrackets.brackets)

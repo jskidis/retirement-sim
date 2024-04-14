@@ -12,8 +12,8 @@ interface BracketBasedTaxCalc : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount
 
     fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate
-    fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount
-    fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount
+    fun currentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase?
+    fun bracketBelowPct(pct: Rate, currYear: YearlyDetail): BracketCase?
 }
 
 interface StdBracketBasedTaxCalc : BracketBasedTaxCalc, TaxBracketProvider, CmpdInflationProvider {
@@ -31,21 +31,21 @@ interface StdBracketBasedTaxCalc : BracketBasedTaxCalc, TaxBracketProvider, Cmpd
     }
 
     override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate =
-        findCurrentBracket(taxableAmount, currYear)?.pct ?: 0.0
+        determineCurrentBracket(taxableAmount, currYear)?.pct ?: 0.0
 
-    override fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount {
-        val currBracket = findCurrentBracket(taxableAmount, currYear)
-        return if (currBracket == null) 0.0
-        else currBracket.end * getCmpdInflationStart(currYear)
-    }
-
-    override fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount {
+    override fun bracketBelowPct(pct: Rate, currYear: YearlyDetail): BracketCase? {
         val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
-        return bracketsBFS.findLast { it.pct <= pct }
-            ?.let { it.end * getCmpdInflationStart(currYear) } ?: 0.0
+        return bracketsBFS.findLast {
+                it.pct <= pct
+            }?.applyInflation(getCmpdInflationStart(currYear))
     }
 
-    private fun findCurrentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? {
+    override fun currentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? {
+        return determineCurrentBracket(taxableAmount, currYear)
+            ?.applyInflation(getCmpdInflationStart(currYear))
+    }
+
+    fun determineCurrentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? {
         val bracketsBFS = bracketsByFilingStatus(currYear.filingStatus)
         val cmpdInflation = getCmpdInflationStart(currYear)
 

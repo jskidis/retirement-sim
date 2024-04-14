@@ -63,6 +63,8 @@ data class BracketCase(
     val end: Amount = Amount.MAX_VALUE,
 ) {
     fun size() = end - start
+    fun applyInflation(cmpdInflation: Rate) = BracketCase(
+        pct = pct, start = start * cmpdInflation, end = end * cmpdInflation)
 }
 
 data class TaxBracket(

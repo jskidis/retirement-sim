@@ -15,16 +15,16 @@ fun interface RothConversionAmountCalc {
     ): Amount
 }
 
-class TilNextBracketRothConv : RothConversionAmountCalc {
+class TilNextBracketRothConv() : RothConversionAmountCalc {
     override fun amountToConvert(
         currYear: YearlyDetail,
         taxableAmounts: TaxableAmounts,
-        taxCalcConfig: TaxCalcConfig,
+        taxCalcConfig: TaxCalcConfig
     ): Amount {
         val taxable = taxableAmounts.fed
-        val topOfBracket = taxCalcConfig.fed.topOfCurrBracket(taxable, currYear)
-        return if (topOfBracket == Amount.MAX_VALUE) 0.0
-        else topOfBracket - taxable
+        val currBracket = taxCalcConfig.fed.currentBracket(taxable, currYear)
+        return if (currBracket == null || currBracket.end == Amount.MAX_VALUE) 0.0
+        else currBracket.end - taxable
     }
 }
 
@@ -35,8 +35,8 @@ class MaxTaxRateRothConv(val maxPct: Rate) : RothConversionAmountCalc {
         taxCalcConfig: TaxCalcConfig,
     ): Amount {
         val taxable = taxableAmounts.fed
-        val topAmount = taxCalcConfig.fed.topAmountBelowPct(maxPct, currYear)
-        return if (topAmount == Amount.MAX_VALUE) 0.0
-        else topAmount - taxable
+        val bracket = taxCalcConfig.fed.bracketBelowPct(maxPct, currYear)
+        return if (bracket == null || bracket.end == Amount.MAX_VALUE) 0.0
+        else bracket.end - taxable
     }
 }

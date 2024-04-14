@@ -9,8 +9,8 @@ interface CmpdInflationProvider {
     fun getCurrInflationRate(year: YearlyDetail): Rate
 }
 
-abstract class BaseCmpdInflationProvider : CmpdInflationProvider {
-    abstract fun getRAC(inflationRec: InflationRec): InflationRAC
+interface BaseCmpdInflationProvider : CmpdInflationProvider {
+    fun getRAC(inflationRec: InflationRec): InflationRAC
 
     override fun getCmpdInflationStart(currYear: YearlyDetail): Rate =
         getRAC(currYear.inflation).cmpdStart
@@ -21,19 +21,19 @@ abstract class BaseCmpdInflationProvider : CmpdInflationProvider {
     override fun getCurrInflationRate(year: YearlyDetail): Rate = getRAC(year.inflation).rate
 }
 
-class StdCmpdInflationProvider : BaseCmpdInflationProvider() {
+class StdCmpdInflationProvider : BaseCmpdInflationProvider {
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.std
 }
 
-class MedCmpdInflationProvider : BaseCmpdInflationProvider() {
+class MedCmpdInflationProvider : BaseCmpdInflationProvider {
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.med
 }
 
-class ChainCmpdInflationProvider : BaseCmpdInflationProvider() {
+class ChainCmpdInflationProvider : BaseCmpdInflationProvider {
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.chain
 }
 
-class WageCmpdInflationProvider : BaseCmpdInflationProvider() {
+class WageCmpdInflationProvider : BaseCmpdInflationProvider {
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.wage
 }
 

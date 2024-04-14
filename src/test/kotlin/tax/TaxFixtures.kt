@@ -28,15 +28,13 @@ class BracketTaxCalcFixture(fixedPct: Double = 0.0) : StdBracketBasedTaxCalc,
 class BracketBasedTaxCalcFixture(
     val tax: Amount = 0.0,
     val marginalRate: Rate = 0.0,
-    val topOfCurrBracket: Amount = 0.0,
-    val topAmountBelowPct: Amount = 0.0,
+    val currBracket: BracketCase? = null,
+    val backetBelowPct: BracketCase? = null,
 ) : BracketBasedTaxCalc {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = tax
     override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate = marginalRate
-    override fun topOfCurrBracket(taxableAmount: Amount, currYear: YearlyDetail): Amount =
-        topOfCurrBracket
-
-    override fun topAmountBelowPct(pct: Rate, currYear: YearlyDetail): Amount = topAmountBelowPct
+    override fun currentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? = currBracket
+    override fun bracketBelowPct(pct: Rate, currYear: YearlyDetail): BracketCase? = backetBelowPct
 }
 
 fun baseTaxConfigFixture() = TaxCalcConfig(
