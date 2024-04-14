@@ -16,10 +16,29 @@ data class EmploymentConfig(
     val employerInsurance: EmployerInsurance? = null,
 )
 
+interface IEmployerInsurance {
+    val selfCost: Amount
+    val spouseCost: Amount
+    val dependentCost: Amount
+}
+
 data class EmployerInsurance(
-    val selfCost: Amount,
-    val spouseCost: Amount,
-    val dependantCost: Amount,
-    val cobraLength: Int = 18,
-    val cobraMult: Double = 2.04
-)
+    override val selfCost: Amount,
+    override val spouseCost: Amount,
+    override val dependentCost: Amount,
+    val cobraConfig: CobraConfig? = null,
+) : IEmployerInsurance
+
+data class CobraConfig(
+    override val selfCost: Amount,
+    override val spouseCost: Amount,
+    override val dependentCost: Amount,
+    val months: Int = 18,
+) : IEmployerInsurance {
+
+    fun effectiveDates(empConfig: EmploymentConfig) = DateRange(
+        start = empConfig.dateRange.end,
+        end = empConfig.dateRange.end.plusMonths(months)
+    )
+}
+

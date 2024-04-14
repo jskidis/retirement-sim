@@ -107,7 +107,10 @@ fun employmentConfigFixture(
     dateRange: DateRange = DateRange(),
     startSalary: Amount = 0.0,
     bonusCalc: BonusCalculator? = null,
-    employerInsurance: EmployerInsurance? = EmployerInsurance(0.0, 0.0, 0.0),
+    employerInsurance: EmployerInsurance? = EmployerInsurance(
+        selfCost = 0.0, spouseCost = 0.0, dependentCost = 0.0,
+        cobraConfig = CobraConfig(0.0, 0.0, 0.0)
+    ),
 ): EmploymentConfig =
     EmploymentConfig(
         ident = RecIdentifier(name = name, person = person),

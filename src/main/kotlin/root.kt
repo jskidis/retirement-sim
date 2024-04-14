@@ -110,5 +110,11 @@ data class YearMonth (
         ((toDec() - other.toDec()) * 100).toInt()
 
     override fun toString() = toJsonStr()
+
+    fun plusMonths(months: Int): YearMonth =
+        YearMonth(
+            year = year + (month + months) / 12,
+            month = (month + months) % 12
+        )
 }
 

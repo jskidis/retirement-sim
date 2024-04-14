@@ -47,8 +47,13 @@ object Jane : ParentConfigBuilder {
         dateRange = employmentDates,
         employerInsurance = EmployerInsurance(
             selfCost = 2500.0,
-            spouseCost = 3000.0,
-            dependantCost = 1000.0
+            spouseCost = 2500.0,
+            dependentCost = 1000.0,
+            cobraConfig = CobraConfig(
+                selfCost = 2.04 * 2500.0,
+                spouseCost = 2.04 * 2500.0,
+                dependentCost = 2.04 * 1000.0
+            )
         )
     )
 
