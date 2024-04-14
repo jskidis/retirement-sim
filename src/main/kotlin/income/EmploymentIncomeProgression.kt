@@ -19,6 +19,9 @@ open class EmploymentIncomeProgression(
         val bonus = employmentConfig.bonusCalc?.calcBonus(income.baseAmount, prevYear) ?: 0.0
 
         return if (bonus <= 0.0) income
-        else income.copy(bonus = bonus)
+        else income.copy(bonus = bonus,
+            taxableIncome = taxabilityProfile.calcTaxable(
+                ident.name, amount = income.baseAmount + bonus)
+        )
     }
 }

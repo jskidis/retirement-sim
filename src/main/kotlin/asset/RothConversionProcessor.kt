@@ -18,6 +18,11 @@ object RothConversionProcessor {
             val amount = amountCalc.amountToConvert(
                 currYear, taxableAmounts, config.currTaxConfig(currYear))
 
+            val availableToConvert = rothConfig.sourceDestPairs.sumOf {
+                findAssetRec(it.first, currYear)?.finalBalance() ?: 0.0
+            }
+            if (availableToConvert == 0.0) return 0.0
+
             val remaining = rothConfig.sourceDestPairs.fold(amount) { acc, it ->
                 if (acc < 1.0) 0.0
                 else {

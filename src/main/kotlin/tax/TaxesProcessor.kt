@@ -13,7 +13,7 @@ interface ITaxesProcessor {
     fun determineStdDeduct(currYear: YearlyDetail): Double
 }
 
-object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflationProvider()  {
+object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflationProvider() {
     val nameOfTaxablePerson = "Household"
 
     override fun processTaxes(
@@ -36,23 +36,24 @@ object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflati
 
     override fun determineTaxableAmounts(currYear: YearlyDetail)
         : TaxableAmounts {
-        val taxableAmounts =
+        val stdDeduct = determineStdDeduct(currYear)
+        val taxableAmounts = (
             currYear.incomes.map { it.taxable() } +
                 currYear.expenses.map { it.taxable() } +
                 currYear.assets.map { it.taxable() } +
                 currYear.benefits.map { it.taxable() }
+            ).filter { it.hasAmounts() }
 
-        val stdDeduct = determineStdDeduct(currYear)
-
-        return taxableAmounts.filter { it.hasAmounts() }
-            .fold(
-                TaxableAmounts(person = nameOfTaxablePerson),
-                { acc, amounts -> acc.plus(amounts) }
-            ).plus(TaxableAmounts(
-                person = nameOfTaxablePerson,
-                fed = -stdDeduct,
-                state = -stdDeduct
-            ))
+        return taxableAmounts
+            .fold(TaxableAmounts
+                (person = nameOfTaxablePerson), { acc, amounts ->
+                acc.plus(amounts)
+            }).plus(
+                TaxableAmounts(
+                    person = nameOfTaxablePerson,
+                    fed = -stdDeduct,
+                    state = -stdDeduct
+                ))
     }
 
     override fun determineStdDeduct(currYear: YearlyDetail): Double =
