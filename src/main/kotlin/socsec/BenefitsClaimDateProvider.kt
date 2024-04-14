@@ -15,17 +15,18 @@ class StdBenefitsClaimDateProvider(val targetYM: YearMonth) : BenefitsClaimDateP
 
 class FlexibleClaimDateProvider(
     val birthYM: YearMonth,
-    val targetYM: YearMonth,
+    targetYM: YearMonth,
     val multipleOfExpense: Double,
 ) : BenefitsClaimDateProvider {
 
+    val guardedTarget = maxOf(targetYM, birthYM.copy(birthYM.year + 62))
     override fun claimDate(prevRec: SSBenefitRec?, prevYear: YearlyDetail?): YearMonth = when {
-        prevYear == null || prevRec == null -> targetYM
+        prevYear == null || prevRec == null -> guardedTarget
         prevRec.claimDate != null -> prevRec.claimDate
-        prevYear.year + 1 >= targetYM.year -> targetYM
-        ageThisYear(prevYear) < 63 -> targetYM
-        getSSIncome(prevRec.ident.person, prevYear) > prevRec.baseAmount -> targetYM
-        assetToExpenseRatio(prevYear) >= multipleOfExpense -> targetYM
+        prevYear.year + 1 >= guardedTarget.year -> guardedTarget
+        ageThisYear(prevYear) < 63 -> guardedTarget
+        getSSIncome(prevRec.ident.person, prevYear) > prevRec.baseAmount -> guardedTarget
+        assetToExpenseRatio(prevYear) >= multipleOfExpense -> guardedTarget
         else -> YearMonth(year = prevYear.year + 1, 0)
     }
 
