@@ -26,7 +26,7 @@ object SimulationRun {
         do {
             years.add(generateYearlyDetail(config, prevYear))
             prevYear = years.last()
-        } while (years.last().year < 2060 &&
+        } while (years.last().year < 2050 &&
             years.last().totalAssetValues() > years.last().totalExpense()
         )
 
