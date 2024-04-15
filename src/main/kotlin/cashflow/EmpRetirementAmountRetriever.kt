@@ -13,27 +13,27 @@ interface EmpRetirementAmountRetriever {
     fun isFreeMoney(): Boolean = false
 }
 
-open class MaxAllowedAmountRetriever : EmpRetirementAmountRetriever {
+open class MaxAllowedAmountRetriever(val pctOfMax: Rate = 1.00) : EmpRetirementAmountRetriever {
     override fun doProrate(): Boolean = true
 
     override fun determineAmount(currYear: YearlyDetail, incomeRec: IncomeRec, birthYM: YearMonth)
-        : Amount = RetirementLimits.calc401kCap(currYear)
+        : Amount = RetirementLimits.calc401kCap(currYear) * pctOfMax
 }
 
-open class MaxCatchupAmountRetriever : EmpRetirementAmountRetriever {
+open class MaxCatchupAmountRetriever(val pctOfMax: Rate = 1.00) : EmpRetirementAmountRetriever {
     override fun doProrate(): Boolean = true
 
     override fun determineAmount(currYear: YearlyDetail, incomeRec: IncomeRec, birthYM: YearMonth)
-        : Amount = RetirementLimits.calc401kCatchup(currYear, birthYM)
+        : Amount = RetirementLimits.calc401kCatchup(currYear, birthYM) * pctOfMax
 }
 
-open class MaxPlusCatchupAmountRetriever : EmpRetirementAmountRetriever {
+open class MaxPlusCatchupAmountRetriever(val pctOfMax: Rate = 1.00) : EmpRetirementAmountRetriever {
     override fun doProrate(): Boolean = true
 
     override fun determineAmount(currYear: YearlyDetail, incomeRec: IncomeRec, birthYM: YearMonth)
         : Amount =
-        MaxAllowedAmountRetriever().determineAmount(currYear, incomeRec, birthYM) +
-            MaxCatchupAmountRetriever().determineAmount(currYear, incomeRec, birthYM)
+        (MaxAllowedAmountRetriever(pctOfMax).determineAmount(currYear, incomeRec, birthYM) +
+            MaxCatchupAmountRetriever(pctOfMax).determineAmount(currYear, incomeRec, birthYM))
 }
 
 open class PctOfSalaryAmountRetriever(
