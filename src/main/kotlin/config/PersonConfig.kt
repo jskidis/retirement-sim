@@ -14,23 +14,25 @@ import socsec.SecondarySSBenefitProgression
 data class Person (
     val name: Name,
     val birthYM: YearMonth,
-    val actuarialGender: ActuarialGender
+    val actuarialGender: ActuarialGender,
+    val isDependant: Boolean,
 )
 
 enum class ActuarialGender { MALE, FEMALE }
 
 open class PersonConfig(
-    val person: Person,
-    val incomes: List<IncomeProgression>,
-    val expenses: List<Progression<ExpenseRec>>,
-    val assets: List<AssetProgression>,
-    val benefits: List<SSBenefitProgression>,
-    val secondaryBenefits: List<SecondarySSBenefitProgression>,
-    val medInsurance: List<MedInsuranceProgression>
+    private val person: Person,
+    private val incomes: List<IncomeProgression>,
+    private val expenses: List<Progression<ExpenseRec>>,
+    private val assets: List<AssetProgression>,
+    private val benefits: List<SSBenefitProgression>,
+    private val secondaryBenefits: List<SecondarySSBenefitProgression>,
+    private val medInsurance: List<MedInsuranceProgression>
 ) {
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
     fun actuarialGender(): ActuarialGender = person.actuarialGender
+    fun isDependant(): Boolean = person.isDependant
     fun incomes(): List<IncomeProgression> = incomes
     fun expenses(): List<ExpenseProgression> = expenses
     fun assets(): List<AssetProgression> = assets
@@ -38,24 +40,4 @@ open class PersonConfig(
     fun secondaryBenefits(): List<SecondarySSBenefitProgression> = secondaryBenefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
 }
-
-open class ParentConfig(
-    person: Person,
-    incomes: List<IncomeProgression>,
-    expenses: List<ExpenseProgression>,
-    assets: List<AssetProgression>,
-    benefits: List<SSBenefitProgression>,
-    secondaryBenefits: List<SecondarySSBenefitProgression>,
-    medInsurance: List<MedInsuranceProgression>,
-) : PersonConfig(person, incomes, expenses, assets, benefits, secondaryBenefits, medInsurance)
-
-open class DependantConfig(
-    person: Person,
-    incomes: List<IncomeProgression>,
-    expenses: List<ExpenseProgression>,
-    assets: List<AssetProgression>,
-    benefits: List<SSBenefitProgression>,
-    secondaryBenefits: List<SecondarySSBenefitProgression>,
-    medInsurance: List<MedInsuranceProgression>,
-) : PersonConfig(person, incomes, expenses, assets, benefits, secondaryBenefits, medInsurance)
 

@@ -15,7 +15,7 @@ object RandomizerFactory {
 
     fun createNewValues(config: SimConfig): Map<String, Double> =
         (GaussKeys.entries.map { it.name to getGaussRnd()  } +
-            config.household.members.people().map { it.name() to getDoubleRnd() }).toMap()
+            config.household.members.map { it.name() to getDoubleRnd() }).toMap()
 
     private fun getGaussRnd() =
         if(suppressRandom()) 0.0

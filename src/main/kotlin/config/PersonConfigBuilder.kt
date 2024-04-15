@@ -18,22 +18,8 @@ interface PersonConfigBuilder {
     fun benefits(person: Person): List<SSBenefitProgression> = ArrayList()
     fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> = ArrayList()
     fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
-}
 
-interface ParentConfigBuilder : PersonConfigBuilder {
-    fun buildConfig(person: Person) = ParentConfig(
-        person = person,
-        incomes = incomes(person),
-        expenses = expenses(person),
-        assets = assets(person),
-        benefits = benefits(person),
-        secondaryBenefits = secondaryBenefits(person),
-        medInsurance = medInsurance(person)
-    )
-}
-
-interface DependentConfigBuilder : PersonConfigBuilder {
-    fun buildConfig(person: Person) = DependantConfig(
+    fun buildConfig(person: Person) = PersonConfig(
         person = person,
         incomes = incomes(person),
         expenses = expenses(person),
@@ -45,7 +31,7 @@ interface DependentConfigBuilder : PersonConfigBuilder {
 }
 
 interface HouseholdConfigBuilder {
-    fun buildConfig(householdMembers: HouseholdMembers) = HouseholdConfig(
+    fun buildConfig(householdMembers: List<PersonConfig>) = HouseholdConfig(
         members = householdMembers,
         expenses = expenses(),
         jointAssets = assets()

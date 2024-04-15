@@ -2,7 +2,10 @@ package medical
 
 import Amount
 import YearlyDetail
-import config.*
+import config.SimConfig
+import config.configFixture
+import config.householdConfigFixture
+import config.parentConfigFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -11,7 +14,6 @@ import yearlyDetailFixture
 
 class MedInsuranceProcessorTest : ShouldSpec({
 
-    val memberConfig = householdMembersFixture()
     val householdConfig = householdConfigFixture()
     val baseConfig = configFixture()
 
@@ -27,12 +29,9 @@ class MedInsuranceProcessorTest : ShouldSpec({
         baseConfig.copy(
             household =
             householdConfig.copy(
-                members =
-                memberConfig.copy(
-                    parent1 = parentConfigFixture(
-                        name = personName, medInsuranceConfigs = medInsurance1),
-                    parent2 = parentConfigFixture(
-                        name = personName2, medInsuranceConfigs = medInsurance2)
+                members = listOf(
+                    parentConfigFixture(name = personName, medInsuranceConfigs = medInsurance1),
+                    parentConfigFixture(name = personName2, medInsuranceConfigs = medInsurance2)
                 )
             )
         )

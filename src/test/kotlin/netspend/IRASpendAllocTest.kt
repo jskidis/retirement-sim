@@ -23,13 +23,15 @@ class IRASpendAllocTest : ShouldSpec({
     val person60 = Person(
         name = "60 YO",
         birthYM = YearMonth(year = year - retirementAge.toInt() - 1, month = 0),
-        actuarialGender = ActuarialGender.FEMALE
+        actuarialGender = ActuarialGender.FEMALE,
+        isDependant = false
     )
 
     val person55 = Person(
         name = "55 YO",
         birthYM = YearMonth(year = year - retirementAge.toInt() + 5, month = 0),
-        actuarialGender = ActuarialGender.FEMALE
+        actuarialGender = ActuarialGender.FEMALE,
+        isDependant = false
     )
 
 

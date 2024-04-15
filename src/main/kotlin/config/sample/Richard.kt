@@ -10,8 +10,8 @@ import cashflow.IRAContribution
 import cashflow.RmdCashFlowEventHandler
 import config.AssetAttributeMap
 import config.EmploymentConfig
-import config.ParentConfigBuilder
 import config.Person
+import config.PersonConfigBuilder
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
 import expense.ExpenseProgression
@@ -28,7 +28,7 @@ import util.DateRange
 import util.YearBasedConfig
 import util.YearConfigPair
 
-object Richard : ParentConfigBuilder {
+object Richard : PersonConfigBuilder {
     val incomeStart: Amount = 30000.0
     val expenseStart: Amount = 30000.0
     val employmentDates: DateRange = DateRange(end = YearMonth(2032, 1))

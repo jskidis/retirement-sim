@@ -25,15 +25,15 @@ data class SimConfig(
     val simSuccess: SimSuccess = BasicSimSuccess(),
 ) {
     fun incomeConfigs(): List<IncomeProgression> =
-        household.members.people().flatMap { it.incomes() }
+        household.members.flatMap { it.incomes() }
 
     fun expenseConfigs(): List<ExpenseProgression> =
         household.expenses +
-            household.members.people().flatMap { it.expenses() }
+            household.members.flatMap { it.expenses() }
 
     fun assetConfigs(): List<AssetProgression> =
         household.jointAssets +
-            household.members.people().flatMap { it.assets() }
+            household.members.flatMap { it.assets() }
 
     fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
         taxConfig.getConfigForYear(currYear.year)

@@ -19,10 +19,8 @@ object SimulationRun {
     ): SimResult {
         val years = ArrayList<YearlyDetail>()
         val config = configBuilder.buildConfig()
-        config.household.members.parent1
 
         var prevYear: YearlyDetail? = null
-
         do {
             years.add(generateYearlyDetail(config, prevYear))
             prevYear = years.last()

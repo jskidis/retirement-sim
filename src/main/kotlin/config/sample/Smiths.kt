@@ -20,32 +20,35 @@ class Smiths : ConfigBuilder {
         val jane = Person(
             name = "Jane",
             birthYM = YearMonth(1975, 4),
-            actuarialGender = ActuarialGender.FEMALE
+            actuarialGender = ActuarialGender.FEMALE,
+            isDependant = false
         )
         val richard = Person(
             name = "Richard",
             birthYM = YearMonth(1965, 1),
-            actuarialGender = ActuarialGender.MALE
+            actuarialGender = ActuarialGender.MALE,
+            isDependant = false
         )
         val suzy = Person(
             name = "Suzy",
             birthYM = YearMonth(2005, 3),
-            actuarialGender = ActuarialGender.FEMALE
+            actuarialGender = ActuarialGender.FEMALE,
+            isDependant = true
         )
         val jonny = Person(
             name = "Jonny",
             birthYM = YearMonth(2010, 9),
-            actuarialGender = ActuarialGender.MALE
+            actuarialGender = ActuarialGender.MALE,
+            isDependant = true
         )
     }
 
     override fun buildConfig(): SimConfig {
-        val householdMembers = HouseholdMembers(
-            parent1 = Jane.buildConfig(jane),
-            parent2 = Richard.buildConfig(richard),
-            dependants = listOf(
-                Jonny.buildConfig(suzy),
-                Suzy.buildConfig(jonny))
+        val householdMembers = listOf(
+            Jane.buildConfig(jane),
+            Richard.buildConfig(richard),
+            Jonny.buildConfig(suzy),
+            Suzy.buildConfig(jonny)
         )
         val householdConfig = Household.buildConfig(householdMembers)
 

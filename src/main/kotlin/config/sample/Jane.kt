@@ -27,7 +27,7 @@ import util.DateRange
 import util.YearBasedConfig
 import util.YearConfigPair
 
-object Jane : ParentConfigBuilder {
+object Jane : PersonConfigBuilder {
     val incomeStart: Amount = 135000.0
     val expenseStart: Amount = 30000.0
     val employmentDates: DateRange = DateRange(end = YearMonth(2037, 6))

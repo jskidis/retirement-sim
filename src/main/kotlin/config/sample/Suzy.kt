@@ -2,15 +2,15 @@ package config.sample
 
 import Amount
 import RecIdentifier
-import config.DependentConfigBuilder
 import config.Person
+import config.PersonConfigBuilder
 import expense.BasicExpenseProgression
 import expense.ExpenseProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
 import tax.NonDeductProfile
 
-object Suzy: DependentConfigBuilder {
+object Suzy: PersonConfigBuilder {
     val expenseStart: Amount = 20000.0
 
     override fun expenses(person: Person): List<ExpenseProgression> {

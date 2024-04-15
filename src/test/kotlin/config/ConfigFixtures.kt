@@ -54,10 +54,10 @@ fun personFixture(
     name: Name = "Person",
     birthYM: YearMonth = YearMonth(year = 1980, month = 0),
     actuarialGender: ActuarialGender = ActuarialGender.FEMALE,
-) = Person(name, birthYM, actuarialGender)
+) = Person(name, birthYM, actuarialGender, false)
 
 fun householdConfigFixture(
-    householdMembers: HouseholdMembers = householdMembersFixture(),
+    householdMembers: List<PersonConfig> = householdMembersFixture(),
     expenses: List<ExpenseProgression> = ArrayList(),
     jointAssets: List<AssetProgression> = ArrayList(),
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
@@ -69,14 +69,9 @@ fun assetOrderingFixture(
 
 */
 fun householdMembersFixture(
-    parent1Config: ParentConfig = parentConfigFixture("Parent1"),
-    parent2Config: ParentConfig = parentConfigFixture("Parent2"),
-    dependantsConfig: List<DependantConfig> = listOf(),
-) = HouseholdMembers(
-    parent1 = parent1Config,
-    parent2 = parent2Config,
-    dependants = dependantsConfig
-)
+    parent1Config: PersonConfig = parentConfigFixture("Parent1"),
+    parent2Config: PersonConfig = parentConfigFixture("Parent2")
+) = listOf(parent1Config, parent2Config)
 
 fun parentConfigFixture(
     name: Name,
@@ -92,7 +87,7 @@ fun parentConfigFixture(
         secondaryProgressionFixture()),
     medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
 ) =
-    ParentConfig(
+    PersonConfig(
         personFixture(name),
         incomeConfigs,
         expenseConfigs,
