@@ -22,8 +22,8 @@ import socsec.SSBenefitProgression
 import socsec.SecondarySSBenefitProgression
 import socsec.benefitsProgressionFixture
 import socsec.secondaryProgressionFixture
-import tax.ITaxesProcessor
 import tax.TaxCalcConfig
+import tax.TaxProcessorConfig
 import tax.TaxesProcessorFixture
 import tax.taxConfigFixture
 import util.DateRange
@@ -37,14 +37,14 @@ fun configFixture(
     taxConfig: YearBasedConfig<TaxCalcConfig> = taxConfigFixture(),
     assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
     rothConversion: RothConversionConfig? = null,
-    taxesProcessor: ITaxesProcessor = TaxesProcessorFixture()
+    taxesProcessor: TaxProcessorConfig = TaxesProcessorFixture()
 
 ) =
     SimConfig(
         startYear = startYear,
         household = householdConfig,
         inflationConfig = inflationConfig,
-        taxConfig = taxConfig,
+        taxCalcConfig = taxConfig,
         assetOrdering = assetOrdering,
         rothConversion = rothConversion,
         taxesProcessor = taxesProcessor

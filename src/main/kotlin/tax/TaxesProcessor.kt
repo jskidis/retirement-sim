@@ -7,13 +7,13 @@ import inflation.StdCmpdInflationProvider
 import util.ConstantsProvider
 import util.ConstantsProvider.KEYS.*
 
-interface ITaxesProcessor {
+interface TaxProcessorConfig {
     fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec
     fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts
     fun determineStdDeduct(currYear: YearlyDetail): Double
 }
 
-object TaxesProcessor : ITaxesProcessor, CmpdInflationProvider by StdCmpdInflationProvider() {
+object TaxesProcessor : TaxProcessorConfig, CmpdInflationProvider by StdCmpdInflationProvider() {
     val nameOfTaxablePerson = "Household"
 
     override fun processTaxes(

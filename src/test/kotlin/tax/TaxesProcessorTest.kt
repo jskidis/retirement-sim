@@ -41,7 +41,7 @@ class TaxesProcessorTest : ShouldSpec({
     val stdDeduct = ConstantsProvider.getValue(STD_DEDUCT_JOINTLY)
 
     val config = configFixture().copy(
-        taxConfig = taxConfigFixture(
+        taxCalcConfig = taxConfigFixture(
             TaxCalcConfig(
                 fedTaxCalc, fedLTGTaxCalc, stateTaxCalc, socSecTaxCalc, medicareTaxCalc
             )

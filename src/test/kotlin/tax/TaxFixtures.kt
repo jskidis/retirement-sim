@@ -53,7 +53,7 @@ class TaxesProcessorFixture(
     val taxesRec: TaxesRec = TaxesRec(),
     val taxableAmounts: TaxableAmounts = TaxableAmounts("Person"),
     val stdDeduction: Amount = 0.0,
-) : ITaxesProcessor {
+) : TaxProcessorConfig {
     override fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec = taxesRec
     override fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts = taxableAmounts
     override fun determineStdDeduct(currYear: YearlyDetail): Double = stdDeduction

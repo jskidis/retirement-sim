@@ -4,10 +4,8 @@ import Name
 import YearMonth
 import asset.AssetProgression
 import expense.ExpenseProgression
-import expense.ExpenseRec
 import income.IncomeProgression
 import medical.MedInsuranceProgression
-import progression.Progression
 import socsec.SSBenefitProgression
 import socsec.SecondarySSBenefitProgression
 
@@ -23,7 +21,7 @@ enum class ActuarialGender { MALE, FEMALE }
 open class PersonConfig(
     private val person: Person,
     private val incomes: List<IncomeProgression>,
-    private val expenses: List<Progression<ExpenseRec>>,
+    private val expenses: List<ExpenseProgression>,
     private val assets: List<AssetProgression>,
     private val benefits: List<SSBenefitProgression>,
     private val secondaryBenefits: List<SecondarySSBenefitProgression>,

@@ -3,7 +3,7 @@ package config.sample
 import Year
 import YearMonth
 import config.*
-import inflation.FixedRateInflationProgression
+import inflation.RandomRateInflationProgression
 import netspend.*
 import tax.NonWageTaxableProfile
 import tax.currTaxConfig
@@ -43,22 +43,26 @@ class Smiths : ConfigBuilder {
         )
     }
 
-    override fun buildConfig(): SimConfig {
+    override fun householdConfig(): HouseholdConfig {
         val householdMembers = listOf(
             Jane.buildConfig(jane),
             Richard.buildConfig(richard),
             Jonny.buildConfig(suzy),
             Suzy.buildConfig(jonny)
         )
-        val householdConfig = Household.buildConfig(householdMembers)
+        return Household.buildConfig(householdMembers)
+    }
 
-        val inflationConfig = FixedRateInflationProgression(0.03)
+    override fun inflationConfig(): InflationConfig = RandomRateInflationProgression()
 
-        val taxCalcConfig = YearBasedConfig(listOf(
-            YearConfigPair(startYear = 2024, config = currTaxConfig),
-            YearConfigPair(startYear = 2027, config = rollbackTaxConfig),
-        ))
+    override fun taxCalcConfig(): TaxCalcYearlyConfig =
+        YearBasedConfig(
+            listOf(
+                YearConfigPair(startYear = 2024, config = currTaxConfig),
+                YearConfigPair(startYear = 2027, config = rollbackTaxConfig),
+            ))
 
+    override fun assetOrdering(): NetSpendAllocationConfig {
         val savingsAllocConfig = NetSpendAssetConfig(
             ident = Household.savingsAcct,
             spendAllocHandler = CapReserveSpendAlloc(
@@ -93,19 +97,11 @@ class Smiths : ConfigBuilder {
             richardIraAllocConfig, janeIraAllocConfig
         )
         val depositOrder = listOf(savingsAllocConfig, investAllocConfig)
-        val assetOrdering = NetSpendAllocationConfig(withdrawOrder, depositOrder)
 
-        val simSuccess = SimSuccess {
-            it.assetValue / it.inflation > 1000000.0
-        }
+        return NetSpendAllocationConfig(withdrawOrder, depositOrder)
+    }
 
-        return SimConfig(
-            startYear = startYear,
-            household = householdConfig,
-            inflationConfig = inflationConfig,
-            taxConfig = taxCalcConfig,
-            assetOrdering = assetOrdering,
-            simSuccess = simSuccess
-        )
+    override fun simSuccess(): SimSuccess = SimSuccess {
+        it.assetValue / it.inflation > 1000000.0
     }
 }

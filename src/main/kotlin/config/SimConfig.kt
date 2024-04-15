@@ -6,22 +6,19 @@ import YearlySummary
 import asset.AssetProgression
 import expense.ExpenseProgression
 import income.IncomeProgression
-import inflation.InflationRec
 import netspend.NetSpendAllocationConfig
-import progression.Progression
-import tax.ITaxesProcessor
 import tax.TaxCalcConfig
+import tax.TaxProcessorConfig
 import tax.TaxesProcessor
-import util.YearBasedConfig
 
 data class SimConfig(
     val startYear: Year,
     val household: HouseholdConfig,
-    val inflationConfig: Progression<InflationRec>,
-    val taxConfig: YearBasedConfig<TaxCalcConfig>,
+    val inflationConfig: InflationConfig,
     val assetOrdering: NetSpendAllocationConfig,
+    val taxCalcConfig: TaxCalcYearlyConfig,
+    val taxesProcessor: TaxProcessorConfig = TaxesProcessor,
     val rothConversion: RothConversionConfig? = null,
-    val taxesProcessor: ITaxesProcessor = TaxesProcessor,
     val simSuccess: SimSuccess = BasicSimSuccess(),
 ) {
     fun incomeConfigs(): List<IncomeProgression> =
@@ -36,7 +33,7 @@ data class SimConfig(
             household.members.flatMap { it.assets() }
 
     fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
-        taxConfig.getConfigForYear(currYear.year)
+        taxCalcConfig.getConfigForYear(currYear.year)
 }
 
 fun interface SimSuccess {

@@ -7,10 +7,6 @@ import medical.MedInsuranceProgression
 import socsec.SSBenefitProgression
 import socsec.SecondarySSBenefitProgression
 
-interface ConfigBuilder {
-    fun buildConfig(): SimConfig
-}
-
 interface PersonConfigBuilder {
     fun incomes(person: Person): List<IncomeProgression> = ArrayList()
     fun expenses(person: Person): List<ExpenseProgression> = ArrayList()
