@@ -4,6 +4,7 @@ import Amount
 import RecIdentifier
 import YearMonth
 import asset.AssetProgression
+import asset.AssetType
 import asset.SimpleAssetGainCreator
 import cashflow.IRAContribution
 import cashflow.RmdCashFlowEventHandler
@@ -68,6 +69,7 @@ object Richard : ParentConfigBuilder {
     override fun assets(person: Person): List<AssetProgression> {
         val richIRA = AssetProgression(
             ident = iraAcct,
+            assetType = AssetType.IRA,
             startBalance = iraAcctBal,
             cashflowEvents = listOf(
                 RmdCashFlowEventHandler(person, NonWageTaxableProfile()),

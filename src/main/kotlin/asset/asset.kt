@@ -20,5 +20,9 @@ interface GrossGainsCalc {
     ): Amount = balance * (attribs.mean + (attribs.stdDev * gaussianRnd))
 }
 
+enum class AssetType {
+    CASH, NRA, IRA, ROTH, STD401K, ROTH401K, OTHER
+}
+
 
 

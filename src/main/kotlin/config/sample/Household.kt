@@ -3,6 +3,7 @@ package config.sample
 import Amount
 import RecIdentifier
 import asset.AssetProgression
+import asset.AssetType
 import asset.SimpleAssetGainCreator
 import asset.TaxableInvestGainCreator
 import config.AssetAttributeMap
@@ -40,6 +41,7 @@ object Household : HouseholdConfigBuilder {
 
         val jointSavings = AssetProgression(
             ident = savingsAcct,
+            assetType = AssetType.CASH,
             startBalance = savingsBal,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonWageTaxableProfile(),
@@ -55,6 +57,7 @@ object Household : HouseholdConfigBuilder {
 
         val jointInvest = AssetProgression(
             ident = investAcct,
+            assetType = AssetType.NRA,
             startBalance = investBal,
             gainCreator = TaxableInvestGainCreator(
                 attributesSet = YearBasedConfig(

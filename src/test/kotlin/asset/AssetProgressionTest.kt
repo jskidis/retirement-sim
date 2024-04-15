@@ -40,6 +40,7 @@ class AssetProgressionTest : ShouldSpec({
         val progression = AssetProgression(
             ident = baseAssetIdent,
             startBalance = startBalance,
+            assetType = AssetType.CASH,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = attributeSet
@@ -65,6 +66,7 @@ class AssetProgressionTest : ShouldSpec({
         val progression = AssetProgression(
             startBalance = startBalance,
             ident = baseAssetIdent,
+            assetType = AssetType.CASH,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = attributeSet
@@ -94,6 +96,7 @@ class AssetProgressionTest : ShouldSpec({
         val progression = AssetProgression(
             startBalance = startBalance,
             ident = baseAssetIdent,
+            assetType = AssetType.CASH,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = attributeSet
@@ -115,6 +118,7 @@ class AssetProgressionTest : ShouldSpec({
             ))
         val progression = AssetProgression(
             startBalance = startBalance,
+            assetType = AssetType.CASH,
             ident = baseAssetIdent,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),

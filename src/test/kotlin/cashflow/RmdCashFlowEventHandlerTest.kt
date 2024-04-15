@@ -18,7 +18,7 @@ class RmdCashFlowEventHandlerTest : ShouldSpec({
     val yearInFuture = 2035
     val balance = 1000.0
     val assetIdent = RecIdentifier(name = "Asset", person = "Person")
-    val assetRec = assetRecFixture(year, assetIdent, balance)
+    val assetRec = assetRecFixture(year, assetIdent, startBal = balance)
 
     should("generateCashFlowTribution doesn't create distribution if rmd pct is 0") {
         val person = personFixture(birthYM = YearMonth(1999, 0))

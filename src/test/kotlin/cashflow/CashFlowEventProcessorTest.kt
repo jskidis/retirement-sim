@@ -1,10 +1,7 @@
 package cashflow
 
 import RecIdentifier
-import asset.AssetChange
-import asset.AssetGainCreator
-import asset.AssetProgression
-import asset.AssetRec
+import asset.*
 import config.configFixture
 import config.householdConfigFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -27,10 +24,10 @@ class CashFlowEventProcessorTest : ShouldSpec({
     val ident4 = RecIdentifier(name = "Asset 4", person = "Person")
     val ident5 = RecIdentifier(name = "Asset 5", person = "Person")
 
-    val rec1 = AssetRec(year, ident1, 0.0, 0.0, gains)
-    val rec2 = AssetRec(year, ident2, 0.0, 0.0, gains)
-    val rec3 =  AssetRec(year, ident3, 0.0, 0.0, gains)
-    val rec4 = AssetRec(year, ident4, 0.0, 0.0, gains)
+    val rec1 = AssetRec(year, ident1, AssetType.IRA,0.0, 0.0, gains)
+    val rec2 = AssetRec(year, ident2, AssetType.ROTH,0.0, 0.0, gains)
+    val rec3 =  AssetRec(year, ident3, AssetType.STD401K, 0.0, 0.0, gains)
+    val rec4 = AssetRec(year, ident4, AssetType.ROTH401K, 0.0, 0.0,  gains)
     val recs = listOf(rec1, rec2, rec3, rec4)
 
     val change1 = AssetChange("CFE1", 2000.0, null)
@@ -46,11 +43,11 @@ class CashFlowEventProcessorTest : ShouldSpec({
     val handler5 = CashFlowEventHandler{_, _ -> change5}
 
     val startBal = 0.0
-    val prog1 = AssetProgression(ident1, startBal, gainCreator, listOf(handler1))
-    val prog2 = AssetProgression(ident2, startBal, gainCreator, listOf(handler2))
-    val prog3 = AssetProgression(ident3, startBal, gainCreator, listOf())
-    val prog4 = AssetProgression(ident4, startBal, gainCreator, listOf(handler4_1, handler4_2))
-    val prog5 = AssetProgression(ident5, startBal, gainCreator, listOf(handler5))
+    val prog1 = AssetProgression(ident1, AssetType.IRA, startBal, gainCreator, listOf(handler1))
+    val prog2 = AssetProgression(ident2, AssetType.ROTH, startBal, gainCreator, listOf(handler2))
+    val prog3 = AssetProgression(ident3, AssetType.STD401K, startBal, gainCreator, listOf())
+    val prog4 = AssetProgression(ident4, AssetType.ROTH401K, startBal, gainCreator, listOf(handler4_1, handler4_2))
+    val prog5 = AssetProgression(ident5, AssetType.NRA, startBal, gainCreator, listOf(handler5))
     val progs = listOf(prog1, prog2, prog3, prog4, prog5)
 
     should("process") {

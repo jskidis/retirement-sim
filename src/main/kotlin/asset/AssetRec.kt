@@ -11,6 +11,7 @@ import util.PortionOfYearPast
 data class AssetRec(
     override val year: Year,
     override val ident: RecIdentifier,
+    val assetType: AssetType,
     val startBal: Amount,
     val startUnrealized: Amount,
     val gains: AssetChange,

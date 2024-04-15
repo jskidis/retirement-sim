@@ -75,7 +75,27 @@ object SimulationRun {
         currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
         RothConversionProcessor.process(config, currYear)
         currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
+/*
+        val rothBalances = assets.filter {
+            it.assetType == AssetType.ROTH || it.assetType == AssetType.ROTH401K
+        }.sumOf {it.finalBalance() }
+        val iraBalances = assets.filter {
+            it.assetType == AssetType.IRA || it.assetType == AssetType.STD401K
+        }.sumOf {it.finalBalance() }
+        val nraBalances = assets.filter {
+            it.assetType == AssetType.NRA
+        }.sumOf {it.finalBalance() }
+        val cashBalances = assets.filter {
+            it.assetType == AssetType.CASH
+        }.sumOf {it.finalBalance() }
 
+        println("Year: ${currYear.year}, " +
+            "IRA: ${moneyFormat.format(iraBalances)}, " +
+            "ROTH: ${moneyFormat.format(rothBalances)}, " +
+            "NRA: ${moneyFormat.format(nraBalances)}, " +
+            "CASH: ${moneyFormat.format(cashBalances)}, "
+        )
+ */
         return currYear
 
     }

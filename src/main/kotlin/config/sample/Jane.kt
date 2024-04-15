@@ -4,6 +4,7 @@ import Amount
 import RecIdentifier
 import YearMonth
 import asset.AssetProgression
+import asset.AssetType
 import asset.SimpleAssetGainCreator
 import cashflow.EmployerMatchAmountRetriever
 import cashflow.EmployerRetirement
@@ -83,6 +84,7 @@ object Jane : ParentConfigBuilder {
     override fun assets(person: Person): List<AssetProgression> {
         val janeIRA = AssetProgression(
             ident = iraAcct,
+            assetType = AssetType.IRA,
             startBalance = iraAcctBal,
             cashflowEvents = listOf(RmdCashFlowEventHandler(person, NonWageTaxableProfile())),
             gainCreator = SimpleAssetGainCreator(
@@ -102,6 +104,7 @@ object Jane : ParentConfigBuilder {
         )
         val jane401K = AssetProgression(
             ident = four01kAcct,
+            assetType = AssetType.STD401K,
             startBalance = four01kAcctBal,
             cashflowEvents = listOf(
                 RmdCashFlowEventHandler(person, NonWageTaxableProfile()),

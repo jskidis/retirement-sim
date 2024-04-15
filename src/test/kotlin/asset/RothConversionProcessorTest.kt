@@ -41,6 +41,7 @@ class RothConversionProcessorTest : ShouldSpec({
     fun assetRec(ident: RecIdentifier, startBal: Amount) = AssetRec(
         year = currYear.year,
         ident = ident,
+        assetType = AssetType.ROTH,
         startBal = startBal,
         startUnrealized = 0.0,
         gains = AssetChange("Person", 0.0)

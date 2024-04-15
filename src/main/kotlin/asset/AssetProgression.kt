@@ -11,6 +11,7 @@ import util.currentDate
 
 open class AssetProgression(
     val ident: RecIdentifier,
+    val assetType: AssetType,
     val startBalance: Amount,
     val gainCreator: AssetGainCreator,
     val cashflowEvents: List<CashFlowEventHandler> = ArrayList(),
@@ -51,6 +52,7 @@ open class AssetProgression(
         return AssetRec(
             year = year,
             ident = ident,
+            assetType = assetType,
             startBal = balance,
             startUnrealized = unrealized,
             gains = gainCreator.createGain(
