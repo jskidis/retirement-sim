@@ -59,7 +59,7 @@ class Smiths : ConfigBuilder {
         YearBasedConfig(
             listOf(
                 YearConfigPair(startYear = 2024, config = currTaxConfig),
-                YearConfigPair(startYear = 2027, config = rollbackTaxConfig),
+                YearConfigPair(startYear = 2026, config = rollbackTaxConfig),
             ))
 
     override fun assetOrdering(): NetSpendAllocationConfig {
