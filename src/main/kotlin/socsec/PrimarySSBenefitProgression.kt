@@ -6,7 +6,7 @@ import YearMonth
 import YearlyDetail
 import config.Person
 import inflation.CmpdInflationProvider
-import inflation.WageCmpdInflationProvider
+import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
 import util.currentDate
 
@@ -20,7 +20,7 @@ open class PrimarySSBenefitProgression(
     val benefitAdjCalc: BenefitAdjustmentCalc = StdBenefitAdjustmentCalc,
     val defaultAdjProvider: DefaultAdjustmentProvider = StdDefaultAdjustmentProvider(),
     val payoutAdjProvider: PayoutAdjProvider = StdPayoutAdjProvider(),
-    val cmpdInflationProvider: CmpdInflationProvider = WageCmpdInflationProvider()
+    val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider()
 ) : SSBenefitProgression {
 
     companion object { const val IDENT_NAME = "SSPrimary" }

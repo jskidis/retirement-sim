@@ -4,7 +4,7 @@ import RecIdentifier
 import YearlyDetail
 import config.Person
 import inflation.CmpdInflationProvider
-import inflation.WageCmpdInflationProvider
+import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
 
 open class SpousalSSBenefitProgression(
@@ -13,7 +13,7 @@ open class SpousalSSBenefitProgression(
     val taxabilityProfile: TaxabilityProfile,
     val benefitAdjCalc: BenefitAdjustmentCalc = SpousalBenefitAdjustmentCalc,
     val payoutAdjProvider: PayoutAdjProvider = StdPayoutAdjProvider(),
-    val cmpdInflationProvider: CmpdInflationProvider = WageCmpdInflationProvider(),
+    val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider(),
 ) : SecondarySSBenefitProgression {
 
     companion object {
