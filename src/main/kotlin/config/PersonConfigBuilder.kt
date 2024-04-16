@@ -1,6 +1,7 @@
 package config
 
 import asset.AssetProgression
+import cashflow.CashFlowEventConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import medical.MedInsuranceProgression
@@ -14,6 +15,7 @@ interface PersonConfigBuilder {
     fun benefits(person: Person): List<SSBenefitProgression> = ArrayList()
     fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> = ArrayList()
     fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
+    fun cashFlowEvents(person: Person): List<CashFlowEventConfig> = ArrayList()
 
     fun buildConfig(person: Person) = PersonConfig(
         person = person,
@@ -22,7 +24,8 @@ interface PersonConfigBuilder {
         assets = assets(person),
         benefits = benefits(person),
         secondaryBenefits = secondaryBenefits(person),
-        medInsurance = medInsurance(person)
+        medInsurance = medInsurance(person),
+        cashFlowEvents = cashFlowEvents(person)
     )
 }
 

@@ -4,7 +4,6 @@ import Amount
 import RecIdentifier
 import Year
 import YearlyDetail
-import cashflow.CashFlowEventHandler
 import progression.PrevRecProviderProgression
 import util.RandomizerFactory
 import util.currentDate
@@ -13,8 +12,7 @@ open class AssetProgression(
     val ident: RecIdentifier,
     val assetType: AssetType,
     val startBalance: Amount,
-    val gainCreator: AssetGainCreator,
-    val cashflowEvents: List<CashFlowEventHandler> = ArrayList(),
+    val gainCreator: AssetGainCreator
 ) : PrevRecProviderProgression<AssetRec> {
 
     override fun previousRec(prevYear: YearlyDetail): AssetRec? = findAssetRec(prevYear)

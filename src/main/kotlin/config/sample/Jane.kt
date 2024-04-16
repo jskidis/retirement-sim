@@ -6,14 +6,10 @@ import YearMonth
 import asset.AssetProgression
 import asset.AssetType
 import asset.SimpleAssetGainCreator
-import cashflow.EmployerMatchAmountRetriever
-import cashflow.EmployerRetirement
-import cashflow.MaxPlusCatchupAmountRetriever
-import cashflow.RmdCashFlowEventHandler
+import cashflow.*
 import config.*
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
-import expense.ExpenseProgression
 import income.EmploymentIncomeProgression
 import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
@@ -21,7 +17,6 @@ import medical.*
 import socsec.FlexibleClaimDateProvider
 import socsec.NewIncomeAdjustBaseAmountProvider
 import socsec.PrimarySSBenefitProgression
-import socsec.SSBenefitProgression
 import tax.*
 import util.DateRange
 import util.YearBasedConfig
@@ -59,34 +54,30 @@ object Jane : PersonConfigBuilder {
     )
 
 
-    override fun incomes(person: Person)
-        : List<IncomeProgression> {
+    override fun incomes(person: Person): List<IncomeProgression> {
         val employmentConfigs = listOf(janeEmpConfig)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
     }
 
-    override fun expenses(person: Person): List<ExpenseProgression> {
-        return listOf(
-            BasicExpenseProgression(
-                ident = RecIdentifier(name = "Expenses", person = person.name),
-                startAmount = expenseStart,
-                taxabilityProfile = NonDeductProfile(),
-                adjusters = listOf(
-                    StdInflationAmountAdjuster(),
-                    AgeBasedExpenseAdjuster(person.birthYM)
-                )
+    override fun expenses(person: Person) = listOf(
+        BasicExpenseProgression(
+            ident = RecIdentifier(name = "Expenses", person = person.name),
+            startAmount = expenseStart,
+            taxabilityProfile = NonDeductProfile(),
+            adjusters = listOf(
+                StdInflationAmountAdjuster(),
+                AgeBasedExpenseAdjuster(person.birthYM)
             )
         )
-    }
+    )
 
     override fun assets(person: Person): List<AssetProgression> {
         val janeIRA = AssetProgression(
             ident = iraAcct,
             assetType = AssetType.IRA,
             startBalance = iraAcctBal,
-            cashflowEvents = listOf(RmdCashFlowEventHandler(person, NonWageTaxableProfile())),
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(
@@ -106,23 +97,6 @@ object Jane : PersonConfigBuilder {
             ident = four01kAcct,
             assetType = AssetType.STD401K,
             startBalance = four01kAcctBal,
-            cashflowEvents = listOf(
-                RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
-                EmployerRetirement(
-                    empConfig = janeEmpConfig,
-                    person = person,
-                    contributionName = "Jane-401K-Contrib",
-                    taxabilityProfile = FedAndStateDeductProfile(),
-                    amountRetriever = MaxPlusCatchupAmountRetriever()
-                ),
-                EmployerRetirement(
-                    empConfig = janeEmpConfig,
-                    person = person,
-                    contributionName = "Jane-401K-Match",
-                    taxabilityProfile = FedAndStateDeductProfile(),
-                    amountRetriever = EmployerMatchAmountRetriever(.03)
-                ),
-            ),
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(
@@ -141,38 +115,60 @@ object Jane : PersonConfigBuilder {
         return listOf(janeIRA, jane401K)
     }
 
-    override fun benefits(person: Person): List<SSBenefitProgression> {
-        return listOf(
-            PrimarySSBenefitProgression(
-                person = person,
-                taxabilityProfile = SSBenefitTaxableProfile(),
-                baseAmountProvider = NewIncomeAdjustBaseAmountProvider(
-                    baseSSBenefit, ssBenefitIncPer100k),
-                claimDateProvider = FlexibleClaimDateProvider(
-                    person.birthYM, targetSSDate, 5.0),
-            )
+    override fun benefits(person: Person) = listOf(
+        PrimarySSBenefitProgression(
+            person = person,
+            taxabilityProfile = SSBenefitTaxableProfile(),
+            baseAmountProvider = NewIncomeAdjustBaseAmountProvider(
+                baseSSBenefit, ssBenefitIncPer100k),
+            claimDateProvider = FlexibleClaimDateProvider(
+                person.birthYM, targetSSDate, 5.0),
         )
-    }
+    )
 
-    override fun medInsurance(person: Person): List<MedInsuranceProgression> {
-        return listOf(
-            EmployerInsPremProgression(
-                employments = listOf(janeEmpConfig),
-                relation = RelationToInsured.SELF
-            ),
-            MedicareProgression(
-                birthYM = person.birthYM,
-                parts = listOf(
-                    MedicarePartType.PARTB,
-                    MedicarePartType.PARTD,
-                    MedicarePartType.DENTAL,
-                )),
-            MarketplacePremProgression(
-                birthYM = person.birthYM,
-                medalType = MPMedalType.SILVER,
-                planType = MPPlanType.HMO,
-                includeDental = true
-            )
+    override fun medInsurance(person: Person) = listOf(
+        EmployerInsPremProgression(
+            employments = listOf(janeEmpConfig),
+            relation = RelationToInsured.SELF
+        ),
+        MedicareProgression(
+            birthYM = person.birthYM,
+            parts = listOf(
+                MedicarePartType.PARTB,
+                MedicarePartType.PARTD,
+                MedicarePartType.DENTAL,
+            )),
+        MarketplacePremProgression(
+            birthYM = person.birthYM,
+            medalType = MPMedalType.SILVER,
+            planType = MPPlanType.HMO,
+            includeDental = true
         )
-    }
+    )
+
+    override fun cashFlowEvents(person: Person) = listOf(
+        CashFlowEventConfig(
+            assetIdent = iraAcct,
+            handler = RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
+        ),
+        CashFlowEventConfig(
+            assetIdent = four01kAcct,
+            handler = RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
+        ),
+        CashFlowEventConfig(
+            assetIdent = four01kAcct,
+            handler = EmployerRetirement(
+                empConfig = janeEmpConfig, person = person,
+                contributionName = "Jane-401K-Contrib",
+                taxabilityProfile = FedAndStateDeductProfile(),
+                amountRetriever = MaxPlusCatchupAmountRetriever()),
+        ),
+        CashFlowEventConfig(
+            assetIdent = four01kAcct,
+            handler = EmployerRetirement(
+                empConfig = janeEmpConfig, person = person,
+                contributionName = "Jane-401K-Match",
+                taxabilityProfile = FedAndStateDeductProfile(),
+                amountRetriever = EmployerMatchAmountRetriever(.03)),
+        ))
 }

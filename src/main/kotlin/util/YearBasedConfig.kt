@@ -13,3 +13,6 @@ data class YearConfigPair<T> (
     val startYear: Year,
     val config: T
 )
+
+fun <T> SingleYearBasedConfig(config: T): YearBasedConfig<T> =
+    YearBasedConfig(listOf(YearConfigPair(currentDate.year, config)))

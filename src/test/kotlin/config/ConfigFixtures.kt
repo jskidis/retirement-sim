@@ -7,6 +7,7 @@ import Year
 import YearMonth
 import asset.AssetProgression
 import asset.assetProgressionFixture
+import cashflow.CashFlowEventConfig
 import expense.ExpenseProgression
 import expense.ExpenseRec
 import expense.expenseProgressionFixture
@@ -85,7 +86,8 @@ fun parentConfigFixture(
         benefitsProgressionFixture()),
     secondaryBenefitConfigs: List<SecondarySSBenefitProgression> = listOf(
         secondaryProgressionFixture()),
-    medInsuranceConfigs: List<MedInsuranceProgression> = listOf()
+    medInsuranceConfigs: List<MedInsuranceProgression> = listOf(),
+    cashFlowEvents: List<CashFlowEventConfig> = listOf()
 ) =
     PersonConfig(
         personFixture(name),
@@ -94,7 +96,8 @@ fun parentConfigFixture(
         assetConfigs,
         benefitConfigs,
         secondaryBenefitConfigs,
-        medInsuranceConfigs)
+        medInsuranceConfigs,
+        cashFlowEvents)
 
 fun employmentConfigFixture(
     name: Name = "Employment",

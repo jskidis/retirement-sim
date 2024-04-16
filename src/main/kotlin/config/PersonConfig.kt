@@ -3,6 +3,7 @@ package config
 import Name
 import YearMonth
 import asset.AssetProgression
+import cashflow.CashFlowEventConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import medical.MedInsuranceProgression
@@ -25,7 +26,8 @@ open class PersonConfig(
     private val assets: List<AssetProgression>,
     private val benefits: List<SSBenefitProgression>,
     private val secondaryBenefits: List<SecondarySSBenefitProgression>,
-    private val medInsurance: List<MedInsuranceProgression>
+    private val medInsurance: List<MedInsuranceProgression>,
+    private val cashFlowEvents: List<CashFlowEventConfig>
 ) {
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
@@ -37,5 +39,6 @@ open class PersonConfig(
     fun benefits(): List<SSBenefitProgression> = benefits
     fun secondaryBenefits(): List<SecondarySSBenefitProgression> = secondaryBenefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
+    fun cashFlowEvents(): List<CashFlowEventConfig> = cashFlowEvents
 }
 

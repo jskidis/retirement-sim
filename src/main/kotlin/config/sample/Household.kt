@@ -13,8 +13,7 @@ import expense.ExpenseProgression
 import inflation.StdInflationAmountAdjuster
 import tax.NonDeductProfile
 import tax.NonWageTaxableProfile
-import util.YearBasedConfig
-import util.YearConfigPair
+import util.SingleYearBasedConfig
 
 object Household : HouseholdConfigBuilder {
     val expenseStart: Amount = 25000.0
@@ -45,13 +44,9 @@ object Household : HouseholdConfigBuilder {
             startBalance = savingsBal,
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonWageTaxableProfile(),
-                attributesSet = YearBasedConfig(
-                    listOf(
-                        YearConfigPair(
-                            startYear = Smiths.startYear - 1,
-                            config = AssetAttributeMap.assetComp("US Cash")
-                        )
-                    ))
+                attributesSet = SingleYearBasedConfig(
+                    config = AssetAttributeMap.assetComp("US Cash")
+                )
             )
         )
 
@@ -60,13 +55,9 @@ object Household : HouseholdConfigBuilder {
             assetType = AssetType.NRA,
             startBalance = investBal,
             gainCreator = TaxableInvestGainCreator(
-                attributesSet = YearBasedConfig(
-                    listOf(
-                        YearConfigPair(
-                            startYear = Smiths.startYear - 1,
-                            config = AssetAttributeMap.assetComp("US Stocks")
-                        )
-                    ))
+                attributesSet = SingleYearBasedConfig(
+                    config = AssetAttributeMap.assetComp("US Stocks")
+                )
             )
         )
 

@@ -1,26 +1,24 @@
 package cashflow
 
+import RecIdentifier
 import YearlyDetail
 import asset.AssetChange
-import asset.AssetProgression
 import asset.AssetRec
 import config.SimConfig
 
 object CashFlowEventProcessor {
     fun process(simConfig: SimConfig, currYear: YearlyDetail): List<AssetChange> {
-        return simConfig.assetConfigs().flatMap { asset ->
-            val assetRec = findAssetRec(currYear, asset)
-            if (assetRec == null) listOf()
+        return simConfig.cashFlowConfigs().map {
+            val assetRec = findAssetRec(currYear, it.assetIdent)
+            if (assetRec == null) null
             else {
-                asset.cashflowEvents.map { it ->
-                    val tribution = it.generateCashFlowTribution(assetRec, currYear)
-                    if (tribution != null) assetRec.tributions.add(tribution)
-                    tribution
-                }.filterNotNull()
+                val tribution = it.handler.generateCashFlowTribution(assetRec, currYear)
+                if (tribution != null) assetRec.tributions.add(tribution)
+                tribution
             }
-        }
+        }.mapNotNull{ it }
     }
-
-    private fun findAssetRec(currYear: YearlyDetail, assetConfig: AssetProgression): AssetRec? =
-        currYear.assets.find { it.ident == assetConfig.ident }
 }
+
+private fun findAssetRec(currYear: YearlyDetail, assetIdent: RecIdentifier): AssetRec? =
+    currYear.assets.find { it.ident == assetIdent }

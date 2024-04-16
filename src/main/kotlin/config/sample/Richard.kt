@@ -6,6 +6,7 @@ import YearMonth
 import asset.AssetProgression
 import asset.AssetType
 import asset.SimpleAssetGainCreator
+import cashflow.CashFlowEventConfig
 import cashflow.IRAContribution
 import cashflow.RmdCashFlowEventHandler
 import config.AssetAttributeMap
@@ -14,14 +15,11 @@ import config.Person
 import config.PersonConfigBuilder
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
-import expense.ExpenseProgression
 import income.EmploymentIncomeProgression
 import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
 import medical.*
 import socsec.PrimarySSBenefitProgression
-import socsec.SSBenefitProgression
-import socsec.SecondarySSBenefitProgression
 import socsec.SpousalSSBenefitProgression
 import tax.*
 import util.DateRange
@@ -44,43 +42,30 @@ object Richard : PersonConfigBuilder {
         dateRange = employmentDates
     )
 
-    override fun incomes(person: Person)
-        : List<IncomeProgression> {
+    override fun incomes(person: Person): List<IncomeProgression> {
         val employmentConfigs = listOf(richardEmpConfig)
         return employmentConfigs.map {
             EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
         }
     }
 
-    override fun expenses(person: Person): List<ExpenseProgression> {
-        return listOf(
-            BasicExpenseProgression(
-                ident = RecIdentifier(name = "Expenses", person = person.name),
-                startAmount = expenseStart,
-                taxabilityProfile = NonDeductProfile(),
-                adjusters = listOf(
-                    StdInflationAmountAdjuster(),
-                    AgeBasedExpenseAdjuster(person.birthYM)
-                )
+    override fun expenses(person: Person) = listOf(
+        BasicExpenseProgression(
+            ident = RecIdentifier(name = "Expenses", person = person.name),
+            startAmount = expenseStart,
+            taxabilityProfile = NonDeductProfile(),
+            adjusters = listOf(
+                StdInflationAmountAdjuster(),
+                AgeBasedExpenseAdjuster(person.birthYM)
             )
         )
-    }
+    )
 
     override fun assets(person: Person): List<AssetProgression> {
         val richIRA = AssetProgression(
             ident = iraAcct,
             assetType = AssetType.IRA,
             startBalance = iraAcctBal,
-            cashflowEvents = listOf(
-                RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
-                IRAContribution(
-                    person = person,
-                    contribName = "IRAContrib",
-                    pctOfCap = 0.5,
-                    taxabilityProfile = FedAndStateDeductProfile(),
-                    includeCatchup = true
-                )
-            ),
             gainCreator = SimpleAssetGainCreator(
                 taxability = NonTaxableProfile(),
                 attributesSet = YearBasedConfig(
@@ -100,47 +85,58 @@ object Richard : PersonConfigBuilder {
         return listOf(richIRA)
     }
 
-    override fun benefits(person: Person): List<SSBenefitProgression> {
-        return listOf(
-            PrimarySSBenefitProgression(
+    override fun benefits(person: Person) = listOf(
+        PrimarySSBenefitProgression(
+            person = person,
+            taxabilityProfile = SSBenefitTaxableProfile(),
+            targetYM = targetSSDate,
+            baseAmount = baseSSBenefit,
+        )
+    )
+
+    override fun secondaryBenefits(person: Person) = listOf(
+        SpousalSSBenefitProgression(
+            person = person,
+            spouse = Smiths.jane,
+            taxabilityProfile = SSBenefitTaxableProfile()
+        )
+    )
+
+
+    override fun medInsurance(person: Person) = listOf(
+        MedicareProgression(
+            birthYM = person.birthYM,
+            parts = listOf(
+                MedicarePartType.PARTB,
+                MedicarePartType.PARTD,
+                MedicarePartType.DENTAL,
+            )),
+        EmployerInsPremProgression(
+            employments = listOf(Jane.janeEmpConfig),
+            relation = RelationToInsured.SPOUSE
+        ),
+        MarketplacePremProgression(
+            birthYM = person.birthYM,
+            medalType = MPMedalType.SILVER,
+            planType = MPPlanType.HMO,
+            includeDental = true
+        )
+    )
+
+    override fun cashFlowEvents(person: Person) = listOf(
+        CashFlowEventConfig(
+            assetIdent = iraAcct,
+            handler = RmdCashFlowEventHandler(person, NonWageTaxableProfile()),
+        ),
+        CashFlowEventConfig(
+            assetIdent = iraAcct,
+            handler = IRAContribution(
                 person = person,
-                taxabilityProfile = SSBenefitTaxableProfile(),
-                targetYM = targetSSDate,
-                baseAmount = baseSSBenefit,
+                contribName = "IRAContrib",
+                pctOfCap = 0.5,
+                taxabilityProfile = FedAndStateDeductProfile(),
+                includeCatchup = true
             )
-        )
-    }
-
-    override fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> {
-        return listOf(
-            SpousalSSBenefitProgression(
-                person = person,
-                spouse = Smiths.jane,
-                taxabilityProfile = SSBenefitTaxableProfile()
-            )
-        )
-    }
-
-
-    override fun medInsurance(person: Person): List<MedInsuranceProgression> {
-        return listOf(
-            MedicareProgression(
-                birthYM = person.birthYM,
-                parts = listOf(
-                    MedicarePartType.PARTB,
-                    MedicarePartType.PARTD,
-                    MedicarePartType.DENTAL,
-                )),
-            EmployerInsPremProgression(
-                employments = listOf(Jane.janeEmpConfig),
-                relation = RelationToInsured.SPOUSE
-            ),
-            MarketplacePremProgression(
-                birthYM = person.birthYM,
-                medalType = MPMedalType.SILVER,
-                planType = MPPlanType.HMO,
-                includeDental = true
-            )
-        )
-    }
+        ),
+    )
 }

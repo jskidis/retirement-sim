@@ -4,6 +4,7 @@ import Year
 import YearlyDetail
 import YearlySummary
 import asset.AssetProgression
+import cashflow.CashFlowEventConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import netspend.NetSpendAllocationConfig
@@ -31,6 +32,9 @@ data class SimConfig(
     fun assetConfigs(): List<AssetProgression> =
         household.jointAssets +
             household.members.flatMap { it.assets() }
+
+    fun cashFlowConfigs(): List<CashFlowEventConfig> =
+        household.members.flatMap { it.cashFlowEvents() }
 
     fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
         taxCalcConfig.getConfigForYear(currYear.year)
