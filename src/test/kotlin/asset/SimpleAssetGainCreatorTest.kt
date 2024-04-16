@@ -7,8 +7,7 @@ import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
 import tax.NonWageTaxableProfile
 import tax.TaxabilityProfile
-import util.YearBasedConfig
-import util.YearConfigPair
+import util.SingleYearBasedConfig
 import util.currentDate
 
 class SimpleAssetGainCreatorTest : ShouldSpec({
@@ -41,9 +40,7 @@ class SimpleAssetGainCreatorFixture(
     attributes: PortfolioAttribs,
 ) : SimpleAssetGainCreator(
     taxability,
-    YearBasedConfig(
-        listOf(YearConfigPair(currentDate.year + 1, attributes))
-    )
+    SingleYearBasedConfig(attributes)
 ) {
     override fun calcGrossGains(
         balance: Amount, attribs: PortfolioAttribs, gaussianRnd: Double,

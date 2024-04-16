@@ -8,8 +8,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import socsec.benefitsRecFixture
+import util.SingleYearBasedConfig
 import util.YearBasedConfig
-import util.YearConfigPair
 import util.currentDate
 import yearlyDetailFixture
 
@@ -142,9 +142,7 @@ class CapReserveSpendAllocTest : ShouldSpec({
         val multiplier = 2.0
         val hanlder = CapReserveSpendAlloc(
             margin = .05,
-            yearlyTargetMult = YearBasedConfig(listOf(
-                YearConfigPair(2020 , multiplier)
-            ))
+            yearlyTargetMult = SingleYearBasedConfig(multiplier)
         )
 
         val expenseTotal = 100000.0

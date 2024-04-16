@@ -8,6 +8,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import tax.NonTaxableProfile
+import util.SingleYearBasedConfig
 import util.YearBasedConfig
 import util.YearConfigPair
 import util.currentDate
@@ -33,10 +34,7 @@ class AssetProgressionTest : ShouldSpec({
     val prevYear = yearlyDetailFixture().copy(assets = listOf(prevAssetRec))
 
     should("determineNext returns asset rec same gain all years)") {
-        val attributeSet = YearBasedConfig(
-            listOf(
-                YearConfigPair(2024, tenPctReturn)
-            ))
+        val attributeSet = SingleYearBasedConfig(tenPctReturn)
         val progression = AssetProgression(
             ident = baseAssetIdent,
             startBalance = startBalance,

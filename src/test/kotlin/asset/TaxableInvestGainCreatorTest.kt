@@ -3,18 +3,14 @@ package asset
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
-import util.YearBasedConfig
-import util.YearConfigPair
+import util.SingleYearBasedConfig
 import util.currentDate
 
 class TaxableInvestGainCreatorTest : ShouldSpec({
     val year = currentDate.year +1
     val balance = 1000.0
 
-    fun buildAttributeSet(attributes: PortfolioAttribs): YearBasedConfig<PortfolioAttribs> =
-        YearBasedConfig(
-            listOf(YearConfigPair(year, attributes))
-        )
+    fun buildAttributeSet(attributes: PortfolioAttribs) = SingleYearBasedConfig(attributes)
 
     should("Apportion dividends between short term and long term according to qualified div ratio") {
         val attributes = PortfolioAttribs(name = "10/1", mean = 0.1, stdDev = 0.0, divid = 0.01)

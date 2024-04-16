@@ -6,8 +6,7 @@ import YearlyDetail
 import config.SimConfig
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
-import util.YearBasedConfig
-import util.YearConfigPair
+import util.SingleYearBasedConfig
 
 class TaxCalcFixture(val fixedPct: Double = 0.0) : TaxCalculator {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = fixedPct
@@ -45,9 +44,8 @@ fun baseTaxConfigFixture() = TaxCalcConfig(
     medicare = TaxCalcFixture(),
 )
 
-fun taxConfigFixture(taxCalc: TaxCalcConfig = baseTaxConfigFixture()) = YearBasedConfig(
-    listOf(YearConfigPair(startYear = 1900, config = taxCalc))
-)
+fun taxConfigFixture(taxCalc: TaxCalcConfig = baseTaxConfigFixture()) =
+    SingleYearBasedConfig(taxCalc)
 
 class TaxesProcessorFixture(
     val taxesRec: TaxesRec = TaxesRec(),
