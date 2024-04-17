@@ -68,8 +68,8 @@ fun SSBenefitRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
-    strWhenNotZero(baseAmount == 0.0, ", \"base\":${baseAmount}") +
-    strWhenNotZero(benefitAdjustment == 0.0, ", \"adj\":${benefitAdjustment}") +
+    strWhenNotZero(baseAmount == 0.0, ", \"base\":${moneyFormat.format(baseAmount)}") +
+    strWhenNotZero(benefitAdjustment == 0.0, ", \"adj\":${twoDecimalFormat.format(benefitAdjustment)}") +
     strWhenNotZero(claimDate == null, ", \"claimDate\":${claimDate}") +
     "}"
 
