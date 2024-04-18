@@ -87,7 +87,7 @@ private fun runMultiple(
     val average = sorted.sumOf { it } / numSims
     val successPct = 100.0 * runs.filter {config.simSuccess.wasSuccessRun(it)}.size / numSims
     val brokePct = 100.0 * runs.filter {
-        it.expenses > it.assetValue}.size / numSims
+        it.expenses - it.benefits > it.assetValue}.size / numSims
 
     println("")
     println("Success Pct: $successPct")

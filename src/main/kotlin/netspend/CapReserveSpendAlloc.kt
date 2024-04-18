@@ -11,9 +11,9 @@ open class CapReserveSpendAlloc(
 ) : SpendAllocHandler {
 
     override fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
-        val target = determineTarget(currYear)
-        val floor = target * (1 - margin)
         val assetBalance = assetRec.finalBalance()
+        val target = determineTarget(currYear, assetBalance)
+        val floor = target * (1 - margin)
 
         return when {
             // asset under target floor, so make a deposit instead which increasing amount needed to withdraw
@@ -26,9 +26,9 @@ open class CapReserveSpendAlloc(
     }
 
     override fun deposit(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
-        val target = determineTarget(currYear)
-        val ceiling = target * (1 + margin)
         val assetBalance = assetRec.finalBalance()
+        val target = determineTarget(currYear, assetBalance)
+        val ceiling = target * (1 + margin)
 
         return when {
             // asset over target ceiling, so make a withdrawl instead which increasing amount needed to deposit
@@ -40,9 +40,9 @@ open class CapReserveSpendAlloc(
         }
     }
 
-    open fun determineTarget(currYear: YearlyDetail): Amount {
-        val multiplier = yearlyTargetMult.getConfigForYear(currYear.year)
+    open fun determineTarget(currYear: YearlyDetail, balance: Amount): Amount {
         val netExpenses = currYear.totalExpense() - currYear.totalBenefits()
-        return multiplier * netExpenses
+        return if (currYear.totalAssetValues() - balance < netExpenses) 0.0
+        else yearlyTargetMult.getConfigForYear(currYear.year) * netExpenses
     }
 }

@@ -22,10 +22,11 @@ object SimulationRun {
 
         var prevYear: YearlyDetail? = null
         do {
-            years.add(generateYearlyDetail(config, prevYear))
-            prevYear = years.last()
-        } while (years.last().year < 2050 &&
-            years.last().totalAssetValues() > years.last().totalExpense()
+            val currYear = generateYearlyDetail(config, prevYear)
+            years.add(currYear)
+            prevYear = currYear
+        } while (currYear.year < 2050 &&
+            currYear.totalAssetValues() > (currYear.totalExpense() - currYear.totalBenefits())
         )
 
         if (outputYearDetails) {
