@@ -94,8 +94,10 @@ fun TaxableAmounts.toJsonStr() = "{" +
     "}"
 
 fun TransferRec.toJsonStr() = "{" +
-    "\"source\":${sourceTribution}" +
-    ", \"dest\":${destTribution}" +
+    "\"sourceAcct\":${sourceRec.ident}" +
+    ", \"distribution\":${sourceTribution}" +
+    ", \"destAcct\":${destRec.ident}" +
+    ", \"contribution\":${destTribution}" +
     "}"
 
 fun InflationRAC.toJsonStr() = "{" +

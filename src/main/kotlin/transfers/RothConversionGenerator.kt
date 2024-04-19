@@ -1,5 +1,6 @@
 package transfers
 
+import Amount
 import RecIdentifier
 import YearlyDetail
 import asset.AssetChange
@@ -18,7 +19,7 @@ open class RothConversionGenerator(
         const val ROTH_CONV_STR = "RothConv"
     }
 
-    override fun determineTransferInfo(config: SimConfig, currYear: YearlyDetail): TransferInfo? {
+    override fun determineTransferInfo(config: SimConfig, currYear: YearlyDetail): Amount {
         val taxableAmounts = config.taxesProcessor.determineTaxableAmounts(currYear)
         val amountCalc = amountCalc.getConfigForYear(currYear.year)
         val amount = amountCalc.amountToConvert(
@@ -28,16 +29,13 @@ open class RothConversionGenerator(
             findAssetRec(it.first, currYear)?.finalBalance() ?: 0.0
         }
 
-        val amountToConvert = Math.min(amount, availableToConvert)
-        return if (amountToConvert == 0.0) null
-        else RothConversationAmount(amountToConvert)
+        return Math.min(amount, availableToConvert)
     }
 
     override fun performTransfers(
         currYear: YearlyDetail,
-        transferInfo: TransferInfo,
+        amount: Amount,
     ): List<TransferRec> {
-        val amount = (transferInfo as RothConversationAmount).amount
         val transferRecs: MutableList<TransferRec> = mutableListOf()
 
         sourceDestPairs.fold(amount) { acc, it ->
@@ -59,9 +57,7 @@ open class RothConversionGenerator(
                             sourceRec.ident.person, distribution),
                         isCarryOver = true
                     )
-                    transferRecs.add(TransferRec(sourceTribution, destTribution))
-                    sourceRec.tributions.add(sourceTribution)
-                    destRec.tributions.add(destTribution)
+                    transferRecs.add(TransferRec(sourceRec, sourceTribution, destRec, destTribution))
                     acc - distribution
                 }
             }
@@ -73,5 +69,4 @@ open class RothConversionGenerator(
         currYear.assets.find { it.ident == ident }
 }
 
-data class RothConversationAmount(val amount: Double) : TransferInfo
 
