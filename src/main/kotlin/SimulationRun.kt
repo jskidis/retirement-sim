@@ -1,5 +1,4 @@
 import asset.AssetProcessor
-import asset.RothConversionProcessor
 import cashflow.CashFlowEventProcessor
 import config.ConfigBuilder
 import config.SimConfig
@@ -9,6 +8,7 @@ import inflation.InflationProcessor
 import medical.MedInsuranceProcessor
 import netspend.NetSpendAllocation
 import socsec.SSBenefitsProcessor
+import transfers.TransferProcessor
 import util.RandomizerFactory
 import util.yearFromPrevYearDetail
 
@@ -72,8 +72,10 @@ object SimulationRun {
         currYear = currYear.copy(netSpend = netSpend)
 
         currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
-        RothConversionProcessor.process(config, currYear)
-        currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
+        currYear = currYear.copy(
+            transfers = TransferProcessor.process(config, currYear),
+            finalPassTaxes = taxesProcessor.processTaxes(currYear, config)
+        )
 /*
         val rothBalances = assets.filter {
             it.assetType == AssetType.ROTH || it.assetType == AssetType.ROTH401K

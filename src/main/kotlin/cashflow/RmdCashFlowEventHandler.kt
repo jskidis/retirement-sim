@@ -1,10 +1,10 @@
 package cashflow
 
 import Amount
+import Year
 import YearlyDetail
 import asset.AssetChange
 import asset.AssetRec
-import asset.RothConversionProcessor
 import config.Person
 import tax.NonWageTaxableProfile
 import tax.TaxabilityProfile
@@ -26,10 +26,11 @@ open class RmdCashFlowEventHandler(
         val age = currYear.year - person.birthYM.year
         val pct = rmdPctLookup.getRmdPct(age = currYear.year - person.birthYM.year)
 
-        return if (age < RothConversionProcessor.rmdMinAge(currYear.year) || pct == 0.0) null
+        return if (age < rmdMinAge(currYear.year) || pct == 0.0) null
         else createAssetChange(amount = pct * assetRec.startBal, person)
-
     }
+
+    private fun rmdMinAge(year: Year): Int = if (year < 2033) 73 else 75
 
     private fun createAssetChange(amount: Amount, person: Person): AssetChange =
         AssetChange(

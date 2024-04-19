@@ -27,6 +27,7 @@ import tax.TaxCalcConfig
 import tax.TaxProcessorConfig
 import tax.TaxesProcessorFixture
 import tax.taxConfigFixture
+import transfers.TransferGenerator
 import util.DateRange
 import util.YearBasedConfig
 import util.currentDate
@@ -37,7 +38,7 @@ fun configFixture(
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: YearBasedConfig<TaxCalcConfig> = taxConfigFixture(),
     assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
-    rothConversion: RothConversionConfig? = null,
+    transferGenerators: List<TransferGenerator> = listOf(),
     taxesProcessor: TaxProcessorConfig = TaxesProcessorFixture()
 
 ) =
@@ -47,7 +48,7 @@ fun configFixture(
         inflationConfig = inflationConfig,
         taxCalcConfig = taxConfig,
         assetOrdering = assetOrdering,
-        rothConversion = rothConversion,
+        transferGenerators = transferGenerators,
         taxesProcessor = taxesProcessor
     )
 

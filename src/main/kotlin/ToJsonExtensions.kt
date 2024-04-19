@@ -6,6 +6,7 @@ import inflation.InflationRAC
 import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
+import transfers.TransferRec
 import util.moneyFormat
 import util.twoDecimalFormat
 
@@ -92,6 +93,11 @@ fun TaxableAmounts.toJsonStr() = "{" +
     strWhenNotZero(medicare == 0.0, ", \"medicare\":\"${moneyFormat.format(medicare)}\"") +
     "}"
 
+fun TransferRec.toJsonStr() = "{" +
+    "\"source\":${sourceTribution}" +
+    ", \"dest\":${destTribution}" +
+    "}"
+
 fun InflationRAC.toJsonStr() = "{" +
     "\"rate\":${twoDecimalFormat.format(rate)}" +
     ",\"start\":${twoDecimalFormat.format(cmpdStart)}" +
@@ -125,6 +131,7 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"expenses\":${expenses}" +
     ", \"cashFlows:\":${cashFlowEvents}" +
     ", \"assets\":${assets}" +
+    ", \"transfers:\":${transfers}" +
     "}"
 
 fun yearlySummaryHeaders(): String =

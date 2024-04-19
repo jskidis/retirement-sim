@@ -7,6 +7,7 @@ import socsec.SSBenefitRec
 import tax.FilingStatus
 import tax.TaxableAmounts
 import tax.TaxesRec
+import transfers.TransferRec
 
 typealias Year = Int
 typealias Amount = Double
@@ -24,6 +25,7 @@ data class YearlyDetail(
     val taxes: TaxesRec = TaxesRec(),
     val finalPassTaxes: TaxesRec = TaxesRec(),
     val netSpend: Amount = 0.0,
+    val transfers: List<TransferRec> = ArrayList(),
     val randomValues: Map<String, Double> = mapOf(),
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {

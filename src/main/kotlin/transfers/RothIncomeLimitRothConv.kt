@@ -1,4 +1,4 @@
-package asset
+package transfers
 
 import Amount
 import YearMonth

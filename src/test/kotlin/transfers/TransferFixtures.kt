@@ -1,16 +1,14 @@
-package asset
+package transfers
 
 import Amount
 import YearlyDetail
 import tax.TaxCalcConfig
 import tax.TaxableAmounts
 
-
-fun interface RothConversionAmountCalc {
-    fun amountToConvert(
+class RothConversionAmountCalcFixture(val amountToConvert: Amount) : RothConversionAmountCalc {
+    override fun amountToConvert(
         currYear: YearlyDetail,
         taxableAmounts: TaxableAmounts,
         taxCalcConfig: TaxCalcConfig,
-    ): Amount
+    ): Amount = amountToConvert
 }
-

@@ -11,6 +11,7 @@ import netspend.NetSpendAllocationConfig
 import tax.TaxCalcConfig
 import tax.TaxProcessorConfig
 import tax.TaxesProcessor
+import transfers.TransferGenerator
 
 data class SimConfig(
     val startYear: Year,
@@ -19,7 +20,7 @@ data class SimConfig(
     val assetOrdering: NetSpendAllocationConfig,
     val taxCalcConfig: TaxCalcYearlyConfig,
     val taxesProcessor: TaxProcessorConfig = TaxesProcessor,
-    val rothConversion: RothConversionConfig? = null,
+    val transferGenerators: List<TransferGenerator> = ArrayList(),
     val simSuccess: SimSuccess = BasicSimSuccess(),
 ) {
     fun incomeConfigs(): List<IncomeProgression> =
@@ -48,3 +49,4 @@ class BasicSimSuccess : SimSuccess {
     override fun wasSuccessRun(yearlySummary: YearlySummary): Boolean =
         yearlySummary.assetValue > 0.0
 }
+

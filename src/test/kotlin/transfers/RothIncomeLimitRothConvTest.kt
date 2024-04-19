@@ -1,4 +1,4 @@
-package asset
+package transfers
 
 import YearMonth
 import inflation.INFL_TYPE

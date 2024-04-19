@@ -3,6 +3,7 @@ package config
 import Year
 import netspend.NetSpendAllocationConfig
 import tax.TaxesProcessor
+import transfers.TransferGenerator
 import util.currentDate
 
 interface ConfigBuilder {
@@ -12,7 +13,7 @@ interface ConfigBuilder {
     fun assetOrdering(): NetSpendAllocationConfig
     fun taxCalcConfig(): TaxCalcYearlyConfig
     fun taxesProcessor(): TaxesProcessor = TaxesProcessor
-    fun rothConversionConfig(): RothConversionConfig? = null
+    fun transferGenerators(): List<TransferGenerator> = ArrayList()
     fun simSuccess(): SimSuccess = BasicSimSuccess()
 
     fun buildConfig(): SimConfig = SimConfig(
@@ -22,7 +23,7 @@ interface ConfigBuilder {
         assetOrdering = assetOrdering(),
         taxCalcConfig = taxCalcConfig(),
         taxesProcessor = taxesProcessor(),
-        rothConversion = rothConversionConfig(),
+        transferGenerators = transferGenerators(),
         simSuccess = simSuccess()
     )
 }

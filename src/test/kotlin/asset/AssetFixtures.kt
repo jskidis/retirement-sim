@@ -3,9 +3,6 @@ package asset
 import Amount
 import RecIdentifier
 import Year
-import YearlyDetail
-import tax.TaxCalcConfig
-import tax.TaxableAmounts
 import util.currentDate
 
 fun assetRecFixture(
@@ -38,10 +35,3 @@ fun assetProgressionFixture(
         gainCreator = { _, _, _, _ -> AssetChange(name, gains) }
     )
 
-class RothConversionAmountCalcFixture(val amountToConvert: Amount) : RothConversionAmountCalc {
-    override fun amountToConvert(
-        currYear: YearlyDetail,
-        taxableAmounts: TaxableAmounts,
-        taxCalcConfig: TaxCalcConfig,
-    ): Amount = amountToConvert
-}
