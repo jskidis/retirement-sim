@@ -46,8 +46,9 @@ fun AssetRec.toJsonStr(): String = "{" +
 fun AssetChange.toJsonStr(): String = "{" +
     "\"name\":\"$name\"" +
     ", \"amount\":\"${moneyFormat.format(amount)}\"" +
-    strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
     strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
+    strWhenNotZero(cashflow == 0.0, ", \"cashFlow\":\"${moneyFormat.format(cashflow)}\"") +
+    strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
     strWhenNotZero(!isCarryOver, ", \"carryover\":true") +
     "}"
 
@@ -122,6 +123,7 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"incomes\":${incomes}" +
     ", \"benefits\":${benefits}" +
     ", \"expenses\":${expenses}" +
+    ", \"cashFlows:\":${cashFlowEvents}" +
     ", \"assets\":${assets}" +
     "}"
 

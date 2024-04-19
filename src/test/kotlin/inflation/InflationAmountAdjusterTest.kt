@@ -28,5 +28,6 @@ class InflationAmountAdjusterFixture(val inflationRAC: InflationRAC)
     CmpdInflationProvider by CmpdInflationProviderFixture(inflationRAC)
 
 class CmpdInflationProviderFixture(val inflationRAC: InflationRAC): BaseCmpdInflationProvider {
+    override fun getInflationType(): INFL_TYPE = INFL_TYPE.STD
     override fun getRAC(inflationRec: InflationRec) = inflationRAC
 }

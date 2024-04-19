@@ -4,6 +4,7 @@ import Rate
 import YearlyDetail
 
 interface CmpdInflationProvider {
+    fun getInflationType(): INFL_TYPE
     fun getCmpdInflationStart(currYear: YearlyDetail): Rate
     fun getCmpdInflationEnd(prevYear: YearlyDetail?): Rate
     fun getCurrInflationRate(year: YearlyDetail): Rate
@@ -22,18 +23,17 @@ interface BaseCmpdInflationProvider : CmpdInflationProvider {
 }
 
 class StdCmpdInflationProvider : BaseCmpdInflationProvider {
+    override fun getInflationType(): INFL_TYPE = INFL_TYPE.STD
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.std
 }
 
 class MedCmpdInflationProvider : BaseCmpdInflationProvider {
+    override fun getInflationType(): INFL_TYPE = INFL_TYPE.MED
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.med
 }
 
-class ChainCmpdInflationProvider : BaseCmpdInflationProvider {
-    override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.chain
-}
-
 class WageCmpdInflationProvider : BaseCmpdInflationProvider {
+    override fun getInflationType(): INFL_TYPE = INFL_TYPE.WAGE
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.wage
 }
 

@@ -36,8 +36,10 @@ class BracketBasedTaxCalcFixture(
     override fun bracketBelowPct(pct: Rate, currYear: YearlyDetail): BracketCase? = backetBelowPct
 }
 
-fun baseTaxConfigFixture() = TaxCalcConfig(
-    fed = BracketTaxCalcFixture(),
+fun baseTaxConfigFixture(
+    fed: BracketBasedTaxCalc = BracketTaxCalcFixture()
+) = TaxCalcConfig(
+    fed = fed,
     fedLTG = BracketTaxCalcFixture(),
     state = TaxCalcFixture(),
     socSec = TaxCalcFixture(),

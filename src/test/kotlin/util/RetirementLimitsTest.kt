@@ -11,6 +11,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
+import tax.FilingStatus
 import util.ConstantsProvider.KEYS.*
 import yearlyDetailFixture
 
@@ -21,7 +22,8 @@ class RetirementLimitsTest : ShouldSpec({
     val baseValue = ConstantsProvider.getValue(SS_INCOME_CAP)
 
     val year = currentDate.year +1
-    val currYear = yearlyDetailFixture(year, inflationRec)
+    val currYear = yearlyDetailFixture(year, inflationRec, filingStatus = FilingStatus.JOINTLY)
+    val currYearSingle = currYear.copy(filingStatus = FilingStatus.SINGLE)
 
     val catchupAge = ConstantsProvider.getValue(RETIREMENT_CATCHUP_AGE).toInt()
     val youngerPerson = YearMonth(year - catchupAge + 5)
@@ -36,17 +38,12 @@ class RetirementLimitsTest : ShouldSpec({
     should("determineCap") {
         var expected = baseValue * stdInfl.cmpdStart
         var result = RetirementLimits.determineCap(key = SS_INCOME_CAP, inflation = inflationRec,
-            inflType = INFL_TYPE.STD, isCmpdStart = true)
-        validateResult(result, expected)
-
-        expected = baseValue * stdInfl.cmpdEnd
-        result = RetirementLimits.determineCap(key = SS_INCOME_CAP, inflation = inflationRec,
-            inflType = INFL_TYPE.STD, isCmpdStart = false)
+            inflType = INFL_TYPE.STD)
         validateResult(result, expected)
 
         expected = baseValue * wageInfl.cmpdEnd
         result = RetirementLimits.determineCap(key = SS_INCOME_CAP, inflation = inflationRec,
-            inflType = INFL_TYPE.WAGE, isCmpdStart = true)
+            inflType = INFL_TYPE.WAGE)
         validateResult(result, expected)
     }
 
@@ -75,5 +72,13 @@ class RetirementLimitsTest : ShouldSpec({
         val expected = RetirementLimits.determineCap(key = CATCHUP_LIMIT_IRA, inflationRec)
         RetirementLimits.calcIRACatchup(currYear, youngerPerson).shouldBeZero()
         RetirementLimits.calcIRACatchup(currYear, olderPerson).shouldBe(expected)
+    }
+
+    should("calcRothIncomeLimit") {
+        val expectedJointly = RetirementLimits.determineCap(key = ROTH_INCOME_LIMIT_JOINTLY, inflationRec)
+        RetirementLimits.rothIncomeLimit(currYear).shouldBe(expectedJointly)
+
+        val expectedSingle = RetirementLimits.determineCap(key = ROTH_INCOME_LIMIT_SINGLE, inflationRec)
+        RetirementLimits.rothIncomeLimit(currYearSingle).shouldBe(expectedSingle)
     }
 })
