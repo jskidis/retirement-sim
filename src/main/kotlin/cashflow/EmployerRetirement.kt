@@ -6,8 +6,8 @@ import asset.AssetChange
 import asset.AssetRec
 import config.EmploymentConfig
 import config.Person
-import income.IncomeRec
 import tax.TaxabilityProfile
+import util.RecFinder
 
 class EmployerRetirement(
     val empConfig: EmploymentConfig,
@@ -23,7 +23,7 @@ class EmployerRetirement(
 
         return if (pctInYear == 0.0) null
         else {
-            val incomeRec = findIncomeRec(currYear)
+            val incomeRec = RecFinder.findIncomeRec(empConfig.ident, currYear)
             if (incomeRec == null) null
             else {
                 val amount = (if (amountRetriever.doProrate()) pctInYear else 1.0) *
@@ -32,9 +32,6 @@ class EmployerRetirement(
             }
         }
     }
-
-    private fun findIncomeRec(currYear: YearlyDetail): IncomeRec? =
-        currYear.incomes.find { it.ident == empConfig.ident }
 
     private fun createCashflowEvent(amount: Amount): AssetChange {
         return AssetChange(

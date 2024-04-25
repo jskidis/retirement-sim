@@ -6,9 +6,9 @@ import config.SimConfig
 object TransferProcessor {
     fun process(config: SimConfig, currYear: YearlyDetail): List<TransferRec> {
         val transferRecs = config.transferGenerators.flatMap {
-            val amount = it.determineTransferInfo(config, currYear)
+            val amount = it.determineTransferAmount(config, currYear)
             if (amount <= 0.0) listOf()
-            else it.performTransfers(currYear, amount)
+            else it.generateTransfers(currYear, amount)
         }
 
         transferRecs.forEach {

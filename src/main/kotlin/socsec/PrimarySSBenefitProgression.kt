@@ -8,6 +8,7 @@ import config.Person
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
+import util.RecFinder
 import util.currentDate
 
 open class PrimarySSBenefitProgression(
@@ -30,7 +31,7 @@ open class PrimarySSBenefitProgression(
         val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
         val cmpInflation = cmpdInflationProvider.getCmpdInflationEnd(prevYear)
 
-        val prevRec = prevYear?.benefits?.find { it.ident == ident }
+        val prevRec = prevYear?.let { RecFinder.findBenefitRec(ident, prevYear) }
         val targetStart = claimDateProvider.claimDate(prevRec, prevYear)
         val hasClaimed = targetStart.year < year || (prevRec?.claimDate != null)
         val newClaim = !hasClaimed && targetStart.year == year

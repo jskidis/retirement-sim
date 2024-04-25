@@ -34,6 +34,9 @@ object Jane : PersonConfigBuilder {
     val iraAcct = RecIdentifier(name = "Jane-IRA", person = Smiths.jane.name)
     val iraAcctBal: Amount = 500000.0
 
+    val rothAcct = RecIdentifier(name = "Jane-Roth", person = Smiths.jane.name)
+    val rothAcctBal: Amount = 100000.0
+
     val four01kAcct = RecIdentifier(name = "Jane-401k", person = Smiths.jane.name)
     val four01kAcctBal = 250000.0
 
@@ -83,7 +86,26 @@ object Jane : PersonConfigBuilder {
                 attributesSet = YearBasedConfig(
                     listOf(
                         YearConfigPair(
-                            startYear = Smiths.startYear - 1,
+                            startYear = Smiths.startYear,
+                            config = AssetAttributeMap.assetComp("US Stocks")
+                        ),
+                        YearConfigPair(
+                            startYear = employmentDates.end.year,
+                            config = AssetAttributeMap.assetComp("Stocks/Bonds 60/40")
+                        )
+                    ))
+            )
+        )
+        val janeRoth = AssetProgression(
+            ident = rothAcct,
+            assetType = AssetType.ROTH,
+            startBalance = rothAcctBal,
+            gainCreator = SimpleAssetGainCreator(
+                taxability = NonTaxableProfile(),
+                attributesSet = YearBasedConfig(
+                    listOf(
+                        YearConfigPair(
+                            startYear = Smiths.startYear,
                             config = AssetAttributeMap.assetComp("US Stocks")
                         ),
                         YearConfigPair(
@@ -102,7 +124,7 @@ object Jane : PersonConfigBuilder {
                 attributesSet = YearBasedConfig(
                     listOf(
                         YearConfigPair(
-                            startYear = Smiths.startYear - 1,
+                            startYear = Smiths.startYear,
                             config = AssetAttributeMap.assetComp("US Stocks")
                         ),
                         YearConfigPair(
@@ -112,7 +134,7 @@ object Jane : PersonConfigBuilder {
                     ))
             )
         )
-        return listOf(janeIRA, jane401K)
+        return listOf(janeIRA, janeRoth, jane401K)
     }
 
     override fun benefits(person: Person) = listOf(

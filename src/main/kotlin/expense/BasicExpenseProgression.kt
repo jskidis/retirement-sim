@@ -5,6 +5,7 @@ import RecIdentifier
 import YearlyDetail
 import progression.*
 import tax.TaxabilityProfile
+import util.RecFinder
 
 open class BasicExpenseProgression(
     val ident: RecIdentifier,
@@ -19,7 +20,7 @@ open class BasicExpenseProgression(
     override fun initialAmount() = startAmount
 
     override fun previousAmount(prevYear: YearlyDetail): Amount? =
-        prevYear.expenses.find {it.ident == ident }?.amount
+        RecFinder.findExpenseRec(ident, prevYear)?.amount
 
     override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount =
         adjustAmount(prevAmount, prevYear)

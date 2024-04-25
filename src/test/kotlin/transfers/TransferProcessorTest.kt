@@ -81,8 +81,9 @@ class TransferProcessorTest : ShouldSpec({
             transferRecs = listOf(transferRec3_1, transferRec3_2)
         )
 
-        val year = currentDate.year +1
-        val config = configFixture(year,
+        val year = currentDate.year + 1
+        val config = configFixture(
+            year,
             transferGenerators = listOf(generator1, generator2, generator3))
         val currYear = yearlyDetailFixture(year)
 
@@ -114,15 +115,17 @@ class TransferProcessorTest : ShouldSpec({
 class TransferGeneratorFixture(
     val transferAmount: Amount,
     val transferRecs: List<TransferRec>,
+
+    override val sourceDestPairs: List<Pair<RecIdentifier, RecIdentifier>> =
+        transferRecs.map{ it.sourceRec.ident to it.destRec.ident  },
+    override val taxabilityProfile: TaxabilityProfile = NonWageTaxableProfile()
 ) : TransferGenerator {
 
-    override val taxabilityProfile: TaxabilityProfile = NonWageTaxableProfile()
-    override val sourceDestPairs: List<Pair<RecIdentifier, RecIdentifier>> =
-        transferRecs.map { it.sourceRec.ident to it.destRec.ident }
-
-    override fun determineTransferInfo(config: SimConfig, currYear: YearlyDetail)
+    override fun determineTransferAmount(config: SimConfig, currYear: YearlyDetail)
         : Amount = transferAmount
 
-    override fun performTransfers(currYear: YearlyDetail, amount: Amount)
+    override fun generateTransfers(currYear: YearlyDetail, amount: Amount)
         : List<TransferRec> = transferRecs
+
+    override fun transferName(): String = "Transfer-Fixture"
 }

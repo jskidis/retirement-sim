@@ -56,8 +56,9 @@ data class YearlySummary(
     val agi: Amount,
     val taxes: Amount,
     val payrollTaxes: Amount,
+    val carryOverTaxes: Amount,
 ) {
-    fun inflAdjAssets(): Amount = assetValue / inflation
+    fun inflAdjAssets(): Amount = (assetValue - carryOverTaxes) / inflation
     companion object {
         fun fromDetail(detail: YearlyDetail): YearlySummary =
             YearlySummary(
@@ -73,6 +74,7 @@ data class YearlySummary(
                 agi = detail.finalPassTaxes.agi,
                 taxes = detail.finalPassTaxes.fed + detail.finalPassTaxes.state,
                 payrollTaxes = detail.finalPassTaxes.socSec + detail.finalPassTaxes.medicare,
+                carryOverTaxes = detail.finalPassTaxes.total() - detail.taxes.total()
             )
     }
 }

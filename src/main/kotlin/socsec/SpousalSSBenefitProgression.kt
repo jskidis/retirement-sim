@@ -6,6 +6,7 @@ import config.Person
 import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
+import util.RecFinder
 
 open class SpousalSSBenefitProgression(
     val person: Person,
@@ -25,9 +26,9 @@ open class SpousalSSBenefitProgression(
     val spouseIdent = RecIdentifier(PrimarySSBenefitProgression.IDENT_NAME, spouse.name)
 
     override fun determineNext(prevYear: YearlyDetail?, currYear: YearlyDetail): SSBenefitRec {
-        val prevSecondaryRec = prevYear?.benefits?.find { it.ident == secondaryIdent }
-        val currPrimaryRec = currYear.benefits.find { it.ident == primaryIdent }
-        val currSpouseRec = currYear.benefits.find { it.ident == spouseIdent }
+        val prevSecondaryRec = prevYear?.let { RecFinder.findBenefitRec(secondaryIdent, prevYear) }
+        val currPrimaryRec = RecFinder.findBenefitRec(primaryIdent, currYear)
+        val currSpouseRec = RecFinder.findBenefitRec(spouseIdent, currYear)
 
         val (baseAmount, benefitAdj, claimDate) = when {
             prevSecondaryRec?.claimDate != null -> Triple(

@@ -5,9 +5,11 @@ import YearMonth
 import config.*
 import inflation.RandomRateInflationProgression
 import netspend.*
+import tax.NonTaxableProfile
 import tax.NonWageTaxableProfile
 import tax.currTaxConfig
 import tax.rollbackTaxConfig
+import transfers.*
 import util.YearBasedConfig
 import util.YearConfigPair
 import util.currentDate
@@ -100,6 +102,46 @@ class Smiths : ConfigBuilder {
 
         return NetSpendAllocationConfig(withdrawOrder, depositOrder)
     }
+
+    override fun transferGenerators(): List<TransferGenerator> = listOf(
+        RothConversionGenerator(
+            amountCalc = YearBasedConfig(
+                listOf(
+                    YearConfigPair(startYear, RothIncomeLimitRothConv(MaxTaxRateRothConv(.24))),
+                    YearConfigPair(2026, RothIncomeLimitRothConv(TilNextBracketRothConv())),
+                    YearConfigPair(Jane.employmentDates.end.year + 1, MaxTaxRateRothConv(.20)),
+                    YearConfigPair(2034, MaxTaxRateRothConv(.15)),
+                    YearConfigPair(Jane.targetSSDate.year, MaxTaxRateRothConv(.25)),
+                    YearConfigPair(jane.birthYM.year + 75, TilNextBracketRothConv())
+                )),
+            sourceDestPairs = listOf(
+                Jane.iraAcct to Jane.rothAcct,
+                Jane.four01kAcct to Jane.rothAcct,
+            ),
+            taxabilityProfile = NonWageTaxableProfile()
+        ),
+        CloseAccountsOnYear(
+            year = Jane.employmentDates.end.year + 1,
+            transferName = "Jane-401k-Transfer",
+            taxabilityProfile = NonTaxableProfile(),
+            sourceDestPairs = listOf(Jane.four01kAcct to Jane.iraAcct),
+        ),
+        CloseAccountsOnYear(
+            year = 2050, transferName = "Jane-Death-IRA",
+            taxabilityProfile = NonWageTaxableProfile(),
+            sourceDestPairs = listOf(Jane.iraAcct to Household.investAcct)
+        ),
+        CloseAccountsOnYear(
+            year = 2050, transferName = "Jane-Death-Roth",
+            taxabilityProfile = NonTaxableProfile(),
+            sourceDestPairs = listOf(Jane.rothAcct to Household.investAcct)
+        ),
+        CloseAccountsOnYear(
+            year = 2050, transferName = "Connie-Death",
+            taxabilityProfile = NonWageTaxableProfile(),
+            sourceDestPairs = listOf(Richard.iraAcct to Household.investAcct)
+        )
+    )
 
     override fun simSuccess(): SimSuccess = SimSuccess {
         it.assetValue / it.inflation > 1000000.0

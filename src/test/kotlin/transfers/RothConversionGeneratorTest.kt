@@ -88,7 +88,7 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBeZero()
     }
 
@@ -110,7 +110,7 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBeZero()
     }
 
@@ -132,10 +132,10 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBe(amountToConvert)
 
-        val transferResult = generator.performTransfers(yearProcessed, infoResult)
+        val transferResult = generator.generateTransfers(yearProcessed, infoResult)
         transferResult.shouldHaveSize(1)
         validateSourceTransferRec(transferResult[0], sourceAsset, -amountToConvert)
         validateDestTransferRec(transferResult[0], destAsset, amountToConvert)
@@ -159,10 +159,10 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBe(amountAvailable)
 
-        val transferResult = generator.performTransfers(yearProcessed, infoResult)
+        val transferResult = generator.generateTransfers(yearProcessed, infoResult)
         transferResult.shouldHaveSize(1)
         validateSourceTransferRec(transferResult[0], sourceAsset, -amountAvailable)
         validateDestTransferRec(transferResult[0], destAsset, amountAvailable)
@@ -190,10 +190,10 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBe(amountToConvert)
 
-        val transferResult = generator.performTransfers(yearProcessed, infoResult)
+        val transferResult = generator.generateTransfers(yearProcessed, infoResult)
         transferResult.shouldHaveSize(2)
         validateSourceTransferRec(transferResult[0], sourceAsset, -amountAvailableFirst)
         validateDestTransferRec(transferResult[0], destAsset, amountAvailableFirst)
@@ -222,10 +222,10 @@ class RothConversionGeneratorTest : ShouldSpec({
         )
         val config = baseConfig.copy(transferGenerators = listOf(generator))
 
-        val infoResult = generator.determineTransferInfo(config, yearProcessed)
+        val infoResult = generator.determineTransferAmount(config, yearProcessed)
         infoResult.shouldBe(amountToConvert)
 
-        val transferResult = generator.performTransfers(yearProcessed, infoResult)
+        val transferResult = generator.generateTransfers(yearProcessed, infoResult)
         transferResult.shouldHaveSize(1)
         validateSourceTransferRec(transferResult[0], sourceAsset2, -amountToConvert)
         validateDestTransferRec(transferResult[0], destAsset, amountToConvert)

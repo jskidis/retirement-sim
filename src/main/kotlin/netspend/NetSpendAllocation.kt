@@ -3,8 +3,8 @@ package netspend
 import Amount
 import RecIdentifier
 import YearlyDetail
-import asset.AssetRec
 import util.PortionOfYearPast
+import util.RecFinder
 
 object NetSpendAllocation {
 
@@ -35,7 +35,7 @@ object NetSpendAllocation {
         withdrawOrder.fold(netSpend) { acc, it ->
             if (acc > -1.0) 0.0
             else {
-                val assetRec = findAssetRec(currYear, it)
+                val assetRec = RecFinder.findAssetRec(it.ident, currYear)
                 if (assetRec == null) acc
                 else acc + it.spendAllocHandler.withdraw(-acc, assetRec, currYear)
             }
@@ -49,16 +49,11 @@ object NetSpendAllocation {
         depositOrder.fold(netSpend) { acc, it ->
             if (acc < 1.0) 0.0
             else {
-                val assetRec = findAssetRec(currYear, it)
+                val assetRec = RecFinder.findAssetRec(it.ident, currYear)
                 if (assetRec == null) acc
                 else acc - it.spendAllocHandler.deposit(acc, assetRec, currYear)
             }
         }
-
-    private fun findAssetRec(
-        currYear: YearlyDetail,
-        progression: NetSpendAssetConfig,
-    ): AssetRec? = currYear.assets.find { it.ident == progression.ident }
 }
 
 data class NetSpendAllocationConfig(

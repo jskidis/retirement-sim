@@ -5,6 +5,7 @@ import YearlyDetail
 import asset.AssetChange
 import asset.AssetRec
 import config.SimConfig
+import util.RecFinder
 
 object CashFlowEventProcessor {
     fun process(simConfig: SimConfig, currYear: YearlyDetail): List<AssetChange> {
@@ -21,4 +22,4 @@ object CashFlowEventProcessor {
 }
 
 private fun findAssetRec(currYear: YearlyDetail, assetIdent: RecIdentifier): AssetRec? =
-    currYear.assets.find { it.ident == assetIdent }
+    RecFinder.findAssetRec(assetIdent, currYear)
