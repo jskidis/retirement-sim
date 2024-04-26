@@ -57,14 +57,14 @@ class AssetRecTest : ShouldSpec({
 
     should("captured gains is determined based on the year of the record") {
         val futureRec = rec.copy(year = futureYear)
-        futureRec.capturedGains().shouldBe(0)
+        futureRec.proratedGains().shouldBe(0)
 
         val pastRec = rec.copy(year = pastYear)
-        pastRec.capturedGains().shouldBe(gainAmont)
+        pastRec.proratedGains().shouldBe(gainAmont)
 
         val presentRec = rec.copy(year = currentYear)
-        presentRec.capturedGains().shouldBeGreaterThan(0.0)
-        presentRec.capturedGains().shouldBeLessThan(gainAmont)
+        presentRec.proratedGains().shouldBeGreaterThan(0.0)
+        presentRec.proratedGains().shouldBeLessThan(gainAmont)
     }
 
     should("calculates the final balance") {

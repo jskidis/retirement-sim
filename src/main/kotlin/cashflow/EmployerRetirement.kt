@@ -7,6 +7,7 @@ import asset.AssetRec
 import config.EmploymentConfig
 import config.Person
 import tax.TaxabilityProfile
+import util.PortionOfYearPast
 import util.RecFinder
 
 class EmployerRetirement(
@@ -19,26 +20,28 @@ class EmployerRetirement(
 
     override fun generateCashFlowTribution(assetRec: AssetRec, currYear: YearlyDetail)
         : AssetChange? {
-        val pctInYear = empConfig.dateRange.pctInYear(currYear.year).value
+        val empPctInYearempPctInYear = empConfig.dateRange.pctInYear(currYear.year).value
 
-        return if (pctInYear == 0.0) null
+        return if (empPctInYearempPctInYear == 0.0) null
         else {
             val incomeRec = RecFinder.findIncomeRec(empConfig.ident, currYear)
             if (incomeRec == null) null
             else {
-                val amount = (if (amountRetriever.doProrate()) pctInYear else 1.0) *
+                val amount = (if (amountRetriever.isAnnualLimit()) empPctInYearempPctInYear else 1.0) *
                     amountRetriever.determineAmount(currYear, incomeRec, person.birthYM)
-                createCashflowEvent(amount)
+                createCashflowEvent(amount, currYear)
             }
         }
     }
 
-    private fun createCashflowEvent(amount: Amount): AssetChange {
+    private fun createCashflowEvent(amount: Amount, currYear: YearlyDetail): AssetChange {
+        val accruedPct = PortionOfYearPast.calc(currYear.year)
         return AssetChange(
             name = contributionName,
             amount = amount,
             taxable = taxabilityProfile?.calcTaxable(empConfig.ident.person, amount),
-            cashflow = if (amountRetriever.isFreeMoney()) 0.0 else -amount
+            cashflow = if (amountRetriever.isFreeMoney()) 0.0 else -amount * (1 - accruedPct),
+            accruedAmt = amount * accruedPct
         )
     }
 }

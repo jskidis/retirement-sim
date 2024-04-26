@@ -32,12 +32,13 @@ data class AssetRec(
     }
 
     fun totalGains(): Amount = gains.amount
-    fun capturedGains(): Amount = PortionOfYearPast.calc(year) * totalGains()
+    fun proratedGains(): Amount = PortionOfYearPast.calc(year) * totalGains()
+    fun nonAccruedTributions(): Amount = tributions.sumOf { it.amount - it.accruedAmt }
     fun totalTributions(): Amount = tributions.sumOf { it.amount }
 
 
     fun finalBalance(): Amount {
-        val balance = startBal + totalGains() - capturedGains() + totalTributions()
+        val balance = startBal + totalGains() - proratedGains() + nonAccruedTributions()
         return if (balance < 100.0) 0.0 else balance
     }
 

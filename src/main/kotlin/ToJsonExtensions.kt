@@ -30,8 +30,8 @@ fun AssetRec.toJsonStr(): String = "{" +
         totalGains() == 0.0,
         ", \"gains\":$gains, \"totalGains\":\"${moneyFormat.format(totalGains())}\"" +
             strWhenNotZero(
-                capturedGains() == 0.0,
-                ", \"capturedGains\":\"${moneyFormat.format(capturedGains())}\"")
+                proratedGains() == 0.0,
+                ", \"capturedGains\":\"${moneyFormat.format(proratedGains())}\"")
     ) +
     strWhenNotZero(
         tributions.isEmpty(),
@@ -70,7 +70,7 @@ fun SSBenefitRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(amount)}\"" +
     strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
-    strWhenNotZero(baseAmount == 0.0, ", \"base\":${moneyFormat.format(baseAmount)}") +
+    strWhenNotZero(baseAmount == 0.0, ", \"base\":\"${moneyFormat.format(baseAmount)}\"") +
     strWhenNotZero(benefitAdjustment == 0.0, ", \"adj\":${twoDecimalFormat.format(benefitAdjustment)}") +
     strWhenNotZero(claimDate == null, ", \"claimDate\":${claimDate}") +
     "}"
