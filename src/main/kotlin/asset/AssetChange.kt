@@ -11,7 +11,6 @@ data class AssetChange(
     val taxable: TaxableAmounts? = null,
     val unrealized: Amount = 0.0,
     val cashflow: Amount = 0.0,
-    val isCarryOver: Boolean = false,
     val accruedAmt: Amount = 0.0,
 ) {
     override fun toString(): String = toJsonStr()

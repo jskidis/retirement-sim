@@ -7,7 +7,6 @@ import income.incomeRecFixture
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -80,7 +79,6 @@ class IRAContributionTest : ShouldSpec({
         result.name.shouldBe(contribName)
         result.amount.shouldBe(smallIncome)
         result.cashflow.shouldBe(-smallIncome)
-        result.isCarryOver.shouldBeFalse()
         result.taxable.shouldBeNull()
     }
 

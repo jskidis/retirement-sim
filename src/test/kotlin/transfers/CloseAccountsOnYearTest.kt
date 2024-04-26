@@ -5,8 +5,6 @@ import asset.AssetChange
 import asset.assetRecFixture
 import config.configFixture
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
@@ -102,22 +100,18 @@ class CloseAccountsOnYearTest : ShouldSpec({
         result[0].destRec.shouldBe(destAsset1Rec)
         result[0].sourceTribution.name.shouldBe(transferName)
         result[0].sourceTribution.cashflow.shouldBeZero()
-        result[0].sourceTribution.isCarryOver.shouldBeFalse()
         result[0].sourceTribution.amount.shouldBe(-sourceAsset1StartBal - sourceAsset1GainAmt)
         result[0].destTribution.name.shouldBe(transferName)
         result[0].destTribution.cashflow.shouldBeZero()
-        result[0].destTribution.isCarryOver.shouldBeTrue()
         result[0].destTribution.amount.shouldBe(sourceAsset1StartBal + sourceAsset1GainAmt)
 
         result[1].sourceRec.shouldBe(sourceAssetRec2)
         result[1].destRec.shouldBe(destAsset2Rec)
         result[1].sourceTribution.name.shouldBe(transferName)
-        result[1].sourceTribution.isCarryOver.shouldBeFalse()
         result[1].sourceTribution.cashflow.shouldBeZero()
         result[1].sourceTribution.amount.shouldBe(-sourceAsset2StartBal - sourceAsset2GainAmt)
         result[1].destTribution.name.shouldBe(transferName)
         result[1].destTribution.cashflow.shouldBeZero()
-        result[1].destTribution.isCarryOver.shouldBeTrue()
         result[1].destTribution.amount.shouldBe(sourceAsset2StartBal + sourceAsset2GainAmt)
     }
 

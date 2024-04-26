@@ -50,7 +50,7 @@ fun AssetChange.toJsonStr(): String = "{" +
     strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
     strWhenNotZero(cashflow == 0.0, ", \"cashFlow\":\"${moneyFormat.format(cashflow)}\"") +
     strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
-    strWhenNotZero(!isCarryOver, ", \"carryover\":true") +
+    strWhenNotZero(accruedAmt == 0.0, ", \"accrued\":\"${moneyFormat.format(accruedAmt)}\"") +
     "}"
 
 fun ExpenseRec.toJsonStr() = "{" +

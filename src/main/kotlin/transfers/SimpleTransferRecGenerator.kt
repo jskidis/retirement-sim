@@ -21,7 +21,6 @@ open class SimpleTransferRecGenerator(
             destRec = destRec,
             destTribution = AssetChange(
                 name = transferName(), amount = distribution,
-                taxable = taxabilityProfile.calcTaxable(sourceRec.ident.person, distribution),
-                isCarryOver = true
+                taxable = taxabilityProfile.calcTaxable(sourceRec.ident.person, distribution)
             ))
 }

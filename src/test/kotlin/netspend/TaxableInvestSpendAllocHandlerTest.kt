@@ -3,7 +3,6 @@ package netspend
 import asset.AssetChange
 import asset.assetRecFixture
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.shouldBe
@@ -36,7 +35,6 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.fed.shouldBe(withdrawAmount)
         assetRec.tributions[0].taxable?.fedLTG.shouldBe(0.0)
         assetRec.tributions[0].taxable?.state.shouldBe(withdrawAmount)
-        assetRec.tributions[0].isCarryOver.shouldBeTrue()
         assetRec.totalUnrealized().shouldBe(ltUnrealized + stUnrealized - withdrawAmount)
     }
 
@@ -56,7 +54,6 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.fed.shouldBe(stUnrealized)
         assetRec.tributions[0].taxable?.fedLTG.shouldBe(withdrawAmount - stUnrealized)
         assetRec.tributions[0].taxable?.state.shouldBe(withdrawAmount)
-        assetRec.tributions[0].isCarryOver.shouldBeTrue()
         assetRec.totalUnrealized().shouldBe(ltUnrealized + stUnrealized - withdrawAmount)
     }
 
@@ -76,7 +73,6 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.fed.shouldBe(stUnrealized)
         assetRec.tributions[0].taxable?.fedLTG.shouldBe(ltUnrealized)
         assetRec.tributions[0].taxable?.state.shouldBe(stUnrealized + ltUnrealized)
-        assetRec.tributions[0].isCarryOver.shouldBeTrue()
         assetRec.totalUnrealized().shouldBeZero()
     }
 
@@ -96,7 +92,6 @@ class TaxableInvestSpendAllocHandlerTest : ShouldSpec({
         assetRec.tributions[0].taxable?.fed.shouldBe(withdrawAmount)
         assetRec.tributions[0].taxable?.fedLTG?.shouldBeZero()
         assetRec.tributions[0].taxable?.state.shouldBe(withdrawAmount)
-        assetRec.tributions[0].isCarryOver.shouldBeTrue()
         assetRec.totalUnrealized().shouldBe(stUnrealized - withdrawAmount)
     }
 

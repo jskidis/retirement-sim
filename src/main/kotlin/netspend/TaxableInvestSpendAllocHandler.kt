@@ -27,8 +27,7 @@ class TaxableInvestSpendAllocHandler(minAcctBal: Amount = 0.0) : BasicSpendAlloc
             name = "Withdraw",
             amount = -drawAmount,
             unrealized = -stUnrealized -ltUnrealized,
-            taxable = taxableAmounts,
-            isCarryOver = true
+            taxable = taxableAmounts
         ))
         return drawAmount
     }

@@ -7,8 +7,6 @@ import asset.AssetRec
 import asset.AssetType
 import config.configFixture
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.booleans.shouldBeFalse
-import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.nulls.shouldBeNull
@@ -57,7 +55,6 @@ class RothConversionGeneratorTest : ShouldSpec({
         transferRec.sourceRec.shouldBe(sourceRec)
         validateTribution(transferRec.sourceTribution, amount)
         transferRec.sourceTribution.taxable.shouldBeNull()
-        transferRec.sourceTribution.isCarryOver.shouldBeFalse()
     }
 
     fun validateDestTransferRec(transferRec: TransferRec, destRec: AssetRec, amount: Amount) {
@@ -67,7 +64,6 @@ class RothConversionGeneratorTest : ShouldSpec({
         transferRec.destTribution.taxable?.fed.shouldBe(amount)
         transferRec.destTribution.taxable?.fedLTG.shouldBe(0.0)
         transferRec.destTribution.taxable?.state.shouldBe(amount)
-        transferRec.destTribution.isCarryOver.shouldBeTrue()
     }
 
     should("not process any conversion if amount to convert is 0") {

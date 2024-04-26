@@ -25,8 +25,7 @@ open class IRASpendAlloc(
         return addWithdrawTribution(
             amount = Math.min(amount, assetRec.finalBalance()),
             assetRec = assetRec,
-            taxable = taxable,
-            isCarryOver = true
+            taxable = taxable
         )
     }
 

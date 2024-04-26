@@ -17,23 +17,21 @@ interface SpendAllocHandler {
 
     fun addWithdrawTribution(
         amount: Amount, assetRec: AssetRec,
-        taxable: TaxableAmounts? = null,
-        isCarryOver: Boolean = false
+        taxable: TaxableAmounts? = null
     ): Amount {
         assetRec.tributions.add(
             AssetChange(name= TributionNames.WITHDRAW,
-            amount = -amount, taxable = taxable, isCarryOver = isCarryOver))
+            amount = -amount, taxable = taxable))
         return amount
     }
 
     fun addDepositTribution(
         amount: Amount, assetRec: AssetRec,
-        taxable: TaxableAmounts? = null,
-        isCarryOver: Boolean = false
+        taxable: TaxableAmounts? = null
     ): Amount {
         assetRec.tributions.add(
             AssetChange(name = TributionNames.DEPOSIT,
-            amount = amount, taxable = taxable, isCarryOver = isCarryOver))
+            amount = amount, taxable = taxable))
         return amount
     }
 }
