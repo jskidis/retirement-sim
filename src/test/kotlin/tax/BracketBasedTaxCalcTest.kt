@@ -24,7 +24,6 @@ class BracketBasedTaxCalcTest : ShouldSpec({
         InflationRAC(0.0),
         InflationRAC(0.0),
         InflationRAC(0.0),
-        InflationRAC(0.0),
     )
 
     val cmpdInflation = 2.0
