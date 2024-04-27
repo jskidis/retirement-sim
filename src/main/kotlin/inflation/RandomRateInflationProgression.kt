@@ -39,6 +39,7 @@ open class RandomRateInflationProgression(
                 currRate = gaussianAdjValue(gaussianRnd, meanAndSD.wageMean, meanAndSD.wageSD),
                 prev = prevRec.wage
             ),
+            rndAdj = gaussianRnd
         )
     }
 

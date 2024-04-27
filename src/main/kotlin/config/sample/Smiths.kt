@@ -3,7 +3,8 @@ package config.sample
 import Year
 import YearMonth
 import config.*
-import inflation.RandomRateInflationProgression
+import inflation.StickyInflationProgression
+import inflation.inflation40YearAvgs
 import netspend.*
 import tax.NonTaxableProfile
 import tax.NonWageTaxableProfile
@@ -55,7 +56,9 @@ class Smiths : ConfigBuilder {
         return Household.buildConfig(householdMembers)
     }
 
-    override fun inflationConfig(): InflationConfig = RandomRateInflationProgression()
+    override fun inflationConfig(): InflationConfig = StickyInflationProgression(
+        initialStickiness = 0.9, meanAndSD = inflation40YearAvgs
+    )
 
     override fun taxCalcConfig(): TaxCalcYearlyConfig =
         YearBasedConfig(

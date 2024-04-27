@@ -16,6 +16,7 @@ fun yearlyDetailFixture(
     assets: List<AssetRec> = ArrayList(),
     taxes: TaxesRec = TaxesRec(),
     secondPassTaxes: TaxesRec = TaxesRec(),
+    randomValues: Map<String, Double> = mapOf(),
     filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) =
     YearlyDetail(
@@ -27,5 +28,6 @@ fun yearlyDetailFixture(
         assets = assets,
         taxes = taxes,
         finalPassTaxes = secondPassTaxes,
+        randomValues = randomValues,
         filingStatus = filingStatus
 )
