@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "1.9.23"
     application
 }
 
-group = "org.example"
+group = "com.skidis.retirement-sim"
 version = "1.0-SNAPSHOT"
 val apacheCsvVersion = "1.10.0"
 val kotestRunnerVersion = "5.8.0"
@@ -26,7 +26,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(11)
 }
 
 application {
