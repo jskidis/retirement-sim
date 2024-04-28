@@ -28,5 +28,5 @@ class NewIncomeAdjustBaseAmountProvider(
 
     private fun getSSIncome(person: Name, prevYear: YearlyDetail): Amount =
         prevYear.incomes.filter { it.ident.person == person }
-            .sumOf{ it.taxableIncome.socSec }
+            .sumOf{ it.taxable().socSec }
 }

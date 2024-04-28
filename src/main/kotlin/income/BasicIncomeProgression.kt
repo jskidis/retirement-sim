@@ -20,7 +20,7 @@ open class BasicIncomeProgression(
     override fun initialAmount() = startAmount
 
     override fun previousAmount(prevYear: YearlyDetail): Amount? =
-        RecFinder.findIncomeRec(ident, prevYear)?.baseAmount
+        RecFinder.findIncomeRec(ident, prevYear)?.amount()
 
     override fun nextAmountFromPrev(prevAmount: Amount, prevYear: YearlyDetail): Amount {
         return adjustAmount(prevAmount, prevYear)

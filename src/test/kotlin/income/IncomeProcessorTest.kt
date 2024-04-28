@@ -60,7 +60,7 @@ class IncomeProcessorTest : ShouldSpec({
         }
         parent1Rec.shouldNotBeNull()
         // salary above cap
-        parent1Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
+        parent1Rec.taxable().socSec.shouldBeWithinPercentageOf(
             ConstantsProvider.getValue(SS_INCOME_CAP), .001)
 
         val parent2Rec = result.find {
@@ -69,7 +69,7 @@ class IncomeProcessorTest : ShouldSpec({
         }
         parent2Rec.shouldNotBeNull()
         // salary above cap
-        parent2Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
+        parent2Rec.taxable().socSec.shouldBeWithinPercentageOf(
             ConstantsProvider.getValue(SS_INCOME_CAP), .001)
     }
 
@@ -88,7 +88,7 @@ class IncomeProcessorTest : ShouldSpec({
         }
         parent1Rec.shouldNotBeNull()
         // salary below inflation adjusted cap
-        parent1Rec.taxableIncome.socSec.shouldBe(parent1Income)
+        parent1Rec.taxable().socSec.shouldBe(parent1Income)
 
         val parent2Rec = result.find {
             it.ident.name == "Parent 2 Inc" &&
@@ -96,7 +96,7 @@ class IncomeProcessorTest : ShouldSpec({
         }
         parent2Rec.shouldNotBeNull()
         // salary above inflation adjusted cap
-        parent2Rec.taxableIncome.socSec.shouldBeWithinPercentageOf(
+        parent2Rec.taxable().socSec.shouldBeWithinPercentageOf(
             ConstantsProvider.getValue(SS_INCOME_CAP) * cmpWageInflation, .001)
 
     }

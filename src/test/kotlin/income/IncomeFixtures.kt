@@ -14,9 +14,21 @@ fun incomeRecFixture(
     name: Name = "Income",
     person: Name = "Person",
     amount: Amount = 0.0,
+    taxableAmounts: TaxableAmounts = TaxableAmounts(person)
+) = StdIncomeRec(
+    year = year,
+    ident = RecIdentifier(name = name, person = person),
+    amount = amount,
+    taxableIncome = taxableAmounts)
+
+fun incomeWithBonusRecFixture(
+    year: Year = currentDate.year + 1,
+    name: Name = "Income",
+    person: Name = "Person",
+    amount: Amount = 0.0,
     bonus: Amount = 0.0,
     taxableAmounts: TaxableAmounts = TaxableAmounts(person)
-) = IncomeRec(
+) = IncomeWithBonusRec(
     year = year,
     ident = RecIdentifier(name = name, person = person),
     baseAmount = amount,
@@ -29,10 +41,10 @@ fun incomeRecFixture(
     person: Name = "Person",
     amount: Amount = 0.0,
     taxProfile: TaxabilityProfile
-) = IncomeRec(
+) = StdIncomeRec(
     year = year,
     ident = RecIdentifier(name = name, person = person),
-    baseAmount = amount,
+    amount = amount,
     taxableIncome = taxProfile.calcTaxable(name, amount))
 
 fun incomeProgressionFixture(

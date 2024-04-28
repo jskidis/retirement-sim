@@ -13,6 +13,7 @@ import expense.BasicExpenseProgression
 import income.EmploymentIncomeProgression
 import income.IncomeProgression
 import inflation.StdInflationAmountAdjuster
+import inflation.WageInflationAmountAdjust
 import medical.*
 import socsec.FlexibleClaimDateProvider
 import socsec.NewIncomeAdjustBaseAmountProvider
@@ -60,7 +61,7 @@ object Jane : PersonConfigBuilder {
     override fun incomes(person: Person): List<IncomeProgression> {
         val employmentConfigs = listOf(janeEmpConfig)
         return employmentConfigs.map {
-            EmploymentIncomeProgression(it, listOf(StdInflationAmountAdjuster()))
+            EmploymentIncomeProgression(it, listOf(WageInflationAmountAdjust()))
         }
     }
 

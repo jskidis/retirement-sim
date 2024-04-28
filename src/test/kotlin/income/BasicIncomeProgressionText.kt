@@ -5,24 +5,30 @@ import Name
 import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import progression.AmountAdjusterFixtureWithGapFill
 import progression.AmountAdjusterWithGapFiller
-import progression.GapAmountAdjusterFixture
+import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import tax.WageTaxableProfile
 import yearlyDetailFixture
 
 class BasicIncomeProgressionTest : ShouldSpec({
-    val startAmount: Amount = 1000.0
-    val incomeName: Name = "Income Name"
-    val person: Name = "Person"
     val prevYearMultiplier = 1.1
     val gapFillerMultipler = 2.0
 
+    val startAmount: Amount = 1000.0
+    val currAmount: Amount = startAmount * prevYearMultiplier
+    val incomeName: Name = "Income Name"
+    val person: Name = "Person"
+
+    val taxableProfile = WageTaxableProfile()
+
     val ident = RecIdentifier(incomeName, person)
-    val progression = BasicBasicIncomeProgressionFixture(
+    val progression = BasicIncomeProgressionFixture(
         ident = ident,
         startAmount = startAmount,
-        adjuster = GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
+        taxableProfile = taxableProfile,
+        adjuster = AmountAdjusterFixtureWithGapFill(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)
@@ -33,7 +39,7 @@ class BasicIncomeProgressionTest : ShouldSpec({
 
     should("determineNext applies amount adjuster to previous years amount") {
         val prevYear = yearlyDetailFixture().copy(incomes = listOf(
-            IncomeRec(year = 2024, ident = ident, baseAmount = 2000.0,
+            StdIncomeRec(year = 2024, ident = ident, amount = currAmount,
                 taxableIncome = TaxableAmounts(person)
             )
         ))
@@ -41,14 +47,30 @@ class BasicIncomeProgressionTest : ShouldSpec({
         val result = progression.determineNext(prevYear)
         result.ident.name.shouldBe(incomeName)
         result.ident.person.shouldBe(person)
-        result.amount().shouldBe(2000.0 * prevYearMultiplier)
+        result.amount().shouldBe(currAmount * prevYearMultiplier)
     }
 
-    should("determineNext applied gaps adjustment when this expense is not in previous year") {
+
+    should("determineNext returns rec for taxable amounts based taxabilityProfile") {
+        val prevYear = yearlyDetailFixture().copy(incomes = listOf(
+            StdIncomeRec(year = 2024, ident = ident, amount = currAmount,
+                taxableIncome = TaxableAmounts(person)
+            )
+        ))
+
+        val expectedAmount = currAmount * prevYearMultiplier
+        val result = progression.determineNext(prevYear)
+        result.ident.name.shouldBe(incomeName)
+        result.ident.person.shouldBe(person)
+        result.amount().shouldBe(expectedAmount)
+        result.taxable().shouldBe(taxableProfile.calcTaxable(ident.person, expectedAmount))
+    }
+
+    should("determineNext applied gaps adjustment when this income is not in previous year") {
         val prevYear = yearlyDetailFixture().copy(incomes = listOf(
             incomeRecFixture(name = incomeName, person = "Other Person", amount = 1000.0),
-            incomeRecFixture(name = "Other Expense", person = person, amount = 2000.0),
-            incomeRecFixture(name = "Other Expense", person = "Other Person", amount = 3000.0)
+            incomeRecFixture(name = "Other Income", person = person, amount = 2000.0),
+            incomeRecFixture(name = "Other Income", person = "Other Person", amount = 3000.0)
         ))
 
         val result = progression.determineNext(prevYear)
@@ -58,10 +80,11 @@ class BasicIncomeProgressionTest : ShouldSpec({
     }
 })
 
-class BasicBasicIncomeProgressionFixture(
+class BasicIncomeProgressionFixture(
     startAmount: Amount,
     ident: RecIdentifier,
-    adjuster: AmountAdjusterWithGapFiller
+    adjuster: AmountAdjusterWithGapFiller,
+    taxableProfile: TaxabilityProfile
 )
-    : BasicIncomeProgression(ident, startAmount, WageTaxableProfile(), listOf(adjuster)
+    : BasicIncomeProgression(ident, startAmount, taxableProfile, listOf(adjuster)
 )

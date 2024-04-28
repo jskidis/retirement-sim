@@ -1,7 +1,8 @@
 import asset.AssetChange
 import asset.AssetRec
 import expense.ExpenseRec
-import income.IncomeRec
+import income.IncomeWithBonusRec
+import income.StdIncomeRec
 import inflation.InflationRAC
 import inflation.InflationRec
 import socsec.SSBenefitRec
@@ -61,7 +62,13 @@ fun ExpenseRec.toJsonStr() = "{" +
     strWhenNotZero(taxable().total() == 0.0, ", \"deductions\":${taxable()}") +
     "}"
 
-fun IncomeRec.toJsonStr() = "{" +
+fun StdIncomeRec.toJsonStr() = "{" +
+    "\"ident\":$ident, " +
+    "\"amount\":\"${moneyFormat.format(amount)}\"" +
+    strWhenNotZero(taxable().total() == 0.0, ", \"taxable\":${taxable()}") +
+    "}"
+
+fun IncomeWithBonusRec.toJsonStr() = "{" +
     "\"ident\":$ident, " +
     "\"amount\":\"${moneyFormat.format(baseAmount)}\"" +
     strWhenNotZero(bonus == 0.0, ", \"bonus\":\"${moneyFormat.format(bonus)}\"") +

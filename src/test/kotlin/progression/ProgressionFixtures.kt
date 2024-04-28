@@ -10,7 +10,7 @@ class AmountAdjusterFixture(val prevYearMultiplier: Double)
         value * prevYearMultiplier
 }
 
-class GapAmountAdjusterFixture(val prevYearMultiplier: Double, val gapFillerMultiplier: Double)
+class AmountAdjusterFixtureWithGapFill(val prevYearMultiplier: Double, val gapFillerMultiplier: Double)
     : AmountAdjusterWithGapFiller {
 
     override fun adjustAmount(value: Amount, prevYear: YearlyDetail) =

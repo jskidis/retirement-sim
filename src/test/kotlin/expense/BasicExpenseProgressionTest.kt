@@ -5,8 +5,8 @@ import Name
 import RecIdentifier
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
+import progression.AmountAdjusterFixtureWithGapFill
 import progression.AmountAdjusterWithGapFiller
-import progression.GapAmountAdjusterFixture
 import tax.NonDeductProfile
 import tax.TaxableAmounts
 import yearlyDetailFixture
@@ -22,7 +22,7 @@ class BasicExpenseProgressionTest : ShouldSpec({
     val progression = BasicExpenseProgressionFixture(
         ident = ident,
         startAmount = startAmount,
-        adjuster = GapAmountAdjusterFixture(prevYearMultiplier, gapFillerMultipler))
+        adjuster = AmountAdjusterFixtureWithGapFill(prevYearMultiplier, gapFillerMultipler))
 
     should("determineNext returns initial amount is prev year is null ") {
         val result = progression.determineNext(null)

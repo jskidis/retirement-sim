@@ -35,7 +35,7 @@ class FlexibleClaimDateProvider(
 
     private fun getSSIncome(person: Name, prevYear: YearlyDetail): Amount =
         prevYear.incomes.filter { it.ident.person == person }
-            .sumOf{ it.taxableIncome.socSec }
+            .sumOf{ it.taxable().socSec }
 
     private fun assetToExpenseRatio(prevYear: YearlyDetail): Amount =
         prevYear.totalAssetValues() / (prevYear.totalExpense() - prevYear.totalBenefits())

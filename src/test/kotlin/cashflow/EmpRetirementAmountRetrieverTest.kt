@@ -1,7 +1,7 @@
 package cashflow
 
 import YearMonth
-import income.incomeRecFixture
+import income.incomeWithBonusRecFixture
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -26,7 +26,7 @@ class EmpRetirementAmountRetrieverTest : ShouldSpec({
 
     val salary = 50000.0
     val bonus = 5000.0
-    val incomeRec = incomeRecFixture(year = year, amount = salary, bonus = bonus)
+    val incomeRec = incomeWithBonusRecFixture(year = year, amount = salary, bonus = bonus)
 
     should("MaxAllowedAmountRetriever::determineAmount returns maximum 401k amount (no catchup)") {
         MaxAllowedAmountRetriever().determineAmount(currYear, incomeRec, birthYMOverCatchup)

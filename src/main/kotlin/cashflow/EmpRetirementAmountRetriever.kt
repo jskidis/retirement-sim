@@ -5,6 +5,7 @@ import Rate
 import YearMonth
 import YearlyDetail
 import income.IncomeRec
+import income.IncomeWithBonusRec
 import util.RetirementLimits
 
 interface EmpRetirementAmountRetriever {
@@ -45,8 +46,8 @@ open class PctOfSalaryAmountRetriever(
 
     override fun determineAmount(currYear: YearlyDetail, incomeRec: IncomeRec, birthYM: YearMonth)
         : Amount =
-        Math.min(
-            (incomeRec.baseAmount + (if (includeBonus) incomeRec.bonus else 0.0)) * pct,
+
+        Math.min(getBonusBasedAmount(incomeRec, includeBonus) * pct,
             MaxPlusCatchupAmountRetriever().determineAmount(currYear, incomeRec, birthYM)
         )
 }
@@ -54,13 +55,19 @@ open class PctOfSalaryAmountRetriever(
 open class EmployerMatchAmountRetriever(
     val pct: Rate,
     val includeBonus: Boolean = false,
-)
-    : EmpRetirementAmountRetriever {
+) : EmpRetirementAmountRetriever {
     override fun isAnnualLimit(): Boolean = false
     override fun isFreeMoney(): Boolean = true
 
     override fun determineAmount(currYear: YearlyDetail, incomeRec: IncomeRec, birthYM: YearMonth)
-        : Amount =
-        (incomeRec.baseAmount + (if (includeBonus) incomeRec.bonus else 0.0)) * pct
+        : Amount = getBonusBasedAmount(incomeRec, includeBonus) * pct
+}
+
+fun getBonusBasedAmount(incomeRec: IncomeRec, includeBonus: Boolean): Amount {
+    val incomeWithBonusRec = incomeRec as? IncomeWithBonusRec
+    return if (incomeWithBonusRec == null) incomeRec.amount()
+        else incomeWithBonusRec.baseAmount +
+            if (!includeBonus) 0.0 else incomeWithBonusRec.bonus
+
 }
 

@@ -174,8 +174,8 @@ class NetSpendAllocationTest : ShouldSpec({
             secondPassTaxes = lastYearCarryOverTaxes
         )
 
-        val expectedResult = income.baseAmount + benefit.amount -
-            expense.amount - thisYearTaxes.total() -
+        val expectedResult = income.amount() + benefit.amount() -
+            expense.amount() - thisYearTaxes.total() -
             ((lastYearCarryOverTaxes.total() - lastYearTaxes.total()) * (1 + inflation.std.rate))
 
         NetSpendAllocation.determineNetSpend(currYear, prevYear).shouldBe(expectedResult)
@@ -191,8 +191,8 @@ class NetSpendAllocationTest : ShouldSpec({
             taxes = thisYearTaxes
         )
 
-        val expectedResult = income.baseAmount + benefit.amount -
-            expense.amount - thisYearTaxes.total()
+        val expectedResult = income.amount() + benefit.amount() -
+            expense.amount() - thisYearTaxes.total()
 
         NetSpendAllocation.determineNetSpend(currYear, null).shouldBe(expectedResult)
     }
@@ -207,8 +207,8 @@ class NetSpendAllocationTest : ShouldSpec({
             taxes = thisYearTaxes
         )
 
-        val expectedResult = (income.baseAmount + benefit.amount -
-            expense.amount - thisYearTaxes.total()) *
+        val expectedResult = (income.amount() + benefit.amount() -
+            expense.amount() - thisYearTaxes.total()) *
             (1 - PortionOfYearPast.calc(currentDate.year))
 
         NetSpendAllocation.determineNetSpend(currYear, null).shouldBe(expectedResult)
