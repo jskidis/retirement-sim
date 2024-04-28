@@ -7,6 +7,7 @@ import java.time.LocalDate
 
 val moneyFormat = DecimalFormat("$##,###,###")
 val twoDecimalFormat = DecimalFormat("#0.00")
+val threeDecimalFormat = DecimalFormat("#0.000")
 val fourDecimalFormat = DecimalFormat(".0000")
 val currentDate = LocalDate.now()
 

@@ -1,6 +1,7 @@
 import config.ConfigBuilder
 import util.RandomizerFactory
 import util.moneyFormat
+import util.twoDecimalFormat
 import java.io.BufferedWriter
 import java.io.File
 import java.util.stream.Collectors
@@ -15,7 +16,12 @@ fun main(args: Array<String>) {
     val outputFilename = if (args.size > 2) args[2] else null
 
     if (numSims == 1) runSingle(configBuilder)
-    else runMultiple(numSims, configBuilder, outputFilename)
+    else {
+        val timeInMillis = measureTimeMillis {
+            runMultiple(numSims, configBuilder, outputFilename)
+        }
+        println("Elapsed: ${twoDecimalFormat.format(timeInMillis / 1000.0)}")
+    }
 }
 
 private fun runSingle(configBuilder: ConfigBuilder) {
@@ -42,44 +48,41 @@ private fun runMultiple(
     configBuilder: ConfigBuilder,
     outputFilename: String?,
 ) {
-    val timeInMillis = measureTimeMillis {
-        val writer: BufferedWriter? =
-            if (outputFilename == null) null
-            else File(outputFilename).bufferedWriter()
+    val writer: BufferedWriter? =
+        if (outputFilename == null) null
+        else File(outputFilename).bufferedWriter()
 
-        if (writer != null) {
-            writer.write(yearlySummaryHeaders())
-            writer.newLine()
-        }
-
-        RandomizerFactory.setSuppressRandom(true)
-        val config = configBuilder.buildConfig()
-        val baseline = SimulationRun.runSim(configBuilder, false)
-            .lastYear().inflAdjAssets()
-
-        RandomizerFactory.setSuppressRandom(false)
-
-        val runs = (1..numSims).toList().parallelStream().map { simNum ->
-            singleRunFromMultiple(simNum, configBuilder, writer)
-        }.collect(Collectors.toList())
-
-        writer?.close()
-
-        val sorted = ((runs.map { it.inflAdjAssets() }).sorted())
-        val median = sorted[runs.size / 2]
-        val average = sorted.sumOf { it } / numSims
-        val successPct = 100.0 * runs.filter { config.simSuccess.wasSuccessRun(it) }.size / numSims
-        val brokePct = 100.0 * runs.filter {
-            it.expenses - it.benefits > it.assetValue
-        }.size / numSims
-
-        println("")
-        println("Success Pct: $successPct")
-        println("Broke Pct: $brokePct")
-        println("Median: ${moneyFormat.format(median)}")
-        println("Average: ${moneyFormat.format(average)}")
-        println("Baseline: ${moneyFormat.format(baseline)}")
+    if (writer != null) {
+        writer.write(yearlySummaryHeaders())
+        writer.newLine()
     }
 
-    println("Elapsed: ${timeInMillis / 1000.0}")
+    RandomizerFactory.setSuppressRandom(true)
+    val config = configBuilder.buildConfig()
+    val baseline = SimulationRun.runSim(configBuilder, false)
+        .lastYear().inflAdjAssets()
+
+    RandomizerFactory.setSuppressRandom(false)
+
+    val runs = (1..numSims).toList().parallelStream().map { simNum ->
+        singleRunFromMultiple(simNum, configBuilder, writer)
+    }.collect(Collectors.toList())
+
+    writer?.close()
+
+    val sorted = ((runs.map { it.inflAdjAssets() }).sorted())
+    val median = sorted[runs.size / 2]
+    val average = sorted.sumOf { it } / numSims
+    val successPct = 100.0 * runs.filter { config.simSuccess.wasSuccessRun(it) }.size / numSims
+    val brokePct = 100.0 * runs.filter {
+        it.expenses - it.benefits > it.assetValue
+    }.size / numSims
+
+    println("")
+    println("Success Pct: ${twoDecimalFormat.format(successPct)}")
+    println("Broke Pct: ${twoDecimalFormat.format(brokePct)}")
+    println("Median: ${moneyFormat.format(median)}")
+    println("Average: ${moneyFormat.format(average)}")
+    println("Baseline: ${moneyFormat.format(baseline)}")
+
 }

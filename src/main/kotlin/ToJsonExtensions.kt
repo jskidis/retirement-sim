@@ -3,11 +3,13 @@ import asset.AssetRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRAC
+import inflation.InflationRec
 import socsec.SSBenefitRec
 import tax.TaxableAmounts
 import tax.TaxesRec
 import transfers.TransferRec
 import util.moneyFormat
+import util.threeDecimalFormat
 import util.twoDecimalFormat
 
 fun RecIdentifier.toJsonStr(): String = "{\"person\":\"$person\", \"name\":\"$name\"}"
@@ -100,10 +102,17 @@ fun TransferRec.toJsonStr() = "{" +
     ", \"contribution\":${destTribution}" +
     "}"
 
+fun InflationRec.toJsonStr() = "{" +
+    "\"rndAjd\": ${threeDecimalFormat.format(rndAdj)}" +
+    ", \"std\": ${std}" +
+    ", \"wage\": ${wage}" +
+    ", \"med\": ${med}" +
+    "}"
+
 fun InflationRAC.toJsonStr() = "{" +
-    "\"rate\":${twoDecimalFormat.format(rate)}" +
-    ",\"start\":${twoDecimalFormat.format(cmpdStart)}" +
-    ",\"end\":${twoDecimalFormat.format(cmpdEnd)}" +
+    "\"rate\":${threeDecimalFormat.format(rate)}" +
+    ",\"start\":${threeDecimalFormat.format(cmpdStart)}" +
+    ",\"end\":${threeDecimalFormat.format(cmpdEnd)}" +
     "}"
 
 fun YearlyDetail.toJsonStr() = "{" +
@@ -125,9 +134,7 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"carryOver\":\"${moneyFormat.format((finalPassTaxes.total() - taxes.total()))}\"" +
     ", \"taxes\":${taxes}" +
     ", \"finalPass\":${finalPassTaxes}" +
-    ", \"stdInfl\": ${inflation.std}" +
-    ", \"wageInfl\": ${inflation.wage}" +
-    ", \"medInfl\": ${inflation.med}" +
+    ", \"inflation\":${inflation}" +
     ", \"incomes\":${incomes}" +
     ", \"benefits\":${benefits}" +
     ", \"expenses\":${expenses}" +

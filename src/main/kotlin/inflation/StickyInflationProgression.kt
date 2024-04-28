@@ -5,7 +5,7 @@ import util.RandomizerFactory
 
 class StickyInflationProgression(
     val initialStickiness: Double = 0.00,
-    val prevYearRatio: Double = 0.75,
+    val prevYearRatio: Double = 2.0/3.0,
     meanAndSD: InflationMeanAndSD = inflation50YearAvgs,
 ) : RandomRateInflationProgression(meanAndSD) {
 

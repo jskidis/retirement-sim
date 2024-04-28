@@ -34,4 +34,7 @@ data class InflationRec(
     val med: InflationRAC,
     val wage: InflationRAC,
     val rndAdj:Rate = 0.0
-)
+) {
+    override fun toString() = toJsonStr()
+}
+
