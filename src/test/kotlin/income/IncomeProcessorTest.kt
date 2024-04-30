@@ -2,8 +2,8 @@ package income
 
 import config.configFixture
 import config.householdConfigFixture
-import config.householdMembersFixture
-import config.parentConfigFixture
+import config.personConfigFixture
+import config.personFixture
 import inflation.InflationRAC
 import inflationRecFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -27,11 +27,15 @@ class IncomeProcessorTest : ShouldSpec({
     val parent2Progression = incomeProgressionFixture(
         name = "Parent 2 Inc", person = parent2Name, amount = parent2Income)
 
-    val parent1 = parentConfigFixture(
-        name = "Parent 1", incomeConfigs = listOf(parent1Progression))
-    val parent2 = parentConfigFixture(
-        name = "Parent 2", incomeConfigs = listOf(parent2Progression))
-    val householdConfig = householdConfigFixture(householdMembersFixture(parent1, parent2))
+    val parent1 = personConfigFixture(
+        person = personFixture(parent1Name),
+        incomeConfigs = listOf(parent1Progression))
+
+    val parent2 = personConfigFixture(
+        person = personFixture("Parent 2"),
+        incomeConfigs = listOf(parent2Progression))
+
+    val householdConfig = householdConfigFixture(listOf(parent1, parent2))
     val config = configFixture(householdConfig = householdConfig)
 
     should("process all household and household member expenses for the year") {

@@ -2,8 +2,8 @@ package asset
 
 import config.configFixture
 import config.householdConfigFixture
-import config.householdMembersFixture
-import config.parentConfigFixture
+import config.personConfigFixture
+import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -27,12 +27,12 @@ class AssetProcessorTest : ShouldSpec({
         name = "Parent 2 Asset", person = parent2Name,
         startBal = 40000.0, gains = 4000.0)
 
-    val parent1 = parentConfigFixture(
-        name = "Parent 1", assetConfigs = listOf(parent1Progression))
-    val parent2 = parentConfigFixture(
-        name = "Parent 2", assetConfigs = listOf(parent2Progression))
+    val parent1 = personConfigFixture(
+        person = personFixture("Parent 1"), assetConfigs = listOf(parent1Progression))
+    val parent2 = personConfigFixture(
+        person = personFixture("Parent 2"), assetConfigs = listOf(parent2Progression))
     val householdConfig = householdConfigFixture(
-        householdMembers = householdMembersFixture(parent1, parent2),
+        householdMembers = listOf(parent1, parent2),
         jointAssets = listOf(householdProgression1)
     )
     val config = configFixture(householdConfig = householdConfig)

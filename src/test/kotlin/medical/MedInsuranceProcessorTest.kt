@@ -2,10 +2,7 @@ package medical
 
 import Amount
 import YearlyDetail
-import config.SimConfig
-import config.configFixture
-import config.householdConfigFixture
-import config.parentConfigFixture
+import config.*
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -30,8 +27,10 @@ class MedInsuranceProcessorTest : ShouldSpec({
             household =
             householdConfig.copy(
                 members = listOf(
-                    parentConfigFixture(name = personName, medInsuranceConfigs = medInsurance1),
-                    parentConfigFixture(name = personName2, medInsuranceConfigs = medInsurance2)
+                    personConfigFixture(person = personFixture(personName),
+                        medInsuranceConfigs = medInsurance1),
+                    personConfigFixture(person = personFixture(personName2),
+                        medInsuranceConfigs = medInsurance2)
                 )
             )
         )

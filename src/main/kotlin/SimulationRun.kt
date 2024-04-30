@@ -49,17 +49,18 @@ object SimulationRun {
         val assets = AssetProcessor.process(config, prevYear)
         val benefits = SSBenefitsProcessor.process(config, prevYear)
         val randomValues = RandomizerFactory.createNewValues(config)
+        val filingStatus = config.taxesProcessor.determineFilingStatus(prevYear, config)
 
         var currYear = YearlyDetail(
             year,
-            inflation = inflation, incomes = incomes, expenses = expenses,
-            assets = assets, benefits = benefits, randomValues = randomValues)
+            inflation = inflation, incomes = incomes, expenses = expenses, assets = assets,
+            benefits = benefits, filingStatus = filingStatus, randomValues = randomValues)
 
         val previousAGI = prevYear?.finalPassTaxes?.agi ?: config.household.initialAGI
         val medInsurance = MedInsuranceProcessor.process(config, currYear, previousAGI)
         currYear = currYear.copy(expenses = currYear.expenses + medInsurance)
 
-        val cashflowEvents = CashFlowEventProcessor.process(config, currYear)
+        val cashflowEvents = CashFlowEventProcessor.process(config, prevYear, currYear)
         currYear = currYear.copy(cashFlowEvents = cashflowEvents)
 
         val secondaryBenefits = SSBenefitsProcessor.processSecondary(config, prevYear, currYear)

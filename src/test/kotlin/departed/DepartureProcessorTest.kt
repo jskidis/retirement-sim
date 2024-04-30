@@ -2,7 +2,8 @@ package departed
 
 import config.configFixture
 import config.householdConfigFixture
-import config.parentConfigFixture
+import config.personConfigFixture
+import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
@@ -12,19 +13,19 @@ import yearlyDetailFixture
 
 class DepartureProcessorTest : ShouldSpec({
     val year = currentDate.year + 1
-    val person1 = "Person 1"
-    val person2 = "Person 2"
+    val person1 = personFixture("Person 1")
+    val person2 = personFixture("Person 2")
 
     should("process doesn't return any departed if no already departed and no new departed") {
         val config = configFixture(
             householdConfig = householdConfigFixture(
                 householdMembers = listOf(
-                    parentConfigFixture(
-                        name = person1,
+                    personConfigFixture(
+                        person = person1,
                         departureConfig = YearBasedDeparture(year + 10)
                     ),
-                    parentConfigFixture(
-                        name = person2,
+                    personConfigFixture(
+                        person = person2,
                         departureConfig = YearBasedDeparture(year + 10)
                     )
                 )
@@ -41,12 +42,12 @@ class DepartureProcessorTest : ShouldSpec({
         val config = configFixture(
             householdConfig = householdConfigFixture(
                 householdMembers = listOf(
-                    parentConfigFixture(
-                        name = person1,
+                    personConfigFixture(
+                        person = person1,
                         departureConfig = YearBasedDeparture(year)
                     ),
-                    parentConfigFixture(
-                        name = person2,
+                    personConfigFixture(
+                        person = person2,
                         departureConfig = YearBasedDeparture(year + 10)
                     )
                 )
@@ -57,7 +58,7 @@ class DepartureProcessorTest : ShouldSpec({
             currYear = yearlyDetailFixture(year = year))
 
         result.shouldHaveSize(1)
-        result[0].person.shouldBe(person1)
+        result[0].person.shouldBe(person1.name)
         result[0].year.shouldBe(year)
     }
 
@@ -65,25 +66,27 @@ class DepartureProcessorTest : ShouldSpec({
         val config = configFixture(
             householdConfig = householdConfigFixture(
                 householdMembers = listOf(
-                    parentConfigFixture(
-                        name = person1,
+                    personConfigFixture(
+                        person = person1,
                         departureConfig = YearBasedDeparture(year)
                     ),
-                    parentConfigFixture(
-                        name = person2,
+                    personConfigFixture(
+                        person = person2,
                         departureConfig = YearBasedDeparture(year - 10)
                     )
                 )
             ))
 
         val result = DepartureProcessor.process(config,
-            prevYear = yearlyDetailFixture(year = year -1, departed = listOf(DepartedRec(person2, year - 10))),
+            prevYear = yearlyDetailFixture(year = year -1, departed = listOf(
+                DepartedRec(person2.name, year - 10))
+            ),
             currYear = yearlyDetailFixture(year = year))
 
         result.shouldHaveSize(2)
-        result[0].person.shouldBe(person2)
+        result[0].person.shouldBe(person2.name)
         result[0].year.shouldBe(year - 10)
-        result[1].person.shouldBe(person1)
+        result[1].person.shouldBe(person1.name)
         result[1].year.shouldBe(year)
     }
 

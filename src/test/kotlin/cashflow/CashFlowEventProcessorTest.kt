@@ -6,7 +6,8 @@ import asset.AssetRec
 import asset.AssetType
 import config.configFixture
 import config.householdConfigFixture
-import config.parentConfigFixture
+import config.personConfigFixture
+import config.personFixture
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldContainAll
 import util.currentDate
@@ -51,12 +52,13 @@ class CashFlowEventProcessorTest : ShouldSpec({
 
     should("process") {
         val currYear = yearlyDetailFixture(year, assets = recs)
-        val personConfig = parentConfigFixture(name = "Person", cashFlowEvents = eventConfigs)
+        val personConfig = personConfigFixture(
+            person = personFixture(), cashFlowEvents = eventConfigs)
         val config = configFixture(
             householdConfig = householdConfigFixture(householdMembers = listOf(personConfig))
         )
 
-        val result = CashFlowEventProcessor.process(config, currYear)
+        val result = CashFlowEventProcessor.process(config, null, currYear)
         result.shouldContainAll(change1, change4_1, change4_1)
         // change 2 is null so change returned,
         // change 5 belongs to prog 5 but there's no matching asset rec, so no change returned

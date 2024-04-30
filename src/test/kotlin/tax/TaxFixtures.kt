@@ -32,12 +32,14 @@ class BracketBasedTaxCalcFixture(
 ) : BracketBasedTaxCalc {
     override fun determineTax(taxableAmount: Amount, currYear: YearlyDetail): Amount = tax
     override fun marginalRate(taxableAmount: Amount, currYear: YearlyDetail): Rate = marginalRate
-    override fun currentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? = currBracket
+    override fun currentBracket(taxableAmount: Amount, currYear: YearlyDetail): BracketCase? =
+        currBracket
+
     override fun bracketBelowPct(pct: Rate, currYear: YearlyDetail): BracketCase? = backetBelowPct
 }
 
 fun baseTaxConfigFixture(
-    fed: BracketBasedTaxCalc = BracketTaxCalcFixture()
+    fed: BracketBasedTaxCalc = BracketTaxCalcFixture(),
 ) = TaxCalcConfig(
     fed = fed,
     fedLTG = BracketTaxCalcFixture(),
@@ -53,9 +55,11 @@ class TaxesProcessorFixture(
     val taxesRec: TaxesRec = TaxesRec(),
     val taxableAmounts: TaxableAmounts = TaxableAmounts("Person"),
     val stdDeduction: Amount = 0.0,
+    val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) : TaxProcessorConfig {
-    override fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec = taxesRec
-    override fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts = taxableAmounts
-    override fun determineStdDeduct(currYear: YearlyDetail): Double = stdDeduction
+    override fun processTaxes(currYear: YearlyDetail, config: SimConfig) = taxesRec
+    override fun determineTaxableAmounts(currYear: YearlyDetail) = taxableAmounts
+    override fun determineStdDeduct(currYear: YearlyDetail) = stdDeduction
+    override fun determineFilingStatus(prevYear: YearlyDetail?, config: SimConfig) = filingStatus
 }
 

@@ -36,7 +36,7 @@ import util.currentDate
 
 fun configFixture(
     startYear: Year = currentDate.year + 1,
-    householdConfig: HouseholdConfig = householdConfigFixture(householdMembersFixture()),
+    householdConfig: HouseholdConfig = householdConfigFixture(),
     inflationConfig: Progression<InflationRec> = inflationConfigFixture(),
     taxConfig: YearBasedConfig<TaxCalcConfig> = taxConfigFixture(),
     assetOrdering: NetSpendAllocationConfig = NetSpendAllocationConfig(listOf(), listOf()),
@@ -58,10 +58,11 @@ fun personFixture(
     name: Name = "Person",
     birthYM: YearMonth = YearMonth(year = 1980, month = 0),
     actuarialGender: ActuarialGender = ActuarialGender.FEMALE,
-) = Person(name, birthYM, actuarialGender, false)
+    isPrimary: Boolean = false
+) = Person(name, birthYM, actuarialGender, isPrimary)
 
 fun householdConfigFixture(
-    householdMembers: List<PersonConfig> = householdMembersFixture(),
+    householdMembers: List<PersonConfig> = listOf(personConfigFixture()),
     expenses: List<ExpenseProgression> = ArrayList(),
     jointAssets: List<AssetProgression> = ArrayList(),
 ) = HouseholdConfig(householdMembers, expenses, jointAssets)
@@ -72,20 +73,16 @@ fun assetOrderingFixture(
 ) = NetSpendAllocationConfig(householdConfig.jointAssets, householdConfig.jointAssets)
 
 */
-fun householdMembersFixture(
-    parent1Config: PersonConfig = parentConfigFixture("Parent1"),
-    parent2Config: PersonConfig = parentConfigFixture("Parent2")
-) = listOf(parent1Config, parent2Config)
 
-fun parentConfigFixture(
-    name: Name,
+fun personConfigFixture(
+    person: Person = personFixture("Person"),
     departureConfig: DepartureConfig = NeverDepartConfig(),
     incomeConfigs: List<IncomeProgression> = listOf(
-        incomeProgressionFixture("Income", name)),
+        incomeProgressionFixture("Income", person.name)),
     expenseConfigs: List<Progression<ExpenseRec>> = listOf(
-        expenseProgressionFixture("Expense", name)),
+        expenseProgressionFixture("Expense", person.name)),
     assetConfigs: List<AssetProgression> = listOf(
-        assetProgressionFixture("Asset", name)),
+        assetProgressionFixture("Asset", person.name)),
     benefitConfigs: List<SSBenefitProgression> = listOf(
         benefitsProgressionFixture()),
     secondaryBenefitConfigs: List<SecondarySSBenefitProgression> = listOf(
@@ -94,7 +91,7 @@ fun parentConfigFixture(
     cashFlowEvents: List<CashFlowEventConfig> = listOf()
 ) =
     PersonConfig(
-        personFixture(name),
+        person,
         departureConfig,
         incomeConfigs,
         expenseConfigs,

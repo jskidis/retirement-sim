@@ -6,11 +6,13 @@ import inflation.CmpdInflationProvider
 import inflation.StdCmpdInflationProvider
 import util.ConstantsProvider
 import util.ConstantsProvider.KEYS.*
+import util.yearFromPrevYearDetail
 
 interface TaxProcessorConfig {
     fun processTaxes(currYear: YearlyDetail, config: SimConfig): TaxesRec
     fun determineTaxableAmounts(currYear: YearlyDetail): TaxableAmounts
     fun determineStdDeduct(currYear: YearlyDetail): Double
+    fun determineFilingStatus(prevYear: YearlyDetail?, config: SimConfig): FilingStatus
 }
 
 object TaxesProcessor : TaxProcessorConfig, CmpdInflationProvider by StdCmpdInflationProvider() {
@@ -62,4 +64,17 @@ object TaxesProcessor : TaxProcessorConfig, CmpdInflationProvider by StdCmpdInfl
             FilingStatus.SINGLE -> ConstantsProvider.getValue(STD_DEDUCT_SINGLE)
             FilingStatus.HOUSEHOLD -> ConstantsProvider.getValue(STD_DEDUCT_HOUSEHOLD)
         } * currYear.inflation.std.cmpdStart
+
+    override fun determineFilingStatus(prevYear: YearlyDetail?, config: SimConfig): FilingStatus {
+        val members = config.nonDepartedMembers(prevYear)
+        return when {
+            members.filter { it.isPrimary() }.size > 1 -> FilingStatus.JOINTLY
+            members.filter {
+                !it.isPrimary() &&
+                    yearFromPrevYearDetail(prevYear) - it.birthYM().year <= 18}
+                .isNotEmpty() -> FilingStatus.HOUSEHOLD
+
+            else -> FilingStatus.SINGLE
+        }
+    }
 }

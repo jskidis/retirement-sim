@@ -8,8 +8,9 @@ import config.SimConfig
 import util.RecFinder
 
 object CashFlowEventProcessor {
-    fun process(simConfig: SimConfig, currYear: YearlyDetail): List<AssetChange> {
-        return simConfig.cashFlowConfigs(currYear).map {
+    fun process(simConfig: SimConfig, prevYear: YearlyDetail?, currYear: YearlyDetail)
+    : List<AssetChange> {
+        return simConfig.cashFlowConfigs(prevYear).map {
             val assetRec = findAssetRec(currYear, it.assetIdent)
             if (assetRec == null) null
             else {
