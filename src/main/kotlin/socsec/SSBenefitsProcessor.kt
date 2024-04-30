@@ -7,14 +7,14 @@ object SSBenefitsProcessor {
     fun process(config: SimConfig, prevYear: YearlyDetail?)
         : List<SSBenefitRec> =
 
-        config.primaryBenefitsConfigs().map {
+        config.primaryBenefitsConfigs(prevYear).map {
             it.determineNext(prevYear)
         }.filter {it.retainRec() }
 
     fun processSecondary(config: SimConfig, prevYear: YearlyDetail?, currYear: YearlyDetail)
         : List<SSBenefitRec> =
 
-        config.secondaryBenefitsConfigs().map {
+        config.secondaryBenefitsConfigs(prevYear).map {
             it.determineNext(prevYear, currYear)
         }.filter { it.retainRec() }
 }

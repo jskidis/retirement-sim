@@ -25,28 +25,34 @@ data class SimConfig(
     val transferGenerators: List<TransferGenerator> = ArrayList(),
     val simSuccess: SimSuccess = BasicSimSuccess(),
 ) {
-    fun incomeConfigs(): List<IncomeProgression> =
-        household.members.flatMap { it.incomes() }
+    fun incomeConfigs(prevYear: YearlyDetail?): List<IncomeProgression> =
+        filterOutDeparted(prevYear).flatMap { it.incomes() }
 
-    fun expenseConfigs(): List<ExpenseProgression> =
+    fun expenseConfigs(prevYear: YearlyDetail?): List<ExpenseProgression> =
         household.expenses +
-            household.members.flatMap { it.expenses() }
+            filterOutDeparted(prevYear).flatMap { it.expenses() }
 
-    fun assetConfigs(): List<AssetProgression> =
+    fun assetConfigs(prevYear: YearlyDetail?): List<AssetProgression> =
         household.jointAssets +
-            household.members.flatMap { it.assets() }
+            filterOutDeparted(prevYear).flatMap { it.assets() }
 
-    fun primaryBenefitsConfigs(): List<SSBenefitProgression> =
-        household.members.flatMap { it.benefits() }
+    fun primaryBenefitsConfigs(prevYear: YearlyDetail?): List<SSBenefitProgression> =
+        filterOutDeparted(prevYear).flatMap { it.benefits() }
 
-    fun secondaryBenefitsConfigs(): List<SecondarySSBenefitProgression> =
-        household.members.flatMap { it.secondaryBenefits() }
+    fun secondaryBenefitsConfigs(prevYear: YearlyDetail?): List<SecondarySSBenefitProgression> =
+        filterOutDeparted(prevYear).flatMap { it.secondaryBenefits() }
 
-    fun cashFlowConfigs(): List<CashFlowEventConfig> =
-        household.members.flatMap { it.cashFlowEvents() }
+    fun cashFlowConfigs(prevYear: YearlyDetail?): List<CashFlowEventConfig> =
+        filterOutDeparted(prevYear).flatMap { it.cashFlowEvents() }
 
     fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
         taxCalcConfig.getConfigForYear(currYear.year)
+
+    private fun filterOutDeparted(prevYear: YearlyDetail?)
+    : List<PersonConfig> {
+        val departedMembers = prevYear?.departed?.map { it.person } ?: listOf()
+        return household.members.filter { !departedMembers.contains(it.name()) }
+    }
 }
 
 fun interface SimSuccess {

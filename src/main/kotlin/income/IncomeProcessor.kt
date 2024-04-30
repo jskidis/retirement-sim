@@ -9,7 +9,7 @@ import util.ConstantsProvider.KEYS.SS_INCOME_CAP
 
 object IncomeProcessor : CmpdInflationProvider by WageCmpdInflationProvider() {
     fun process(config: SimConfig, prevYear: YearlyDetail?): List<IncomeRec> =
-        config.incomeConfigs().map { income ->
+        config.incomeConfigs(prevYear).map { income ->
             capSocSecTaxableIncome(
                 income.determineNext(prevYear), prevYear)
         }.filter { it.retainRec() }
