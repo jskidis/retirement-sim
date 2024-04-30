@@ -8,6 +8,8 @@ import cashflow.CashFlowEventConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import netspend.NetSpendAllocationConfig
+import socsec.SSBenefitProgression
+import socsec.SecondarySSBenefitProgression
 import tax.TaxCalcConfig
 import tax.TaxProcessorConfig
 import tax.TaxesProcessor
@@ -33,6 +35,12 @@ data class SimConfig(
     fun assetConfigs(): List<AssetProgression> =
         household.jointAssets +
             household.members.flatMap { it.assets() }
+
+    fun primaryBenefitsConfigs(): List<SSBenefitProgression> =
+        household.members.flatMap { it.benefits() }
+
+    fun secondaryBenefitsConfigs(): List<SecondarySSBenefitProgression> =
+        household.members.flatMap { it.secondaryBenefits() }
 
     fun cashFlowConfigs(): List<CashFlowEventConfig> =
         household.members.flatMap { it.cashFlowEvents() }

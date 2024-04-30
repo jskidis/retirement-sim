@@ -1,5 +1,6 @@
 import asset.AssetChange
 import asset.AssetRec
+import departed.DepartedRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -26,6 +27,7 @@ data class YearlyDetail(
     val finalPassTaxes: TaxesRec = TaxesRec(),
     val netSpend: Amount = 0.0,
     val transfers: List<TransferRec> = ArrayList(),
+    val departed: List<DepartedRec> = ArrayList(),
     val randomValues: Map<String, Double> = mapOf(),
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
