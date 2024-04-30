@@ -1,4 +1,5 @@
 import asset.AssetRec
+import departed.DepartedRec
 import expense.ExpenseRec
 import income.IncomeRec
 import inflation.InflationRec
@@ -16,6 +17,7 @@ fun yearlyDetailFixture(
     assets: List<AssetRec> = ArrayList(),
     taxes: TaxesRec = TaxesRec(),
     secondPassTaxes: TaxesRec = TaxesRec(),
+    departed: List<DepartedRec> = ArrayList(),
     randomValues: Map<String, Double> = mapOf(),
     filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) =
@@ -28,6 +30,7 @@ fun yearlyDetailFixture(
         assets = assets,
         taxes = taxes,
         finalPassTaxes = secondPassTaxes,
+        departed = departed,
         randomValues = randomValues,
         filingStatus = filingStatus
 )

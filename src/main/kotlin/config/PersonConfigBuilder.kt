@@ -2,6 +2,8 @@ package config
 
 import asset.AssetProgression
 import cashflow.CashFlowEventConfig
+import departed.DepartureConfig
+import departed.NeverDepartConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import medical.MedInsuranceProgression
@@ -9,6 +11,7 @@ import socsec.SSBenefitProgression
 import socsec.SecondarySSBenefitProgression
 
 interface PersonConfigBuilder {
+    fun departureConfig(person: Person): DepartureConfig = NeverDepartConfig()
     fun incomes(person: Person): List<IncomeProgression> = ArrayList()
     fun expenses(person: Person): List<ExpenseProgression> = ArrayList()
     fun assets(person: Person): List<AssetProgression> = ArrayList()
@@ -19,6 +22,7 @@ interface PersonConfigBuilder {
 
     fun buildConfig(person: Person) = PersonConfig(
         person = person,
+        departureConfig = departureConfig(person),
         incomes = incomes(person),
         expenses = expenses(person),
         assets = assets(person),

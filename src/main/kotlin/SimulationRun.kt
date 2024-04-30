@@ -2,6 +2,7 @@ import asset.AssetProcessor
 import cashflow.CashFlowEventProcessor
 import config.ConfigBuilder
 import config.SimConfig
+import departed.DepartureProcessor
 import expense.ExpenseProcessor
 import income.IncomeProcessor
 import inflation.InflationProcessor
@@ -25,7 +26,8 @@ object SimulationRun {
             val currYear = generateYearlyDetail(config, prevYear)
             years.add(currYear)
             prevYear = currYear
-        } while (currYear.year < 2050 &&
+        } while (currYear.year < 2100 &&
+            config.nonDepartedMembers(currYear).filter { it.isPrimary() }.isNotEmpty() &&
             currYear.totalAssetValues() > (currYear.totalExpense() - currYear.totalBenefits())
         )
 
@@ -71,32 +73,35 @@ object SimulationRun {
         NetSpendAllocation.allocateNetSpend(netSpend, currYear, config.assetOrdering)
         currYear = currYear.copy(netSpend = netSpend)
 
+        val departed = DepartureProcessor.process(config, prevYear, currYear)
+        currYear = currYear.copy(departed = departed)
+
         currYear = currYear.copy(finalPassTaxes = taxesProcessor.processTaxes(currYear, config))
         currYear = currYear.copy(
             transfers = TransferProcessor.process(config, currYear),
             finalPassTaxes = taxesProcessor.processTaxes(currYear, config)
         )
-/*
-        val rothBalances = assets.filter {
-            it.assetType == AssetType.ROTH || it.assetType == AssetType.ROTH401K
-        }.sumOf {it.finalBalance() }
-        val iraBalances = assets.filter {
-            it.assetType == AssetType.IRA || it.assetType == AssetType.STD401K
-        }.sumOf {it.finalBalance() }
-        val nraBalances = assets.filter {
-            it.assetType == AssetType.NRA
-        }.sumOf {it.finalBalance() }
-        val cashBalances = assets.filter {
-            it.assetType == AssetType.CASH
-        }.sumOf {it.finalBalance() }
+        /*
+                val rothBalances = assets.filter {
+                    it.assetType == AssetType.ROTH || it.assetType == AssetType.ROTH401K
+                }.sumOf {it.finalBalance() }
+                val iraBalances = assets.filter {
+                    it.assetType == AssetType.IRA || it.assetType == AssetType.STD401K
+                }.sumOf {it.finalBalance() }
+                val nraBalances = assets.filter {
+                    it.assetType == AssetType.NRA
+                }.sumOf {it.finalBalance() }
+                val cashBalances = assets.filter {
+                    it.assetType == AssetType.CASH
+                }.sumOf {it.finalBalance() }
 
-        println("Year: ${currYear.year}, " +
-            "IRA: ${moneyFormat.format(iraBalances)}, " +
-            "ROTH: ${moneyFormat.format(rothBalances)}, " +
-            "NRA: ${moneyFormat.format(nraBalances)}, " +
-            "CASH: ${moneyFormat.format(cashBalances)}, "
-        )
- */
+                println("Year: ${currYear.year}, " +
+                    "IRA: ${moneyFormat.format(iraBalances)}, " +
+                    "ROTH: ${moneyFormat.format(rothBalances)}, " +
+                    "NRA: ${moneyFormat.format(nraBalances)}, " +
+                    "CASH: ${moneyFormat.format(cashBalances)}, "
+                )
+         */
         return currYear
 
     }

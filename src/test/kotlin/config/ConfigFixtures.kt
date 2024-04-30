@@ -8,6 +8,8 @@ import YearMonth
 import asset.AssetProgression
 import asset.assetProgressionFixture
 import cashflow.CashFlowEventConfig
+import departed.DepartureConfig
+import departed.NeverDepartConfig
 import expense.ExpenseProgression
 import expense.ExpenseRec
 import expense.expenseProgressionFixture
@@ -77,6 +79,7 @@ fun householdMembersFixture(
 
 fun parentConfigFixture(
     name: Name,
+    departureConfig: DepartureConfig = NeverDepartConfig(),
     incomeConfigs: List<IncomeProgression> = listOf(
         incomeProgressionFixture("Income", name)),
     expenseConfigs: List<Progression<ExpenseRec>> = listOf(
@@ -92,6 +95,7 @@ fun parentConfigFixture(
 ) =
     PersonConfig(
         personFixture(name),
+        departureConfig,
         incomeConfigs,
         expenseConfigs,
         assetConfigs,

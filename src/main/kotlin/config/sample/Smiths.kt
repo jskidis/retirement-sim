@@ -24,25 +24,25 @@ class Smiths : ConfigBuilder {
             name = "Jane",
             birthYM = YearMonth(1975, 4),
             actuarialGender = ActuarialGender.FEMALE,
-            isDependant = false
+            isPrimary = true
         )
         val richard = Person(
             name = "Richard",
             birthYM = YearMonth(1965, 1),
             actuarialGender = ActuarialGender.MALE,
-            isDependant = false
+            isPrimary = true
         )
         val suzy = Person(
             name = "Suzy",
             birthYM = YearMonth(2005, 3),
             actuarialGender = ActuarialGender.FEMALE,
-            isDependant = true
+            isPrimary = false
         )
         val jonny = Person(
             name = "Jonny",
             birthYM = YearMonth(2010, 9),
             actuarialGender = ActuarialGender.MALE,
-            isDependant = true
+            isPrimary = false
         )
     }
 

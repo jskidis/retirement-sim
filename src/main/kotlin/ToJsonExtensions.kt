@@ -1,5 +1,6 @@
 import asset.AssetChange
 import asset.AssetRec
+import departed.DepartedRec
 import expense.ExpenseRec
 import income.IncomeWithBonusRec
 import income.StdIncomeRec
@@ -118,12 +119,17 @@ fun InflationRec.toJsonStr() = "{" +
 
 fun InflationRAC.toJsonStr() = "{" +
     "\"rate\":${threeDecimalFormat.format(rate)}" +
-    ",\"start\":${threeDecimalFormat.format(cmpdStart)}" +
+    ", \"start\":${threeDecimalFormat.format(cmpdStart)}" +
     ",\"end\":${threeDecimalFormat.format(cmpdEnd)}" +
     "}"
 
+fun DepartedRec.toJsonStr() = "{" +
+    "\"person\":\"$person\"" +
+    ", \"year\":$year" +
+    "}"
+
 fun YearlyDetail.toJsonStr() = "{" +
-    "\"year\": ${year}" +
+    "\"year\":${year}" +
     ", \"income\":\"${moneyFormat.format(totalIncome())}\"" +
     strWhenNotZero(
         totalBenefits() == 0.0,
@@ -137,6 +143,7 @@ fun YearlyDetail.toJsonStr() = "{" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
+    strWhenNotZero(departed.isEmpty(), ", \"departed\":$departed") +
     ", \"taxesTotal\":\"${moneyFormat.format((taxes.total()))}\"" +
     ", \"carryOver\":\"${moneyFormat.format((finalPassTaxes.total() - taxes.total()))}\"" +
     ", \"taxes\":${taxes}" +

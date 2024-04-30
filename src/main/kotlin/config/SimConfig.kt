@@ -26,30 +26,29 @@ data class SimConfig(
     val simSuccess: SimSuccess = BasicSimSuccess(),
 ) {
     fun incomeConfigs(prevYear: YearlyDetail?): List<IncomeProgression> =
-        filterOutDeparted(prevYear).flatMap { it.incomes() }
+        nonDepartedMembers(prevYear).flatMap { it.incomes() }
 
     fun expenseConfigs(prevYear: YearlyDetail?): List<ExpenseProgression> =
         household.expenses +
-            filterOutDeparted(prevYear).flatMap { it.expenses() }
+            nonDepartedMembers(prevYear).flatMap { it.expenses() }
 
     fun assetConfigs(prevYear: YearlyDetail?): List<AssetProgression> =
         household.jointAssets +
-            filterOutDeparted(prevYear).flatMap { it.assets() }
+            nonDepartedMembers(prevYear).flatMap { it.assets() }
 
     fun primaryBenefitsConfigs(prevYear: YearlyDetail?): List<SSBenefitProgression> =
-        filterOutDeparted(prevYear).flatMap { it.benefits() }
+        nonDepartedMembers(prevYear).flatMap { it.benefits() }
 
     fun secondaryBenefitsConfigs(prevYear: YearlyDetail?): List<SecondarySSBenefitProgression> =
-        filterOutDeparted(prevYear).flatMap { it.secondaryBenefits() }
+        nonDepartedMembers(prevYear).flatMap { it.secondaryBenefits() }
 
     fun cashFlowConfigs(prevYear: YearlyDetail?): List<CashFlowEventConfig> =
-        filterOutDeparted(prevYear).flatMap { it.cashFlowEvents() }
+        nonDepartedMembers(prevYear).flatMap { it.cashFlowEvents() }
 
     fun currTaxConfig(currYear: YearlyDetail): TaxCalcConfig =
         taxCalcConfig.getConfigForYear(currYear.year)
 
-    private fun filterOutDeparted(prevYear: YearlyDetail?)
-    : List<PersonConfig> {
+    fun nonDepartedMembers(prevYear: YearlyDetail?) : List<PersonConfig> {
         val departedMembers = prevYear?.departed?.map { it.person } ?: listOf()
         return household.members.filter { !departedMembers.contains(it.name()) }
     }

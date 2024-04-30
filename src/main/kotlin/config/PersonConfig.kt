@@ -4,6 +4,7 @@ import Name
 import YearMonth
 import asset.AssetProgression
 import cashflow.CashFlowEventConfig
+import departed.DepartureConfig
 import expense.ExpenseProgression
 import income.IncomeProgression
 import medical.MedInsuranceProgression
@@ -14,13 +15,14 @@ data class Person (
     val name: Name,
     val birthYM: YearMonth,
     val actuarialGender: ActuarialGender,
-    val isDependant: Boolean,
+    val isPrimary: Boolean,
 )
 
 enum class ActuarialGender { MALE, FEMALE }
 
 open class PersonConfig(
     private val person: Person,
+    private val departureConfig: DepartureConfig,
     private val incomes: List<IncomeProgression>,
     private val expenses: List<ExpenseProgression>,
     private val assets: List<AssetProgression>,
@@ -32,7 +34,8 @@ open class PersonConfig(
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
     fun actuarialGender(): ActuarialGender = person.actuarialGender
-    fun isDependant(): Boolean = person.isDependant
+    fun isPrimary(): Boolean = person.isPrimary
+    fun departureConfig(): DepartureConfig = departureConfig
     fun incomes(): List<IncomeProgression> = incomes
     fun expenses(): List<ExpenseProgression> = expenses
     fun assets(): List<AssetProgression> = assets
