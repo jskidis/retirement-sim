@@ -8,6 +8,8 @@ import asset.AssetType
 import asset.SimpleAssetGainCreator
 import cashflow.*
 import config.*
+import departed.DepartureConfig
+import departed.YearBasedDeparture
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
 import income.EmploymentIncomeProgression
@@ -40,6 +42,9 @@ object Jane : PersonConfigBuilder {
 
     val four01kAcct = RecIdentifier(name = "Jane-401k", person = Smiths.jane.name)
     val four01kAcctBal = 250000.0
+
+    override fun departureConfig(person: Person): DepartureConfig =
+        YearBasedDeparture(2050)
 
     val janeEmpConfig = EmploymentConfig(
         ident = RecIdentifier(name = "BigCo", person = Smiths.jane.name),

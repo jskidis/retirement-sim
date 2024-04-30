@@ -13,6 +13,8 @@ import config.AssetAttributeMap
 import config.EmploymentConfig
 import config.Person
 import config.PersonConfigBuilder
+import departed.DepartureConfig
+import departed.YearBasedDeparture
 import expense.AgeBasedExpenseAdjuster
 import expense.BasicExpenseProgression
 import income.EmploymentIncomeProgression
@@ -42,6 +44,9 @@ object Richard : PersonConfigBuilder {
         startSalary = incomeStart,
         dateRange = employmentDates
     )
+
+    override fun departureConfig(person: Person): DepartureConfig =
+        YearBasedDeparture(2050)
 
     override fun incomes(person: Person): List<IncomeProgression> {
         val employmentConfigs = listOf(richardEmpConfig)
