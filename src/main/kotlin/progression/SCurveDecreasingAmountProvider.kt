@@ -3,6 +3,7 @@ package progression
 import Amount
 import Year
 import YearlyDetail
+import util.SCurveCalc
 
 abstract class SCurveDecreasingAmountProvider(
     val startAmount: Amount,
@@ -16,22 +17,10 @@ abstract class SCurveDecreasingAmountProvider(
         adjustAmount(nominalNextValue(prevYear), prevYear)
 
     fun nominalNextValue(prevYear: YearlyDetail): Amount =
-        SCurveDecreasingAmount.calcAmount(prevYear.year + 1, startAmount, startDecYear, numYears)
-}
-
-object SCurveDecreasingAmount {
-
-    fun calcAmount(year: Year, startAmount: Amount, startDecYear: Year, numYears: Int): Amount =
-        if (startDecYear > year) startAmount
-        else {
-            val remainingYearPct =
-                1.0 * Math.max(0, numYears - (year - startDecYear)) / numYears
-
-            val curvePct: Double =
-                if (remainingYearPct > .5) Math.sin(Math.PI * (remainingYearPct - .5)) / 2.0 + 0.5
-                else 0.5 - (Math.cos(Math.PI * remainingYearPct) / 2.0)
-
-            startAmount * curvePct
-        }
+        SCurveCalc.calcValue(
+            index = (prevYear.year + 1).toDouble(),
+            indexRange = startDecYear.toDouble() to (startDecYear + numYears).toDouble(),
+            valueRange = startAmount to 0.0
+        )
 }
 
