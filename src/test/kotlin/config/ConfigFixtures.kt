@@ -99,7 +99,10 @@ fun personConfigFixture(
         benefitConfigs,
         secondaryBenefitConfigs,
         medInsuranceConfigs,
-        cashFlowEvents)
+        cashFlowEvents,
+        targetSSDraw = YearMonth(currentDate.year),
+        targetRetirement = YearMonth(currentDate.year)
+    )
 
 fun employmentConfigFixture(
     name: Name = "Employment",

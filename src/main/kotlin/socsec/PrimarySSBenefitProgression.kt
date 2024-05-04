@@ -10,6 +10,7 @@ import inflation.StdCmpdInflationProvider
 import tax.TaxabilityProfile
 import util.RecFinder
 import util.currentDate
+import util.yearFromPrevYearDetail
 
 open class PrimarySSBenefitProgression(
     val person: Person,
@@ -28,7 +29,7 @@ open class PrimarySSBenefitProgression(
     val ident = RecIdentifier(name = IDENT_NAME, person = person.name)
 
     override fun determineNext(prevYear: YearlyDetail?): SSBenefitRec {
-        val year = (prevYear?.year?.let { it + 1 } ?: currentDate.year)
+        val year = yearFromPrevYearDetail(prevYear)
         val cmpInflation = cmpdInflationProvider.getCmpdInflationEnd(prevYear)
 
         val prevRec = prevYear?.let { RecFinder.findBenefitRec(ident, prevYear) }

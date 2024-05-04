@@ -16,8 +16,7 @@ class InflationRACTest : ShouldSpec({
         result = InflationRAC.build(currRate = 0.2,
             prev = InflationRAC(rate = 0.1, cmpdStart = 1.1, cmpdEnd = 1.21))
         result.rate.shouldBe(0.2)
-        result.cmpdStart.shouldBeWithinPercentageOf(1.1 * (1 + 0.2), .001)
+        result.cmpdStart.shouldBeWithinPercentageOf(1.21, .001)
         result.cmpdEnd.shouldBeWithinPercentageOf(1.21 * (1 + 0.2), percentage = .001)
     }
-
 })

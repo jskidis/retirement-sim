@@ -46,6 +46,9 @@ object Jane : PersonConfigBuilder {
     override fun departureConfig(person: Person): DepartureConfig =
         YearBasedDeparture(2050)
 
+    override fun targetSSDraw(): YearMonth = targetSSDate
+    override fun targetRetirement(): YearMonth = employmentDates.end
+
     val janeEmpConfig = EmploymentConfig(
         ident = RecIdentifier(name = "BigCo", person = Smiths.jane.name),
         startSalary = incomeStart,

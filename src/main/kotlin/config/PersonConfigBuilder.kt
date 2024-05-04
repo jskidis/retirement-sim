@@ -1,5 +1,6 @@
 package config
 
+import YearMonth
 import asset.AssetProgression
 import cashflow.CashFlowEventConfig
 import departed.DepartureConfig
@@ -9,6 +10,7 @@ import income.IncomeProgression
 import medical.MedInsuranceProgression
 import socsec.SSBenefitProgression
 import socsec.SecondarySSBenefitProgression
+import util.currentDate
 
 interface PersonConfigBuilder {
     fun departureConfig(person: Person): DepartureConfig = NeverDepartConfig()
@@ -19,6 +21,8 @@ interface PersonConfigBuilder {
     fun secondaryBenefits(person: Person): List<SecondarySSBenefitProgression> = ArrayList()
     fun medInsurance(person: Person): List<MedInsuranceProgression> = ArrayList()
     fun cashFlowEvents(person: Person): List<CashFlowEventConfig> = ArrayList()
+    fun targetSSDraw(): YearMonth = YearMonth(currentDate.year)
+    fun targetRetirement(): YearMonth = YearMonth(currentDate.year)
 
     fun buildConfig(person: Person) = PersonConfig(
         person = person,
@@ -29,7 +33,9 @@ interface PersonConfigBuilder {
         benefits = benefits(person),
         secondaryBenefits = secondaryBenefits(person),
         medInsurance = medInsurance(person),
-        cashFlowEvents = cashFlowEvents(person)
+        cashFlowEvents = cashFlowEvents(person),
+        targetSSDraw = targetSSDraw(),
+        targetRetirement = targetRetirement()
     )
 }
 

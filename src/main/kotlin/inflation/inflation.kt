@@ -21,7 +21,7 @@ data class InflationRAC(
     companion object {
         fun build(currRate: Rate, prev: InflationRAC) = InflationRAC(
             rate = currRate,
-            cmpdStart = prev.cmpdStart * (1.0 + currRate),
+            cmpdStart = prev.cmpdEnd,
             cmpdEnd = prev.cmpdEnd * (1.0 + currRate)
         )
     }

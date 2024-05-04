@@ -60,7 +60,7 @@ class SecondarySSBenefitProgressionFixture(
     benefitAdj: Double = 1.0
 ) : SpousalSSBenefitProgression(
     person = person,
-    spouse = spouse,
+    provider = spouse,
     taxabilityProfile = taxabilityProfile,
     benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> benefitAdj }
 )

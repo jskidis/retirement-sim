@@ -168,7 +168,7 @@ class SpousalSSBenefitProgressionFixture(
     taxablePct: Double = 0.5,
 ) : SpousalSSBenefitProgression(
     person = person,
-    spouse = spouse,
+    provider = spouse,
     taxabilityProfile = BenefitTaxableProfileFixture(taxablePct),
     benefitAdjCalc = BenefitAdjustmentCalc { _, _ -> adjustment },
     cmpdInflationProvider = CmpdInflationProviderFixture(

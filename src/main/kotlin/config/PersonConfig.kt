@@ -29,7 +29,9 @@ open class PersonConfig(
     private val benefits: List<SSBenefitProgression>,
     private val secondaryBenefits: List<SecondarySSBenefitProgression>,
     private val medInsurance: List<MedInsuranceProgression>,
-    private val cashFlowEvents: List<CashFlowEventConfig>
+    private val cashFlowEvents: List<CashFlowEventConfig>,
+    private val targetSSDraw: YearMonth,
+    private val targetRetirement: YearMonth,
 ) {
     fun name(): Name = person.name
     fun birthYM(): YearMonth = person.birthYM
@@ -43,5 +45,7 @@ open class PersonConfig(
     fun secondaryBenefits(): List<SecondarySSBenefitProgression> = secondaryBenefits
     fun medInsurance(): List<MedInsuranceProgression> = medInsurance
     fun cashFlowEvents(): List<CashFlowEventConfig> = cashFlowEvents
+    fun targetSSDraw(): YearMonth = targetSSDraw
+    fun targetRetirement(): YearMonth = targetRetirement
 }
 

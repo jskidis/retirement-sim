@@ -1,5 +1,6 @@
 import config.ConfigBuilder
 import util.RandomizerFactory
+import util.commaFormat
 import util.moneyFormat
 import util.twoDecimalFormat
 import java.io.BufferedWriter
@@ -20,7 +21,7 @@ fun main(args: Array<String>) {
         val timeInMillis = measureTimeMillis {
             runMultiple(numSims, configBuilder, outputFilename)
         }
-        println("Elapsed: ${twoDecimalFormat.format(timeInMillis / 1000.0)}")
+        println("Time Elapsed: ${twoDecimalFormat.format(timeInMillis / 1000.0)} seconds")
     }
 }
 
@@ -79,10 +80,19 @@ private fun runMultiple(
     }.size / numSims
 
     println("")
-    println("Success Pct: ${twoDecimalFormat.format(successPct)}")
-    println("Broke Pct: ${twoDecimalFormat.format(brokePct)}")
-    println("Median: ${moneyFormat.format(median)}")
-    println("Average: ${moneyFormat.format(average)}")
+    println("Simulations: ${commaFormat.format(numSims)}")
+    println("Success Pct: ${twoDecimalFormat.format(successPct)}%")
+    println("Went Broke :  ${twoDecimalFormat.format(brokePct)}%")
+    println("====== Targets ======")
+    config.household.members.filter { it.isPrimary() }.forEach {
+        println("Person: ${it.name()}")
+        println("Retirement: ${it.targetRetirement()}")
+        println("SS Draw Dt: ${it.targetSSDraw()}")
+    }
+    println("====== Legacy ======")
+    println("Target  : ${moneyFormat.format(1000000.0)}")
+    println("Median  : ${moneyFormat.format(median)}")
+    println("Average : ${moneyFormat.format(average)}")
     println("Baseline: ${moneyFormat.format(baseline)}")
-
+    println("")
 }

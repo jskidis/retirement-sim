@@ -48,6 +48,9 @@ object Richard : PersonConfigBuilder {
     override fun departureConfig(person: Person): DepartureConfig =
         YearBasedDeparture(2050)
 
+    override fun targetSSDraw(): YearMonth = targetSSDate
+    override fun targetRetirement(): YearMonth = employmentDates.end
+
     override fun incomes(person: Person): List<IncomeProgression> {
         val employmentConfigs = listOf(richardEmpConfig)
         return employmentConfigs.map {
@@ -103,7 +106,7 @@ object Richard : PersonConfigBuilder {
     override fun secondaryBenefits(person: Person) = listOf(
         SpousalSSBenefitProgression(
             person = person,
-            spouse = Smiths.jane,
+            provider = Smiths.jane,
             taxabilityProfile = SSBenefitTaxableProfile()
         )
     )
