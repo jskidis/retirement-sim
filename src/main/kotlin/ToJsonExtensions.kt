@@ -134,13 +134,13 @@ fun YearlyDetail.toJsonStr() = "{" +
     strWhenNotZero(
         totalBenefits() == 0.0,
         ", \"benefit\":\"${moneyFormat.format(totalBenefits())}\"") +
+    ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
     strWhenNotZero(
         totalAssetCashflow() == 0.0,
         ", \"assetCashflow\":\"${moneyFormat.format((totalAssetCashflow()))}\"") +
-    ", \"expense\":\"${moneyFormat.format(totalExpense())}\"" +
     ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
-    ", \"averageROR\":\"${twoDecimalFormat.format(averageRor() * 100)}\"" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
+    ", \"averageROR\":\"${twoDecimalFormat.format(averageRor() * 100)}\"" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +
     ", \"netDist\":\"${moneyFormat.format((netDistributions()))}\"" +
     strWhenNotZero(departed.isEmpty(), ", \"departed\":$departed") +
