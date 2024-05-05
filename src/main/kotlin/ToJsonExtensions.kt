@@ -51,7 +51,7 @@ fun AssetRec.toJsonStr(): String = "{" +
 fun AssetChange.toJsonStr(): String = "{" +
     "\"name\":\"$name\"" +
     ", \"amount\":\"${moneyFormat.format(amount)}\"" +
-    strWhenNotZero(taxable == null, ", \"taxable\":$taxable") +
+    strWhenNotZero(taxable == null || !taxable.hasAmounts(), ", \"taxable\":$taxable") +
     strWhenNotZero(cashflow == 0.0, ", \"cashFlow\":\"${moneyFormat.format(cashflow)}\"") +
     strWhenNotZero(unrealized == 0.0, ", \"unrealized\":\"${moneyFormat.format(unrealized)}\"") +
     strWhenNotZero(accruedAmt == 0.0, ", \"accrued\":\"${moneyFormat.format(accruedAmt)}\"") +

@@ -1,8 +1,5 @@
 import config.ConfigBuilder
-import util.RandomizerFactory
-import util.commaFormat
-import util.moneyFormat
-import util.twoDecimalFormat
+import util.*
 import java.io.BufferedWriter
 import java.io.File
 import java.util.stream.Collectors
@@ -33,7 +30,7 @@ private fun runSingle(configBuilder: ConfigBuilder) {
 }
 
 private fun singleRunFromMultiple(num: Int, configBuilder: ConfigBuilder, writer: BufferedWriter?)
-    : YearlySummary {
+    : SimResult {
     val result = SimulationRun.runSim(configBuilder, false)
     if (writer != null) {
         result.summaries.forEach {
@@ -41,7 +38,7 @@ private fun singleRunFromMultiple(num: Int, configBuilder: ConfigBuilder, writer
             writer.newLine()
         }
     }
-    return result.lastYear()
+    return result
 }
 
 private fun runMultiple(
@@ -65,9 +62,10 @@ private fun runMultiple(
 
     RandomizerFactory.setSuppressRandom(false)
 
-    val runs = (1..numSims).toList().parallelStream().map { simNum ->
+    val runsResults = (1..numSims).toList().parallelStream().map { simNum ->
         singleRunFromMultiple(simNum, configBuilder, writer)
     }.collect(Collectors.toList())
+    val runs = runsResults.map { it.lastYear() }
 
     writer?.close()
 
@@ -78,6 +76,11 @@ private fun runMultiple(
     val brokePct = 100.0 * runs.filter {
         it.expenses - it.benefits > it.assetValue
     }.size / numSims
+
+    val avgInflation = runs.sumOf {
+        Math.pow(it.inflation.cmpdEnd, 1.0 / (it.year - currentDate.year) ) -1
+    } / numSims
+    val avgROR = runsResults.sumOf { it.averageROR() } / numSims
 
     println("")
     println("Simulations: ${commaFormat.format(numSims)}")
@@ -94,5 +97,8 @@ private fun runMultiple(
     println("Median  : ${moneyFormat.format(median)}")
     println("Average : ${moneyFormat.format(average)}")
     println("Baseline: ${moneyFormat.format(baseline)}")
+    println("====== Stats ======")
+    println("Avg Infl: ${twoDecimalFormat.format(avgInflation * 100)}%")
+    println("Avg ROR : ${twoDecimalFormat.format(avgROR * 100)}%")
     println("")
 }

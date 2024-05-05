@@ -147,6 +147,6 @@ class Smiths : ConfigBuilder {
     )
 
     override fun simSuccess(): SimSuccess = SimSuccess {
-        it.assetValue / it.inflation > 1000000.0
+        it.assetValue / it.inflation.cmpdEnd > 1000000.0
     }
 }

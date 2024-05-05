@@ -3,6 +3,7 @@ import asset.AssetRec
 import departed.DepartedRec
 import expense.ExpenseRec
 import income.IncomeRec
+import inflation.InflationRAC
 import inflation.InflationRec
 import socsec.SSBenefitRec
 import tax.FilingStatus
@@ -47,7 +48,7 @@ data class YearlyDetail(
 
 data class YearlySummary(
     val year: Year,
-    val inflation: Rate,
+    val inflation: InflationRAC,
     val assetValue: Amount,
     val avgROR: Rate,
     val income: Amount,
@@ -60,12 +61,12 @@ data class YearlySummary(
     val payrollTaxes: Amount,
     val carryOverTaxes: Amount,
 ) {
-    fun inflAdjAssets(): Amount = (assetValue - carryOverTaxes) / inflation
+    fun inflAdjAssets(): Amount = (assetValue - carryOverTaxes) / inflation.cmpdEnd
     companion object {
         fun fromDetail(detail: YearlyDetail): YearlySummary =
             YearlySummary(
                 year = detail.year,
-                inflation = detail.inflation.std.cmpdEnd,
+                inflation = detail.inflation.std,
                 assetValue = detail.totalAssetValues(),
                 avgROR = detail.averageRor(),
                 income = detail.totalIncome(),
@@ -84,6 +85,7 @@ data class YearlySummary(
 data class SimResult (
     val summaries: List<YearlySummary>
 ) {
+    fun averageROR(): Rate = summaries.sumOf { it.avgROR } / summaries.size
     fun lastYear(): YearlySummary = summaries.last()
 }
 
