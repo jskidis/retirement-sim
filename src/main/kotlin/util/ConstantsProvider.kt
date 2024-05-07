@@ -17,7 +17,8 @@ object ConstantsProvider {
         ROTH_INCOME_LIMIT_SINGLE { override fun toString() = "rothIncomeLimitSingle" },
         ROTH_INCOME_LIMIT_JOINTLY { override fun toString() = "rothIncomeLimitJointly" },
         RETIREMENT_CATCHUP_AGE { override fun toString() = "retirementCatchupAge" },
-        RETIREMENT_WITHDRAW_AGE { override fun toString() = "retirementWithdrawAge"}
+        RETIREMENT_WITHDRAW_AGE { override fun toString() = "retirementWithdrawAge"},
+        SSTRUSTFUND_DEPLETED_YEAR { override fun toString() = "ssTrustfundDepletedYear" }
     }
 
     fun getValue(key: KEYS): Double =

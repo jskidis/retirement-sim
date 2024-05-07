@@ -80,7 +80,7 @@ abstract class SecondarySSBenefitProgressionBase(
         val amountMinusPrimary = Math.max(
             0.0,
             (fullAmount - (currPrimaryRec?.amount ?: 0.0)) * pctInYear)
-        val amount = payoutAdjProvider.adjustPayout(amountMinusPrimary)
+        val amount = payoutAdjProvider.adjustPayout(amountMinusPrimary, currYear.year)
 
         return SSBenefitRec(
             year = currYear.year,
