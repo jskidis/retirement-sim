@@ -1,4 +1,5 @@
 import config.ConfigBuilder
+import departed.DepartedRec
 import util.*
 import java.io.BufferedWriter
 import java.io.File
@@ -62,10 +63,9 @@ private fun runMultiple(
 
     RandomizerFactory.setSuppressRandom(false)
 
-    val runsResults = (1..numSims).toList().parallelStream().map { simNum ->
-        singleRunFromMultiple(simNum, configBuilder, writer)
+    val runs = (1..numSims).toList().parallelStream().map { simNum ->
+        singleRunFromMultiple(simNum, configBuilder, writer).lastYear()
     }.collect(Collectors.toList())
-    val runs = runsResults.map { it.lastYear() }
 
     writer?.close()
 
@@ -78,19 +78,25 @@ private fun runMultiple(
     }.size / numSims
 
     val avgInflation = runs.sumOf {
-        Math.pow(it.inflation.cmpdEnd, 1.0 / (it.year - currentDate.year) ) -1
+        Math.pow(it.inflation.cmpdEnd, 1.0 / (it.year - currentDate.year)) - 1
     } / numSims
-    val avgROR = runsResults.sumOf { it.averageROR() } / numSims
+    val avgROR = runs.sumOf {
+        Math.pow(it.compoundROR, 1.0 / (it.year - currentDate.year)) - 1
+    } / numSims
+
+    val departedRecs: List<DepartedRec> = runs.flatMap { it.departed }
 
     println("")
     println("Simulations: ${commaFormat.format(numSims)}")
     println("Success Pct: ${twoDecimalFormat.format(successPct)}%")
     println("Went Broke :  ${twoDecimalFormat.format(brokePct)}%")
-    println("====== Targets ======")
-    config.household.members.filter { it.isPrimary() }.forEach {
-        println("Person: ${it.name()}")
-        println("Retirement: ${it.targetRetirement()}")
-        println("SS Draw Dt: ${it.targetSSDraw()}")
+    println("====== People ======")
+    config.household.members.filter { it.isPrimary() }.forEach { member ->
+        val departed = departedRecs.filter { departed -> member.name() == departed.person }
+        val avgYear = Math.round(1.0 * departed.sumOf { it.year } / departed.size).toInt()
+        println("${member.name()} Avg YOD: $avgYear")
+        println("${member.name()} Retirement: ${member.targetRetirement()}")
+        println("${member.name()} SS Draw Dt: ${member.targetSSDraw()}")
     }
     println("====== Legacy ======")
     println("Target  : ${moneyFormat.format(1000000.0)}")

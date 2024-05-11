@@ -30,6 +30,7 @@ data class YearlyDetail(
     val transfers: List<TransferRec> = ArrayList(),
     val departed: List<DepartedRec> = ArrayList(),
     val randomValues: Map<String, Double> = mapOf(),
+    val compoundROR: Double = 1.0,
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
     fun totalIncome() = incomes.sumOf { it.amount() }
@@ -60,7 +61,9 @@ data class YearlySummary(
     val taxes: Amount,
     val payrollTaxes: Amount,
     val carryOverTaxes: Amount,
-) {
+    val departed: List<DepartedRec>,
+    val compoundROR: Double,
+    ) {
     fun inflAdjAssets(): Amount = (assetValue - carryOverTaxes) / inflation.cmpdEnd
     companion object {
         fun fromDetail(detail: YearlyDetail): YearlySummary =
@@ -77,7 +80,9 @@ data class YearlySummary(
                 agi = detail.finalPassTaxes.agi,
                 taxes = detail.finalPassTaxes.fed + detail.finalPassTaxes.state,
                 payrollTaxes = detail.finalPassTaxes.socSec + detail.finalPassTaxes.medicare,
-                carryOverTaxes = detail.finalPassTaxes.total() - detail.taxes.total()
+                carryOverTaxes = detail.finalPassTaxes.total() - detail.taxes.total(),
+                departed = detail.departed,
+                compoundROR = detail.compoundROR
             )
     }
 }
@@ -85,7 +90,6 @@ data class YearlySummary(
 data class SimResult (
     val summaries: List<YearlySummary>
 ) {
-    fun averageROR(): Rate = summaries.sumOf { it.avgROR } / summaries.size
     fun lastYear(): YearlySummary = summaries.last()
 }
 
