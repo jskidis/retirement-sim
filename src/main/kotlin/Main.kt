@@ -88,8 +88,8 @@ private fun runMultiple(
 
     println("")
     println("Simulations: ${commaFormat.format(numSims)}")
-    println("Success Pct: ${twoDecimalFormat.format(successPct)}%")
-    println("Went Broke :  ${twoDecimalFormat.format(brokePct)}%")
+    println("Success  %: ${twoDecimalFormat.format(successPct)}%")
+    println("Go Broke %:  ${twoDecimalFormat.format(brokePct)}%")
     println("====== People ======")
     config.household.members.filter { it.isPrimary() }.forEach { member ->
         val departed = departedRecs.filter { departed -> member.name() == departed.person }
