@@ -36,6 +36,9 @@ data class YearlyDetail(
     fun totalIncome() = incomes.sumOf { it.amount() }
     fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
+    fun totalAssetValues(excludedAssets: List<RecIdentifier>) =
+        assets.filterNot { excludedAssets.contains(it.ident) }.sumOf { it.finalBalance() }
+
     fun totalBenefits() = benefits.sumOf { it.amount() }
     fun totalAssetCashflow() = cashFlowEvents.sumOf{ it.cashflow }
     fun averageRor() = assets.sumOf { it.gains.amount } / assets.sumOf { it.startBal }

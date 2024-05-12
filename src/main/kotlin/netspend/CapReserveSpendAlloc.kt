@@ -1,6 +1,7 @@
 package netspend
 
 import Amount
+import RecIdentifier
 import YearlyDetail
 import asset.AssetRec
 import util.YearBasedConfig
@@ -8,11 +9,12 @@ import util.YearBasedConfig
 open class CapReserveSpendAlloc(
     val yearlyTargetMult: YearBasedConfig<Double>,
     val margin: Double,
+    val excludedAssets: List<RecIdentifier> = ArrayList()
 ) : SpendAllocHandler {
 
     override fun withdraw(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
         val assetBalance = assetRec.finalBalance()
-        val target = determineTarget(currYear, assetBalance)
+        val target = determineTarget(currYear, assetRec)
         val floor = target * (1 - margin)
 
         return when {
@@ -27,7 +29,7 @@ open class CapReserveSpendAlloc(
 
     override fun deposit(amount: Amount, assetRec: AssetRec, currYear: YearlyDetail): Amount {
         val assetBalance = assetRec.finalBalance()
-        val target = determineTarget(currYear, assetBalance)
+        val target = determineTarget(currYear, assetRec)
         val ceiling = target * (1 + margin)
 
         return when {
@@ -40,9 +42,10 @@ open class CapReserveSpendAlloc(
         }
     }
 
-    open fun determineTarget(currYear: YearlyDetail, balance: Amount): Amount {
+    open fun determineTarget(currYear: YearlyDetail, assetRec: AssetRec): Amount {
         val netExpenses = currYear.totalExpense() - currYear.totalBenefits()
-        return if (currYear.totalAssetValues() - balance < netExpenses) 0.0
-        else yearlyTargetMult.getConfigForYear(currYear.year) * netExpenses
+        val totalAssets = currYear.totalAssetValues(excludedAssets + assetRec.ident)
+        return Math.min(Math.max(0.0, totalAssets - netExpenses),
+            yearlyTargetMult.getConfigForYear(currYear.year) * netExpenses)
     }
 }
