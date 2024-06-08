@@ -1,7 +1,9 @@
 package netspend
 
 import Amount
+import RecIdentifier
 import YearlyDetail
+import asset.AssetRec
 import asset.assetRecFixture
 import expense.expenseRecFixture
 import io.kotest.core.spec.style.ShouldSpec
@@ -149,22 +151,29 @@ class CapReserveSpendAllocTest : ShouldSpec({
         val currBalance = 10000.0
         val expenseTotal = 100000.0
         val benefitTotal = 1000.0
-        val otherAssetsValue = expenseTotal * 2
+        val otherAssetsValue = expenseTotal * 4
         val expensesRec = expenseRecFixture(amount = expenseTotal)
         val benefitsRec = benefitsRecFixture(amount = benefitTotal)
-        val assetRec = assetRecFixture(startBal = otherAssetsValue)
+        val assetRec = assetRecFixture(
+            ident = RecIdentifier(name = "CapReserve", person = "Person"),
+            startBal = currBalance
+        )
+        val otherAssetsRec = assetRecFixture(
+            ident = RecIdentifier(name = "OtherAssets", person = "Person"),
+            startBal = otherAssetsValue
+        )
 
         val currYearCopy = currYear.copy(
             expenses = listOf(expensesRec),
             benefits = listOf(benefitsRec),
-            assets = listOf(assetRec)
+            assets = listOf(assetRec, otherAssetsRec)
         )
 
-        val result = hanlder.determineTarget(currYearCopy, currBalance)
+        val result = hanlder.determineTarget(currYearCopy, assetRec)
         result.shouldBe((expenseTotal - benefitTotal) * multiplier)
     }
 
-    should("determine target will 0 is other assets don't have enough to cover expense - benefits ") {
+    should("determine target will return 0 if other assets don't have enough to cover expense - benefits ") {
         val multiplier = 2.0
         val hanlder = CapReserveSpendAlloc(
             margin = .05,
@@ -177,15 +186,22 @@ class CapReserveSpendAllocTest : ShouldSpec({
         val otherAssetsValue = expenseTotal - benefitTotal - 100.0
         val expensesRec = expenseRecFixture(amount = expenseTotal)
         val benefitsRec = benefitsRecFixture(amount = benefitTotal)
-        val assetRec = assetRecFixture(startBal = otherAssetsValue)
+        val assetRec = assetRecFixture(
+            ident = RecIdentifier(name = "CapReserve", person = "Person"),
+            startBal = currBalance
+        )
+        val otherAssetsRec = assetRecFixture(
+            ident = RecIdentifier(name = "OtherAssets", person = "Person"),
+            startBal = otherAssetsValue
+        )
 
         val currYearCopy = currYear.copy(
             expenses = listOf(expensesRec),
             benefits = listOf(benefitsRec),
-            assets = listOf(assetRec)
+            assets = listOf(assetRec, otherAssetsRec)
         )
 
-        val result = hanlder.determineTarget(currYearCopy, currBalance)
+        val result = hanlder.determineTarget(currYearCopy, assetRec)
         result.shouldBeZero()
     }
 })
@@ -193,5 +209,5 @@ class CapReserveSpendAllocTest : ShouldSpec({
 class CapReserveSpendAllocFixture(val target: Amount, margin: Double) :
     CapReserveSpendAlloc(YearBasedConfig(listOf()), margin) {
 
-    override fun determineTarget(currYear: YearlyDetail, balance: Amount): Amount  = target
+    override fun determineTarget(currYear: YearlyDetail, assetRec: AssetRec): Amount  = target
 }
