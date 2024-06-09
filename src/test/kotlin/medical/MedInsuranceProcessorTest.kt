@@ -3,6 +3,7 @@ package medical
 import Amount
 import YearlyDetail
 import config.*
+import departed.DepartedRec
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -159,6 +160,27 @@ class MedInsuranceProcessorTest : ShouldSpec({
         result[2].taxDeductions.person.shouldBe(personName2)
         result[2].taxDeductions.fed.shouldBe(fullYearCoverage.fullyDeductAmount)
         result[2].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount)
+    }
+
+    should("doesn't processes med insurance cost people who have departed") {
+        val progression1 = MedInsuranceProgressionFixture(fullYearCoverage)
+        val progression2 = MedInsuranceProgressionFixture(fullYearCoverage)
+        val config = buildConfig(
+            listOf(progression1),
+            listOf(progression2)
+        )
+        val cy = currentYear.copy(departed = listOf(DepartedRec(personName2, year -1)))
+
+        val result = MedInsuranceProcessor.process(config, cy, previousAGI = 0.0)
+        result.shouldHaveSize(1)
+
+        result[0].year.shouldBe(year)
+        result[0].ident.name.shouldBe(fullYearCoverage.name)
+        result[0].ident.person.shouldBe(personName)
+        result[0].amount.shouldBe(fullYearCoverage.premium)
+        result[0].taxDeductions.person.shouldBe(personName)
+        result[0].taxDeductions.fed.shouldBe(fullYearCoverage.fullyDeductAmount)
+        result[0].taxDeductions.state.shouldBe(fullYearCoverage.fullyDeductAmount)
     }
 })
 

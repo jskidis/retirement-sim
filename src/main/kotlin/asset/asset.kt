@@ -21,7 +21,7 @@ interface GrossGainsCalc {
 }
 
 enum class AssetType {
-    CASH, NRA, IRA, ROTH, STD401K, ROTH401K, OTHER
+    CASH, NRA, IRA, ROTH, STD401K, ROTH401K, ILLIQUID, OTHER
 }
 
 

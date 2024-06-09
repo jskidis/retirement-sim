@@ -58,7 +58,7 @@ class CashFlowEventProcessorTest : ShouldSpec({
             householdConfig = householdConfigFixture(householdMembers = listOf(personConfig))
         )
 
-        val result = CashFlowEventProcessor.process(config, null, currYear)
+        val result = CashFlowEventProcessor.process(config, currYear)
         result.shouldContainAll(change1, change4_1, change4_1)
         // change 2 is null so change returned,
         // change 5 belongs to prog 5 but there's no matching asset rec, so no change returned
