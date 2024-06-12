@@ -16,6 +16,7 @@ open class RandomRateInflationProgression(
             std = InflationRAC(rate = gaussianAdjValue(gaussianRnd, meanAndSD.stdMean, meanAndSD.stdSD)),
             med = InflationRAC(rate = gaussianAdjValue(gaussianRnd, meanAndSD.medMean, meanAndSD.medSD)),
             wage = InflationRAC(rate = gaussianAdjValue(gaussianRnd, meanAndSD.wageMean, meanAndSD.wageSD)),
+            housing = InflationRAC(rate = gaussianAdjValue(gaussianRnd, meanAndSD.housingMean, meanAndSD.housingSD)),
             rndAdj = gaussianRnd
         )
     }
@@ -38,6 +39,10 @@ open class RandomRateInflationProgression(
             wage = InflationRAC.build(
                 currRate = gaussianAdjValue(gaussianRnd, meanAndSD.wageMean, meanAndSD.wageSD),
                 prev = prevRec.wage
+            ),
+            housing = InflationRAC.build(
+                currRate = gaussianAdjValue(gaussianRnd, meanAndSD.housingMean, meanAndSD.housingSD),
+                prev = prevRec.housing
             ),
             rndAdj = gaussianRnd
         )

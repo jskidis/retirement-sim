@@ -37,3 +37,8 @@ class WageCmpdInflationProvider : BaseCmpdInflationProvider {
     override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.wage
 }
 
+class HousingCmpdInflationProvider: BaseCmpdInflationProvider {
+    override fun getInflationType(): INFL_TYPE = INFL_TYPE.HOUSING
+    override fun getRAC(inflationRec: InflationRec): InflationRAC = inflationRec.housing
+}
+

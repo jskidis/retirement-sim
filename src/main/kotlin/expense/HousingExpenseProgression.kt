@@ -5,7 +5,7 @@ import RecIdentifier
 import Year
 import YearlyDetail
 import inflation.CmpdInflationProvider
-import inflation.StdCmpdInflationProvider
+import inflation.HousingCmpdInflationProvider
 import progression.AmountProviderProgression
 import progression.AmountToRecProvider
 import tax.NonDeductProfile
@@ -21,7 +21,7 @@ class HousingExpenseProgression(
     val houseAsset: RecIdentifier,
     val paidOffYear: Year,
     val taxabilityProfile: TaxabilityProfile = NonDeductProfile(),
-    val cmpdInflationProvider: CmpdInflationProvider = StdCmpdInflationProvider(),
+    val cmpdInflationProvider: CmpdInflationProvider = HousingCmpdInflationProvider(),
 ) : AmountProviderProgression<ExpenseRec>,
     AmountToRecProvider<ExpenseRec> by ExpenseRecProvider(ident, taxabilityProfile) {
 

@@ -11,6 +11,7 @@ enum class INFL_TYPE : RACProvider {
     STD { override fun racFromRec(inflation: InflationRec) = inflation.std },
     MED { override fun racFromRec(inflation: InflationRec) = inflation.med },
     WAGE { override fun racFromRec(inflation: InflationRec) = inflation.wage },
+    HOUSING { override fun racFromRec(inflation: InflationRec) = inflation.housing },
 }
 
 data class InflationRAC(
@@ -33,6 +34,7 @@ data class InflationRec(
     val std: InflationRAC,
     val med: InflationRAC,
     val wage: InflationRAC,
+    val housing: InflationRAC,
     val rndAdj:Rate = 0.0
 ) {
     override fun toString() = toJsonStr()
