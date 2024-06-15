@@ -11,7 +11,7 @@ data class ActuarialLifeRec(
     val femalePct: Rate
 )
 
-object ActuarialLifeMap : ChanceOfDeathCalc {
+object ActuarialLifeMap : ChanceOfActurialEventCalc {
     val ageMap: Map<Int, ActuarialLifeRec> by lazy {
         loadMap().associate { Pair(it.age, it) }
     }
@@ -28,7 +28,7 @@ object ActuarialLifeMap : ChanceOfDeathCalc {
         )
     }
 
-    override fun getChanceOfDeath(age: Int, gender: ActuarialGender): Double =
+    override fun getChanceOfEvent(age: Int, gender: ActuarialGender): Double =
         when (gender) {
             ActuarialGender.MALE -> ageMap.get(age)?.malePct ?: 0.0
             ActuarialGender.FEMALE -> ageMap.get(age)?.femalePct ?: 0.0
@@ -36,6 +36,6 @@ object ActuarialLifeMap : ChanceOfDeathCalc {
 
 }
 
-fun interface ChanceOfDeathCalc {
-    fun getChanceOfDeath(age: Int, gender: ActuarialGender): Double
+fun interface ChanceOfActurialEventCalc {
+    fun getChanceOfEvent(age: Int, gender: ActuarialGender): Double
 }

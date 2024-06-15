@@ -23,7 +23,7 @@ class HousingExpenseProgressionTest : ShouldSpec({
     val houseAssetRec = assetRecFixture(year, houseAsset, AssetType.ILLIQUID)
 
     val cmpdInflation = 2.0
-    val inflationRec = inflationRecFixture(stdRAC = InflationRAC(
+    val inflationRec = inflationRecFixture(housingRAC = InflationRAC(
         rate = .03, cmpdStart = cmpdInflation - .03, cmpdEnd = cmpdInflation))
 
     val progression = HousingExpenseProgression(

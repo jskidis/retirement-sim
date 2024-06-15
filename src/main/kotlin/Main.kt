@@ -70,6 +70,7 @@ private fun runMultiple(
     writer?.close()
 
     val sorted = ((runs.map { it.inflAdjAssets() }).sorted())
+    val maxYear = runs.maxOf { it.year }
     val median = sorted[runs.size / 2]
     val average = sorted.sumOf { it } / numSims
     val successPct = 100.0 * runs.filter { config.simSuccess.wasSuccessRun(it) }.size / numSims
@@ -89,7 +90,8 @@ private fun runMultiple(
     println("")
     println("Simulations: ${commaFormat.format(numSims)}")
     println("Success  %: ${twoDecimalFormat.format(successPct)}%")
-    println("Go Broke %:  ${twoDecimalFormat.format(brokePct)}%")
+    println("Go Broke %: ${twoDecimalFormat.format(brokePct)}%")
+    println("Max Year  : $maxYear")
     println("====== People ======")
     config.household.members.filter { it.isPrimary() }.forEach { member ->
         val departed = departedRecs.filter { departed -> member.name() == departed.person }
