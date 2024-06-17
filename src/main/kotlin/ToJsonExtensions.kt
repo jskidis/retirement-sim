@@ -139,6 +139,7 @@ fun YearlyDetail.toJsonStr() = "{" +
         totalAssetCashflow() == 0.0,
         ", \"assetCashflow\":\"${moneyFormat.format((totalAssetCashflow()))}\"") +
     ", \"assetValue\":\"${moneyFormat.format(totalAssetValues())}\"" +
+    ", \"liquidAssets\":\"${moneyFormat.format(totalLiquidAssets())}\"" +
     ", \"infAdj\":\"${moneyFormat.format(totalAssetValues() / inflation.std.cmpdEnd)}\"" +
     ", \"averageROR\":\"${twoDecimalFormat.format(averageRor() * 100)}\"" +
     ", \"netSpend\":\"${moneyFormat.format((netSpend()))}\"" +

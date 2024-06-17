@@ -11,7 +11,7 @@ class ActuarialBasedDeparture(
     defaultYear: Year,
     multiplier: Rate = 1.0,
     probabilityCalc: ChanceOfActurialEventCalc = ActuarialLifeMap,
-) : ActuarialEventCalc(person, minYear, defaultYear, multiplier, probabilityCalc),
+) : ActuarialEventCalc(person, minYear, defaultYear, multiplier, 0.0, probabilityCalc),
     DepartureConfig {
 
     override fun determineDeparted(currYear: YearlyDetail): Boolean = didEventOccur(currYear)

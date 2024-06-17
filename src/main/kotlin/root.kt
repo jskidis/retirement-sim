@@ -1,5 +1,6 @@
 import asset.AssetChange
 import asset.AssetRec
+import asset.AssetType
 import departed.DepartedRec
 import expense.ExpenseRec
 import income.IncomeRec
@@ -36,6 +37,8 @@ data class YearlyDetail(
     fun totalIncome() = incomes.sumOf { it.amount() }
     fun totalExpense() = expenses.sumOf { it.amount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
+    fun totalLiquidAssets() =
+        assets.filterNot { AssetType.ILLIQUID == it.assetType }.sumOf { it.finalBalance() }
     fun totalAssetValues(excludedAssets: List<RecIdentifier>) =
         assets.filterNot { excludedAssets.contains(it.ident) }.sumOf { it.finalBalance() }
 
