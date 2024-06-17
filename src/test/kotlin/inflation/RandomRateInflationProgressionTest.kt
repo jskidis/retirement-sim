@@ -5,10 +5,10 @@ import YearlyDetail
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
+import util.InflRandom
 import kotlin.math.pow
 
 class RandomRateInflationProgressionTest : ShouldSpec({
-    val mockRndVal = 2.0
     val stdMean: Rate = 0.03
     val stdSD: Rate = 0.015
     val medMean: Rate = 0.04
@@ -21,7 +21,9 @@ class RandomRateInflationProgressionTest : ShouldSpec({
     val meanAndSD = InflationMeanAndSD(stdMean, stdSD,
         medMean, medSD, wageMean, wageSD, housingMean, housingSD)
 
-    val progression = RandomRateInflationProgressFixture(mockRndVal, meanAndSD)
+    val mockRndVal = 2.0
+    val randomizer = InflRandom { _ -> mockRndVal }
+    val progression = RandomRateInflationProgression(meanAndSD, randomizer)
 
     should(
         "determine next with no previous data: " +
@@ -69,11 +71,4 @@ class RandomRateInflationProgressionTest : ShouldSpec({
         nextValue.housing.cmpdEnd.shouldBeWithinPercentageOf((1.0 + nextValue.housing.rate).pow(2), .001)
     }
 })
-
-class RandomRateInflationProgressFixture(
-    val mockRndVal: Double,
-    meanAndSD: InflationMeanAndSD,
-) : RandomRateInflationProgression(meanAndSD) {
-    override fun getInflRandom(prevYear: YearlyDetail?): Double = mockRndVal
-}
 

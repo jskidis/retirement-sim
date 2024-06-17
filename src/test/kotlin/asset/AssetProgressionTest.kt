@@ -8,10 +8,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.doubles.shouldBeWithinPercentageOf
 import io.kotest.matchers.shouldBe
 import tax.NonTaxableProfile
-import util.SingleYearBasedConfig
-import util.YearBasedConfig
-import util.YearConfigPair
-import util.currentDate
+import util.*
 import yearlyDetailFixture
 
 class AssetProgressionTest : ShouldSpec({
@@ -129,6 +126,31 @@ class AssetProgressionTest : ShouldSpec({
         results.gains.name.shouldBe(tenPctReturn.name)
         results.gains.amount.shouldBe(0.0)
         results.startUnrealized.shouldBe(0.0)
+        results.tributions.shouldBeEmpty()
+    }
+
+    should("determineNext utilizes randomizer") {
+        val randomizerReturn = 1.5
+        val randomizer = ROIRandom { _ -> randomizerReturn }
+        val attributeSet = SingleYearBasedConfig(tenPctReturn)
+        val progression = AssetProgression(
+            ident = baseAssetIdent,
+            startBalance = startBalance,
+            assetType = AssetType.CASH,
+            gainCreator = SimpleAssetGainCreator(
+                taxability = NonTaxableProfile(),
+                attributesSet = attributeSet
+            ),
+            roiRandomizer = randomizer
+        )
+
+        val results = progression.determineNext(prevYear.copy(year = nextYear))
+        results.ident.name.shouldBe(assetName)
+        results.ident.person.shouldBe(person)
+        results.gains.name.shouldBe(tenPctReturn.name)
+        results.gains.amount.shouldBeWithinPercentageOf(
+            startBalance * (tenPctReturn.mean + tenPctReturn.stdDev * randomizerReturn), .001)
+        results.totalUnrealized().shouldBe(startUnrealized)
         results.tributions.shouldBeEmpty()
     }
 })

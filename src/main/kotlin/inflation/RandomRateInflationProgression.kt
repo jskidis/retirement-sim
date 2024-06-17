@@ -2,10 +2,12 @@ package inflation
 
 import YearlyDetail
 import progression.PrevRecProviderProgression
+import util.InflRandom
 import util.RandomizerFactory
 
 open class RandomRateInflationProgression(
-    val meanAndSD: InflationMeanAndSD = inflation50YearAvgs
+    val meanAndSD: InflationMeanAndSD = inflation50YearAvgs,
+    val inflRandomizer: InflRandom = RandomizerFactory,
 ) : PrevRecProviderProgression<InflationRec> {
 
     override fun previousRec(prevYear: YearlyDetail): InflationRec = prevYear.inflation
@@ -52,5 +54,5 @@ open class RandomRateInflationProgression(
         rndValue * stdDev + mean
 
     open fun getInflRandom(prevYear: YearlyDetail?): Double =
-        RandomizerFactory.getInflRandom(prevYear)
+        inflRandomizer.getInflRandom(prevYear)
 }

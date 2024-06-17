@@ -5,6 +5,7 @@ import RecIdentifier
 import Year
 import YearlyDetail
 import progression.PrevRecProviderProgression
+import util.ROIRandom
 import util.RandomizerFactory
 import util.RecFinder
 import util.currentDate
@@ -13,7 +14,8 @@ open class AssetProgression(
     val ident: RecIdentifier,
     val assetType: AssetType,
     val startBalance: Amount,
-    val gainCreator: AssetGainCreator
+    val gainCreator: AssetGainCreator,
+    val roiRandomizer: ROIRandom = RandomizerFactory,
 ) : PrevRecProviderProgression<AssetRec> {
 
     override fun previousRec(prevYear: YearlyDetail): AssetRec? =
@@ -40,7 +42,7 @@ open class AssetProgression(
             year = prevYear.year + 1,
             balance = prevRec.finalBalance(),
             unrealized = prevRec.totalUnrealized(),
-            roiGaussRnd = getROIRandom(prevYear)
+            roiGaussRnd = roiRandomizer.getROIRandom(prevYear)
         )
 
     fun buildRec(year: Year, balance: Amount, unrealized: Amount, roiGaussRnd: Double): AssetRec {
@@ -58,7 +60,4 @@ open class AssetProgression(
             )
         )
     }
-
-    open fun getROIRandom(prevYear: YearlyDetail?): Double =
-        RandomizerFactory.getROIRandom(prevYear)
 }
