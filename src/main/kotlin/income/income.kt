@@ -4,11 +4,13 @@ import Amount
 import AmountRec
 import RecIdentifier
 import Year
+import YearlyDetail
 import progression.AmountToRecProvider
 import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import toJsonStr
+import util.yearFromPrevYearDetail
 
 interface IncomeRec : AmountRec {
     fun updateTaxable(taxable: TaxableAmounts): IncomeRec
@@ -45,11 +47,11 @@ data class IncomeWithBonusRec(
 
 open class IncomeRecProvider(
     val ident: RecIdentifier,
-    val taxabilityProfile: TaxabilityProfile
+    val taxabilityProfile: TaxabilityProfile,
 ) : AmountToRecProvider<IncomeRec> {
 
-    override fun createRecord(value: Amount, year: Year) = StdIncomeRec(
-        year = year,
+    override fun createRecord(value: Amount, prevYear: YearlyDetail?) = StdIncomeRec(
+        year = yearFromPrevYearDetail(prevYear),
         ident = ident,
         amount = value,
         taxableIncome = taxabilityProfile.calcTaxable(ident.person, value))

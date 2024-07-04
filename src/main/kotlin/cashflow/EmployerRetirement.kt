@@ -7,7 +7,7 @@ import asset.AssetRec
 import config.EmploymentConfig
 import config.Person
 import tax.TaxabilityProfile
-import util.PortionOfYearPast
+import util.PortionOfCurrYear
 import util.RecFinder
 
 class EmployerRetirement(
@@ -35,12 +35,12 @@ class EmployerRetirement(
     }
 
     private fun createCashflowEvent(amount: Amount, currYear: YearlyDetail): AssetChange {
-        val accruedPct = PortionOfYearPast.calc(currYear.year)
+        val accruedPct = PortionOfCurrYear.calc(currYear.year)
         return AssetChange(
             name = contributionName,
             amount = amount,
             taxable = taxabilityProfile?.calcTaxable(empConfig.ident.person, amount),
-            cashflow = if (amountRetriever.isFreeMoney()) 0.0 else -amount * (1 - accruedPct),
+            cashflow = if (amountRetriever.isFreeMoney()) 0.0 else -amount,
             accruedAmt = amount * accruedPct
         )
     }

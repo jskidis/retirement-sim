@@ -3,8 +3,10 @@ package tax
 import Amount
 import Name
 import Rate
+import Year
 import YearlyDetail
 import toJsonStr
+import util.PortionOfCurrYear
 
 enum class FilingStatus {
     JOINTLY, HOUSEHOLD, SINGLE
@@ -41,6 +43,7 @@ data class TaxesRec(
     val agi: Amount = 0.0,
 ) {
     fun total(): Amount = fed + state + socSec + medicare
+    fun nonAccruedTotal(year: Year): Amount = (1 - PortionOfCurrYear.calc(year)) * total()
 
     override fun toString(): String = toJsonStr()
 }

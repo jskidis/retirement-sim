@@ -3,7 +3,6 @@ package netspend
 import Amount
 import RecIdentifier
 import YearlyDetail
-import util.PortionOfYearPast
 import util.RecFinder
 
 object NetSpendAllocation {
@@ -21,10 +20,10 @@ object NetSpendAllocation {
         val carryOverTaxes = prevYear?.let {
             (it.finalPassTaxes.total() - it.taxes.total()) * (1 + currYear.inflation.std.rate)
         } ?: 0.0
-        val netSpend = (currYear.totalIncome() + currYear.totalBenefits() -
-            currYear.totalExpense() + currYear.totalAssetCashflow() -
-            currYear.taxes.total() - carryOverTaxes)
-        return (1- PortionOfYearPast.calc(currYear.year)) * netSpend
+
+        return (currYear.totalNonAccruedIncome() + currYear.totalNonAccruedBenefits() -
+            currYear.totalNonAccruedExpenses() + currYear.totalNonAccruedAssetCashflow() -
+            currYear.taxes.nonAccruedTotal(currYear.year) - carryOverTaxes)
     }
 
     private fun processesWithdraws(

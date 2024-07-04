@@ -6,7 +6,7 @@ import RecIdentifier
 import Year
 import tax.TaxableAmounts
 import toJsonStr
-import util.PortionOfYearPast
+import util.PortionOfCurrYear
 
 data class AssetRec(
     override val year: Year,
@@ -32,7 +32,7 @@ data class AssetRec(
     }
 
     fun totalGains(): Amount = gains.amount
-    fun proratedGains(): Amount = PortionOfYearPast.calc(year) * totalGains()
+    fun proratedGains(): Amount = PortionOfCurrYear.calc(year) * totalGains()
     fun nonAccruedTributions(): Amount = tributions.sumOf { it.amount - it.accruedAmt }
     fun totalTributions(): Amount = tributions.sumOf { it.amount }
 

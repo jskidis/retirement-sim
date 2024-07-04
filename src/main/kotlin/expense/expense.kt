@@ -4,11 +4,13 @@ import Amount
 import AmountRec
 import RecIdentifier
 import Year
+import YearlyDetail
 import progression.AmountToRecProvider
 import progression.Progression
 import tax.TaxabilityProfile
 import tax.TaxableAmounts
 import toJsonStr
+import util.yearFromPrevYearDetail
 
 data class ExpenseRec(
     override val year: Year,
@@ -26,8 +28,8 @@ open class ExpenseRecProvider(
     val taxabilityProfile: TaxabilityProfile
 ) : AmountToRecProvider<ExpenseRec> {
 
-    override fun createRecord(value: Amount, year: Year) = ExpenseRec(
-        year = year,
+    override fun createRecord(value: Amount, prevYear: YearlyDetail?) = ExpenseRec(
+        year = yearFromPrevYearDetail(prevYear),
         ident = ident,
         amount = value,
         taxDeductions = taxabilityProfile.calcTaxable(ident.person, value)

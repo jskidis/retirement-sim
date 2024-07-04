@@ -11,6 +11,7 @@ import tax.FilingStatus
 import tax.TaxableAmounts
 import tax.TaxesRec
 import transfers.TransferRec
+import util.PortionOfCurrYear
 
 typealias Year = Int
 typealias Amount = Double
@@ -35,7 +36,9 @@ data class YearlyDetail(
     val filingStatus: FilingStatus = FilingStatus.JOINTLY,
 ) {
     fun totalIncome() = incomes.sumOf { it.amount() }
+    fun totalNonAccruedIncome() = incomes.sumOf { it.nonAccruedAmount() }
     fun totalExpense() = expenses.sumOf { it.amount() }
+    fun totalNonAccruedExpenses() = expenses.sumOf { it.nonAccruedAmount() }
     fun totalAssetValues() = assets.sumOf { it.finalBalance() }
     fun totalLiquidAssets() =
         assets.filterNot { AssetType.ILLIQUID == it.assetType }.sumOf { it.finalBalance() }
@@ -43,7 +46,13 @@ data class YearlyDetail(
         assets.filterNot { excludedAssets.contains(it.ident) }.sumOf { it.finalBalance() }
 
     fun totalBenefits() = benefits.sumOf { it.amount() }
+    fun totalNonAccruedBenefits() = benefits.sumOf { it.nonAccruedAmount() }
     fun totalAssetCashflow() = cashFlowEvents.sumOf{ it.cashflow }
+    fun totalNonAccruedAssetCashflow() = cashFlowEvents.sumOf{
+        if (it.cashflow == 0.0) 0.0
+        else it.cashflow + it.accruedAmt
+    }
+
     fun averageRor() = assets.sumOf { it.gains.amount } / assets.sumOf { it.startBal }
     fun netSpend() = netSpend
 
@@ -113,6 +122,7 @@ interface AmountRec {
     val year: Year
     val ident: RecIdentifier
     fun amount(): Amount
+    fun nonAccruedAmount(): Amount = (1 - PortionOfCurrYear.calc(year)) * amount()
     fun taxable(): TaxableAmounts
     fun retainRec(): Boolean = amount() != 0.0
 }

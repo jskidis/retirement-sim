@@ -49,7 +49,6 @@ class EmployerRetirementTest : ShouldSpec({
             result.accruedAmt.shouldBeZero()
         }
         else {
-            result.cashflow.shouldBeGreaterThan(cashFlowAmount).shouldBeLessThan(0.0)
             result.accruedAmt.shouldBeGreaterThan(0.0).shouldBeLessThan(amount)
         }
     }

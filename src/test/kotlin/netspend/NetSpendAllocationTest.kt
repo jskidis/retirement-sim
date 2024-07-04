@@ -15,7 +15,6 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import socsec.benefitsRecFixture
 import tax.TaxesRec
-import util.PortionOfYearPast
 import util.currentDate
 import yearlyDetailFixture
 
@@ -207,9 +206,8 @@ class NetSpendAllocationTest : ShouldSpec({
             taxes = thisYearTaxes
         )
 
-        val expectedResult = (income.amount() + benefit.amount() -
-            expense.amount() - thisYearTaxes.total()) *
-            (1 - PortionOfYearPast.calc(currentDate.year))
+        val expectedResult = (income.nonAccruedAmount() + benefit.nonAccruedAmount() -
+            expense.nonAccruedAmount() - thisYearTaxes.nonAccruedTotal(currentDate.year))
 
         NetSpendAllocation.determineNetSpend(currYear, null).shouldBe(expectedResult)
     }
